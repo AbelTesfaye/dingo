@@ -28,7 +28,7 @@ pad = (n, width, z) => {
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 };
 
-const HomeRoute = props => {
+const HomePage = props => {
   const AppInstance = props.AppInstance;
   return (
     <ScrollView>
@@ -347,7 +347,7 @@ const HomeRoute = props => {
     </ScrollView>
   );
 };
-const SearchRoute = props => {
+const SearchPage = props => {
   const AppInstance = props.AppInstance;
   return (
     <ScrollView>
@@ -564,8 +564,11 @@ const SearchRoute = props => {
                   </Text>
                 );
               }}
-              data={[{ key: "a" }, { key: "b" }]}
-              renderItem={item => {
+              data={
+                AppInstance.state
+                  .screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse
+              }
+              renderItem={({item,index}) => {
                 return (
                   <View
                     style={{
@@ -580,7 +583,7 @@ const SearchRoute = props => {
                         width: 100,
                         height: 70
                       }}
-                      source={require("./fire.png")}
+                      source={{uri: item.YTTumbnail}}
                     />
                     <View
                       style={{
@@ -593,19 +596,12 @@ const SearchRoute = props => {
                         style={{
                           flex: 1,
                           fontWeight: "bold",
-                          textAlignVertical: "top"
+                          textAlignVertical: "center"
                         }}
                       >
-                        some Item name {item.key}
+                       {item.YTTitle}
                       </Text>
-                      <Text
-                        style={{
-                          flex: 1,
-                          textAlignVertical: "bottom"
-                        }}
-                      >
-                        some Item name {item.key}
-                      </Text>
+                    
                     </View>
                   </View>
                 );
@@ -617,7 +613,7 @@ const SearchRoute = props => {
     </ScrollView>
   );
 };
-const LibraryRoute = props => (
+const LibraryPage = props => (
   <View>
     <Text> My Library is active</Text>
   </View>
@@ -793,6 +789,14 @@ export default class App extends Component<Props> {
       }
     );
   };
+  _searchYouTube =  (query, callback) => {
+    this._fetchFromEndpoint(
+      `searchYouTube?q=${encodeURIComponent(query)}`,
+      responseJson => {
+        callback(responseJson);
+      }
+    );
+  };
 
   _getNewReleasedTracks = callback => {
     this._fetchFromEndpoint(`getChartTopTracks`, responseJson => {
@@ -889,6 +893,19 @@ export default class App extends Component<Props> {
         screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: results
       });
     });
+
+    this._searchYouTube(query, responseJson => {
+      console.log("_searchYouTube responseJson: " + JSON.stringify(responseJson));
+      const results = responseJson.results.map(i => ({
+        ...i,
+        key: shortid.generate()
+      }));
+      this.setState({
+        screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse: results
+      });
+    });
+
+
   };
   _renderTabBar = props => (
     <TabBar
@@ -973,11 +990,11 @@ export default class App extends Component<Props> {
                 renderScene={({ route }) => {
                   switch (route.key) {
                     case "home":
-                      return <HomeRoute AppInstance={this} />;
+                      return <HomePage AppInstance={this} />;
                     case "search":
-                      return <SearchRoute AppInstance={this} />;
+                      return <SearchPage AppInstance={this} />;
                     case "library":
-                      return <LibraryRoute AppInstance={this} />;
+                      return <LibraryPage AppInstance={this} />;
                     default:
                       return null;
                   }

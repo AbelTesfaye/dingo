@@ -18,7 +18,8 @@ import TrackPlayer from "react-native-track-player";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import Icon from "react-native-ionicons";
 import { MiniPlayerProgressBar } from "./MiniPlayerProgressBar";
-const {width,height} = Dimensions.get("window")
+import { TrackComponent } from "./TrackComponent";
+const { width, height } = Dimensions.get("window");
 
 type Props = {};
 
@@ -347,6 +348,7 @@ const HomePage = props => {
     </ScrollView>
   );
 };
+
 const SearchPage = props => {
   const AppInstance = props.AppInstance;
   return (
@@ -474,7 +476,7 @@ const SearchPage = props => {
                         flex: 1,
                         alignSelf: "stretch"
                       }}
-                      source={{ uri: item.images[item.images.length-1] }}
+                      source={{ uri: item.images[item.images.length - 1] }}
                     />
                     <View
                       style={{
@@ -511,39 +513,13 @@ const SearchPage = props => {
                 AppInstance.state
                   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse
               }
-              renderItem={({ item,index }) => {
+              renderItem={({ item, index }) => {
                 return (
-                  <TouchableNativeFeedback
-                    onPress={() => AppInstance._onSearchTracksPress(item,index)}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "white",
-                        flexDirection: "row",
-                        margin: 5
-                      }}
-                    >
-                      <Image
-                        style={{
-                          backgroundColor: "#ddd",
-                          width: 50,
-                          height: 50
-                        }}
-                        source={{ uri: item.images[0] }}
-                      />
-                      <View
-                        style={{
-                          marginHorizontal: 10,
-                          justifyContent: "flex-start",
-                          alignItems: "flex-start",
-                          flex: 1
-                        }}
-                      >
-                        <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
-                        <Text style={{}}>{item.artistName}</Text>
-                      </View>
-                    </View>
-                  </TouchableNativeFeedback>
+                  <TrackComponent
+                    _onSearchTracksPress={AppInstance._onSearchTracksPress}
+                    item={item}
+                    index={index}
+                  />
                 );
               }}
             />
@@ -568,7 +544,7 @@ const SearchPage = props => {
                 AppInstance.state
                   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse
               }
-              renderItem={({item,index}) => {
+              renderItem={({ item, index }) => {
                 return (
                   <View
                     style={{
@@ -583,7 +559,7 @@ const SearchPage = props => {
                         width: 100,
                         height: 70
                       }}
-                      source={{uri: item.YTTumbnail}}
+                      source={{ uri: item.YTTumbnail }}
                     />
                     <View
                       style={{
@@ -599,9 +575,8 @@ const SearchPage = props => {
                           textAlignVertical: "center"
                         }}
                       >
-                       {item.YTTitle}
+                        {item.YTTitle}
                       </Text>
-                    
                     </View>
                   </View>
                 );
@@ -646,42 +621,43 @@ export default class App extends Component<Props> {
       screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: [],
       screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: {},
       screenStates_screenPlayerStates_pageQueueStates_playerState: "",
-      screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: 0,
-
-     
+      screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: 0
     };
-
-   
   }
-  componentDidMount=()=>{
+  componentDidMount = () => {
     this.getNewReleasedTracksAndPutThemInState();
-    
 
-    this._onTrackChanged =  TrackPlayer.addEventListener('playback-track-changed', async (data) => {
-      if (data.nextTrack) {
-        const track = await TrackPlayer.getTrack(data.nextTrack);
+    this._onTrackChanged = TrackPlayer.addEventListener(
+      "playback-track-changed",
+      async data => {
+        if (data.nextTrack) {
+          const track = await TrackPlayer.getTrack(data.nextTrack);
 
-        this.setState({
-          screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: track
-        });
-        
+          this.setState({
+            screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: track
+          });
+        }
+        this._getTrackPlayerQueueToState();
+        this._updateCurrentPlayingTrackState();
       }
-      this._getTrackPlayerQueueToState()
-      this._updateCurrentPlayingTrackState()
-    })
+    );
 
-    this._onStateChanged = TrackPlayer.addEventListener('playback-state', (data) => {
-      this.setState({
-        screenStates_screenPlayerStates_pageQueueStates_playerState: data.state
-      });
+    this._onStateChanged = TrackPlayer.addEventListener(
+      "playback-state",
+      data => {
+        this.setState({
+          screenStates_screenPlayerStates_pageQueueStates_playerState:
+            data.state
+        });
 
-      this._getTrackPlayerQueueToState()
-    })
-  }
+        this._getTrackPlayerQueueToState();
+      }
+    );
+  };
 
   componentWillUnmount() {
-    this._onTrackChanged.remove()
-    this._onStateChanged.remove()
+    this._onTrackChanged.remove();
+    this._onStateChanged.remove();
   }
 
   _getCurrentTrackId = callback => {
@@ -691,7 +667,7 @@ export default class App extends Component<Props> {
       })
       .catch(e => console.error(e));
   };
- 
+
   _getTrackPlayerQueueToState = () => {
     TrackPlayer.getQueue()
       .then(tracks => {
@@ -731,9 +707,7 @@ export default class App extends Component<Props> {
         .catch(e => console.log(e));
     });
   };
- 
 
-  
   _updateSearchQueryText = query => {
     this.setState({
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryText: query
@@ -789,7 +763,7 @@ export default class App extends Component<Props> {
       }
     );
   };
-  _searchYouTube =  (query, callback) => {
+  _searchYouTube = (query, callback) => {
     this._fetchFromEndpoint(
       `searchYouTube?q=${encodeURIComponent(query)}`,
       responseJson => {
@@ -842,15 +816,18 @@ export default class App extends Component<Props> {
     });
     return newTracks;
   };
-  _onSearchTracksPress = (track,index) => {
+  _onSearchTracksPress = (track, index) => {
     // playlistItems = [track];
-    playlistItems = this.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse;
+    playlistItems = this.state
+      .screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse;
     playlistItems = this._insertKeyToArrayItems(playlistItems);
 
     playlistItems = this._convertToTrackPlayerFormat(playlistItems);
 
     this.setState({
-      screenStates_screenNavigatorStates_newQueueItems: playlistItems.slice(index),
+      screenStates_screenNavigatorStates_newQueueItems: playlistItems.slice(
+        index
+      ),
       activeScreen: "PLAYER_SCREEN"
     });
   };
@@ -895,7 +872,9 @@ export default class App extends Component<Props> {
     });
 
     this._searchYouTube(query, responseJson => {
-      console.log("_searchYouTube responseJson: " + JSON.stringify(responseJson));
+      console.log(
+        "_searchYouTube responseJson: " + JSON.stringify(responseJson)
+      );
       const results = responseJson.results.map(i => ({
         ...i,
         key: shortid.generate()
@@ -904,8 +883,6 @@ export default class App extends Component<Props> {
         screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse: results
       });
     });
-
-
   };
   _renderTabBar = props => (
     <TabBar
@@ -975,7 +952,7 @@ export default class App extends Component<Props> {
   );
 
   render() {
-    this.state.activeScreen = "DETAIL_SCREEN"
+    this.state.activeScreen = "DETAIL_SCREEN";
 
     const miniPlayerTrack = this.state
       .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack;
@@ -1009,18 +986,19 @@ export default class App extends Component<Props> {
                 useNativeDriver
               />
             </View>
-            {this.state.screenStates_screenPlayerStates_pageQueueStates_playerState !== TrackPlayer.STATE_NONE ? (
+            {this.state
+              .screenStates_screenPlayerStates_pageQueueStates_playerState !==
+            TrackPlayer.STATE_NONE ? (
               <TouchableNativeFeedback
                 onPress={() => {
                   this.setState({
                     activeScreen: "PLAYER_SCREEN",
-                    screenStates_screenNavigatorStates_newQueueItems:[],
+                    screenStates_screenNavigatorStates_newQueueItems: []
                   });
                 }}
               >
-              
                 <View
-                 elevation={5} 
+                  elevation={5}
                   style={{
                     width: width,
                     height: 55,
@@ -1040,7 +1018,7 @@ export default class App extends Component<Props> {
                     <Image
                       style={{
                         height: 50,
-                        width: 50,
+                        width: 50
                       }}
                       source={{
                         uri: miniPlayerTrack.artwork
@@ -1052,8 +1030,7 @@ export default class App extends Component<Props> {
                         marginHorizontal: 10,
                         justifyContent: "flex-start",
                         alignItems: "flex-start",
-                        flex: 1,
-                        
+                        flex: 1
                       }}
                     >
                       <Text
@@ -1081,18 +1058,175 @@ export default class App extends Component<Props> {
             tracks={this.state.screenStates_screenNavigatorStates_newQueueItems}
             indexToStartAt={1}
           />
-        ) : 
-        
-        this.state.activeScreen == "DETAIL_SCREEN" ?(
-<View>
+        ) : this.state.activeScreen == "DETAIL_SCREEN" ? (
+          <View>
+            <View>
+              <View
+                style={{
+                  backgroundColor: "white",
+                  flexDirection: "row",
+                  alignItems: "center"
+                }}
+              >
+                <Image
+                  style={{
+                    width: 100,
+                    height: 100,
+                    backgroundColor: "#ddd"
+                  }}
+                  source={require("./fire.png")}
+                />
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    margin: 50
+                  }}
+                >
+                  Album Name
+                </Text>
+              </View>
 
-
-
-</View>
-
-        ):
-        
-        (
+              <Text style={{ margin: 10 }}>Tracks</Text>
+              <FlatList
+                keyExtractor={(item, index) => item.key}
+                style={{
+                  backgroundColor: "white"
+                }}
+                data={[
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  },
+                  {
+                    key: "a",
+                    images: [""],
+                    name: "wazzup",
+                    artistName: "holla"
+                  }
+                ]}
+                renderItem={({ item, index }) => {
+                  return (
+                    <TrackComponent
+                      _onSearchTracksPress={this._onSearchTracksPress}
+                      item={item}
+                      index={index}
+                    />
+                  );
+                }}
+              />
+            </View>
+          </View>
+        ) : (
           <Text style={styles.welcome}>Unknown screen</Text>
         )}
       </View>

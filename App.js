@@ -517,7 +517,7 @@ const SearchPage = props => {
               renderItem={({ item, index }) => {
                 return (
                   <TrackComponent
-                    _onSearchTracksPress={AppInstance._onSearchTracksPress}
+                    onTrackPress={AppInstance._onSearchTracksPress}
                     item={item}
                     index={index}
                   />
@@ -953,7 +953,7 @@ export default class App extends Component<Props> {
   );
 
   render() {
-    this.state.activeScreen = "DETAIL_SCREEN";
+   // this.state.activeScreen = "DETAIL_SCREEN";
 
     const miniPlayerTrack = this.state
       .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack;
@@ -1061,7 +1061,11 @@ export default class App extends Component<Props> {
           />
         ) : this.state.activeScreen == "DETAIL_SCREEN" ? (
           <View>
-            <AlbumViewer onTrackPress={()=>{alert("Track pressed")}} />
+            {/* <AlbumViewer onTrackPress={()=>{alert("Track pressed")}} /> */}
+        <View>
+
+        </View>
+        
           </View>
         ) : (
           <Text style={styles.welcome}>Unknown screen</Text>

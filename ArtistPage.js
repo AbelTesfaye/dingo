@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, Image } from "react-native";
-import { TrackListComponent } from "./TrackListComponent";
+import { TrackList } from "./TrackList";
 import { AlbumList } from "./AlbumList";
 export class ArtistPage extends React.Component {
   constructor(props) {
@@ -64,7 +64,7 @@ export class ArtistPage extends React.Component {
           >
             Top Tracks
           </Text>
-          <TrackListComponent
+          <TrackList
             onTrackPress={this.props.onTrackPress}
             data={[
               {

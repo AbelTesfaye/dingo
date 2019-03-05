@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList } from "react-native";
-import { TrackComponent } from "./TrackComponent";
-export class TrackListComponent extends React.Component {
+import { TrackItem } from "./TrackItem";
+export class TrackList extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -15,7 +15,7 @@ export class TrackListComponent extends React.Component {
         data={this.props.data}
         renderItem={({ item, index }) => {
           return (
-            <TrackComponent
+            <TrackItem
               onTrackPress={this.props.onTrackPress}
               item={item}
               index={index}

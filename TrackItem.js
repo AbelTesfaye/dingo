@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, Image, TouchableNativeFeedback } from "react-native";
-export class TrackComponent extends React.Component {
+export class TrackItem extends React.Component {
   constructor(props) {
     super(props);
   }

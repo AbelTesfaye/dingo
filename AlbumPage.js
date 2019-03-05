@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, Image } from "react-native";
-import { TrackListComponent } from "./TrackListComponent";
+import { TrackList } from "./TrackList";
 
 export class AlbumPage extends React.Component {
   constructor(props) {
@@ -41,7 +41,7 @@ export class AlbumPage extends React.Component {
         >
           Tracks
         </Text>
-       <TrackListComponent onTrackPress={this.props.onTrackPress} data={[
+       <TrackList onTrackPress={this.props.onTrackPress} data={[
           {
             key: "a",
             images: [""],

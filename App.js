@@ -18,10 +18,14 @@ import TrackPlayer from "react-native-track-player";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import Icon from "react-native-ionicons";
 import { MiniPlayerProgressBar } from "./MiniPlayerProgressBar";
-import { TrackComponent } from "./TrackComponent";
+import { TrackItem } from "./TrackItem";
 import { AlbumPage } from "./AlbumPage";
 import { AlbumList } from "./AlbumList";
 import { ArtistPage } from "./ArtistPage";
+import { TrackListPage } from "./TrackListPage";
+import { AlbumItem } from "./AlbumItem";
+import { AlbumListPage } from "./AlbumListPage";
+
 const { width, height } = Dimensions.get("window");
 
 type Props = {};
@@ -463,7 +467,7 @@ const SearchPage = props => {
               }
               renderItem={({ item, index }) => {
                 return (
-                  <TrackComponent
+                  <TrackItem
                     onTrackPress={AppInstance._onSearchTracksPress}
                     item={item}
                     index={index}
@@ -541,7 +545,6 @@ const LibraryPage = props => (
     <Text> My Library is active</Text>
   </View>
 );
-
 
 export default class App extends Component<Props> {
   constructor(props) {
@@ -1010,7 +1013,14 @@ export default class App extends Component<Props> {
         ) : this.state.activeScreen == "DETAIL_SCREEN" ? (
           <ScrollView>
             {/* <AlbumPage onTrackPress={()=>{alert("Track pressed")}} /> */}
-            <ArtistPage onTrackPress={()=>{alert("Track pressed")}}/>
+            {/* <ArtistPage onTrackPress={()=>{alert("Track pressed")}}/> */}
+            {/* <TrackListPage onTrackPress={()=>{alert("Track pressed")}}></TrackLPage> */}
+            {/* <AlbumListPage /> */}
+            <View>
+              
+            </View>
+
+          
           </ScrollView>
         ) : (
           <Text style={styles.welcome}>Unknown screen</Text>

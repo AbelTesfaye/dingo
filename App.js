@@ -851,7 +851,7 @@ export default class App extends Component<Props> {
 
     this.setState({
       screenStates_screenNavigatorStates_newQueueItems: playlistItems.slice(index),
-      activeScreen: "player"
+      activeScreen: "PLAYER_SCREEN"
     });
   };
   _startSearch = () => {
@@ -975,12 +975,14 @@ export default class App extends Component<Props> {
   );
 
   render() {
+    this.state.activeScreen = "DETAIL_SCREEN"
+
     const miniPlayerTrack = this.state
       .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack;
 
     return (
       <View style={{ flex: 1 }}>
-        {this.state.activeScreen == "navigator" ||
+        {this.state.activeScreen == "NAVIGATOR_SCREEN" ||
         this.state.activeScreen == null ? (
           <View style={{ flex: 1, backgroundColor: "white" }}>
             <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -1011,7 +1013,7 @@ export default class App extends Component<Props> {
               <TouchableNativeFeedback
                 onPress={() => {
                   this.setState({
-                    activeScreen: "player",
+                    activeScreen: "PLAYER_SCREEN",
                     screenStates_screenNavigatorStates_newQueueItems:[],
                   });
                 }}
@@ -1073,13 +1075,24 @@ export default class App extends Component<Props> {
               </TouchableNativeFeedback>
             ) : null}
           </View>
-        ) : this.state.activeScreen == "player" ? (
+        ) : this.state.activeScreen == "PLAYER_SCREEN" ? (
           <Player
             AppInstance={this}
             tracks={this.state.screenStates_screenNavigatorStates_newQueueItems}
             indexToStartAt={1}
           />
-        ) : (
+        ) : 
+        
+        this.state.activeScreen == "DETAIL_SCREEN" ?(
+<View>
+
+
+
+</View>
+
+        ):
+        
+        (
           <Text style={styles.welcome}>Unknown screen</Text>
         )}
       </View>

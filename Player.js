@@ -120,7 +120,7 @@ export default class Player extends Component {
 
   handleBackButtonClick() {
     this.props.AppInstance.setState({
-      activeScreen: "navigator"
+      activeScreen: "NAVIGATOR_SCREEN"
     });
     return true;
   }

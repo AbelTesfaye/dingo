@@ -8,7 +8,7 @@ export class TrackComponent extends React.Component {
     return (
       <TouchableNativeFeedback
         onPress={() =>
-          this.props._onSearchTracksPress(this.props.item, this.props.index)
+          this.props.onTrackPress(this.props.item, this.props.index)
         }
       >
         <View

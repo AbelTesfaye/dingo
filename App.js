@@ -19,7 +19,9 @@ import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import Icon from "react-native-ionicons";
 import { MiniPlayerProgressBar } from "./MiniPlayerProgressBar";
 import { TrackComponent } from "./TrackComponent";
-import { AlbumViewer } from "./AlbumViewer";
+import { AlbumPage } from "./AlbumPage";
+import { TrackListComponent } from "./TrackListComponent";
+import { AlbumList } from "./AlbumList";
 const { width, height } = Dimensions.get("window");
 
 type Props = {};
@@ -432,66 +434,11 @@ const SearchPage = props => {
             Albums
           </Text>
           <View style={{ marginHorizontal: 10 }}>
-            <FlatList
-              keyExtractor={(item, index) => item.key}
-              horizontal={true}
-              style={{
-                backgroundColor: "white"
-              }}
-              ListFooterComponent={() => {
-                return (
-                  <Text
-                    style={{
-                      flex: 1,
-                      marginTop: 10,
-                      textAlignVertical: "center"
-                    }}
-                  >
-                    Show more
-                  </Text>
-                );
-              }}
+            <AlbumList
               data={
-                null
-                //FOR DEBUG
-                // AppInstance.state
-                //   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse
+                AppInstance.state
+                  .screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse
               }
-              renderItem={({ item }) => {
-                return (
-                  <View
-                    style={{
-                      margin: 10,
-                      backgroundColor: "white",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: 200,
-                      height: 200,
-                      flex: 1
-                    }}
-                  >
-                    <Image
-                      resizeMode="contain"
-                      style={{
-                        flex: 1,
-                        alignSelf: "stretch"
-                      }}
-                      source={{ uri: item.images[item.images.length - 1] }}
-                    />
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center"
-                      }}
-                    >
-                      <Text numberOfLines={1}>
-                        {item.name} • {item.artistName}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              }}
             />
           </View>
           <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
@@ -953,7 +900,7 @@ export default class App extends Component<Props> {
   );
 
   render() {
-   // this.state.activeScreen = "DETAIL_SCREEN";
+    this.state.activeScreen = "DETAIL_SCREEN";
 
     const miniPlayerTrack = this.state
       .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack;
@@ -1060,13 +1007,86 @@ export default class App extends Component<Props> {
             indexToStartAt={1}
           />
         ) : this.state.activeScreen == "DETAIL_SCREEN" ? (
-          <View>
-            {/* <AlbumViewer onTrackPress={()=>{alert("Track pressed")}} /> */}
-        <View>
+          <ScrollView>
+            {/* <AlbumPage onTrackPress={()=>{alert("Track pressed")}} /> */}
+            <View>
+              <View
+                style={{
+                  backgroundColor: "white",
+                  alignItems: "center"
+                }}
+              >
+                <Image
+                  style={{
+                    marginTop: 50,
+                    width: 100,
+                    height: 100,
+                    borderRadius: 50,
+                    backgroundColor: "#ddd"
+                  }}
+                  source={require("./fire.png")}
+                />
+                <Text
+                  style={{
+                    margin: 50
+                  }}
+                >
+                  Artist Name
+                </Text>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    margin: 10
+                  }}
+                >
+                  Albums
+                </Text>
+                <AlbumList
+                  data={[
+                    {
+                      key: "a",
+                      images: [""],
+                      name: "wazzup",
+                      artistName: "holla"
+                    },
 
-        </View>
-        
-          </View>
+                    {
+                      key: "a",
+                      images: [""],
+                      name: "wazzup",
+                      artistName: "holla"
+                    }
+                  ]}
+                />
+                <Text
+                  style={{
+                    margin: 10
+                  }}
+                >
+                  Top Tracks
+                </Text>
+                <TrackListComponent
+                  onTrackPress={this.props.onTrackPress}
+                  data={[
+                    {
+                      key: "a",
+                      images: [""],
+                      name: "wazzup",
+                      artistName: "holla"
+                    },
+
+                    {
+                      key: "a",
+                      images: [""],
+                      name: "wazzup",
+                      artistName: "holla"
+                    }
+                  ]}
+                />
+              </View>
+            </View>
+          </ScrollView>
         ) : (
           <Text style={styles.welcome}>Unknown screen</Text>
         )}

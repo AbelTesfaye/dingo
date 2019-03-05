@@ -20,8 +20,8 @@ import Icon from "react-native-ionicons";
 import { MiniPlayerProgressBar } from "./MiniPlayerProgressBar";
 import { TrackComponent } from "./TrackComponent";
 import { AlbumPage } from "./AlbumPage";
-import { TrackListComponent } from "./TrackListComponent";
 import { AlbumList } from "./AlbumList";
+import { ArtistPage } from "./ArtistPage";
 const { width, height } = Dimensions.get("window");
 
 type Props = {};
@@ -542,6 +542,7 @@ const LibraryPage = props => (
   </View>
 );
 
+
 export default class App extends Component<Props> {
   constructor(props) {
     super(props);
@@ -1009,83 +1010,7 @@ export default class App extends Component<Props> {
         ) : this.state.activeScreen == "DETAIL_SCREEN" ? (
           <ScrollView>
             {/* <AlbumPage onTrackPress={()=>{alert("Track pressed")}} /> */}
-            <View>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  alignItems: "center"
-                }}
-              >
-                <Image
-                  style={{
-                    marginTop: 50,
-                    width: 100,
-                    height: 100,
-                    borderRadius: 50,
-                    backgroundColor: "#ddd"
-                  }}
-                  source={require("./fire.png")}
-                />
-                <Text
-                  style={{
-                    margin: 50
-                  }}
-                >
-                  Artist Name
-                </Text>
-              </View>
-              <View>
-                <Text
-                  style={{
-                    margin: 10
-                  }}
-                >
-                  Albums
-                </Text>
-                <AlbumList
-                  data={[
-                    {
-                      key: "a",
-                      images: [""],
-                      name: "wazzup",
-                      artistName: "holla"
-                    },
-
-                    {
-                      key: "a",
-                      images: [""],
-                      name: "wazzup",
-                      artistName: "holla"
-                    }
-                  ]}
-                />
-                <Text
-                  style={{
-                    margin: 10
-                  }}
-                >
-                  Top Tracks
-                </Text>
-                <TrackListComponent
-                  onTrackPress={this.props.onTrackPress}
-                  data={[
-                    {
-                      key: "a",
-                      images: [""],
-                      name: "wazzup",
-                      artistName: "holla"
-                    },
-
-                    {
-                      key: "a",
-                      images: [""],
-                      name: "wazzup",
-                      artistName: "holla"
-                    }
-                  ]}
-                />
-              </View>
-            </View>
+            <ArtistPage onTrackPress={()=>{alert("Track pressed")}}/>
           </ScrollView>
         ) : (
           <Text style={styles.welcome}>Unknown screen</Text>

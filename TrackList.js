@@ -12,6 +12,13 @@ export class TrackList extends React.Component {
         style={{
           backgroundColor: "white"
         }}
+        ListFooterComponent={() => {
+          return (
+            <Text style={{ marginTop: 10, textAlign: "center" }}>
+              Show more
+            </Text>
+          );
+        }}
         data={this.props.data}
         renderItem={({ item, index }) => {
           return (

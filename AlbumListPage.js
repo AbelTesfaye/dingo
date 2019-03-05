@@ -8,11 +8,7 @@ export class AlbumListPage extends React.Component {
   }
   render() {
     return (
-        <View>  
-            
-         <AlbumListGrid/>
-        </View>
-   
+         <AlbumListGrid/>   
     );
   }
 }

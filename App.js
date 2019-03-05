@@ -25,6 +25,7 @@ import { ArtistPage } from "./ArtistPage";
 import { TrackListPage } from "./TrackListPage";
 import { AlbumItem } from "./AlbumItem";
 import { AlbumListPage } from "./AlbumListPage";
+import { ArtistList as ArtistListPage } from "./ArtistListPage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -356,6 +357,7 @@ const HomePage = props => {
   );
 };
 
+
 const SearchPage = props => {
   const AppInstance = props.AppInstance;
   return (
@@ -381,57 +383,10 @@ const SearchPage = props => {
           </Text>
 
           <View style={{ marginHorizontal: 10 }}>
-            <FlatList
-              keyExtractor={(item, index) => item.key}
-              style={{
-                backgroundColor: "white"
-              }}
-              ListFooterComponent={() => {
-                return (
-                  <Text style={{ marginTop: 10, textAlign: "center" }}>
-                    Show more
-                  </Text>
-                );
-              }}
-              data={
-                null
-                //FOR DEBUG
-                // AppInstance.state
-                //   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse
-              }
-              renderItem={({ item }) => {
-                return (
-                  <View
-                    style={{
-                      backgroundColor: "white",
-                      flexDirection: "row",
-                      margin: 5
-                    }}
-                  >
-                    <Image
-                      style={{
-                        borderRadius: 25,
-                        backgroundColor: "#ddd",
-                        width: 50,
-                        height: 50
-                      }}
-                      source={{ uri: item.images[0] }}
-                    />
-                    <View
-                      style={{
-                        marginHorizontal: 10,
-                        justifyContent: "center",
-                        alignItems: "center"
-                      }}
-                    >
-                      <Text style={{ fontWeight: "bold", fontSize: 15 }}>
-                        {item.name}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              }}
-            />
+            <ArtistListPage data={
+              AppInstance.state
+                  .screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse
+            }/>
           </View>
 
           <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
@@ -1016,10 +971,129 @@ export default class App extends Component<Props> {
             {/* <ArtistPage onTrackPress={()=>{alert("Track pressed")}}/> */}
             {/* <TrackListPage onTrackPress={()=>{alert("Track pressed")}}></TrackLPage> */}
             {/* <AlbumListPage /> */}
-            <View>
-              
-            </View>
-
+              <ArtistListPage data={[
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          },
+          {
+            key: "a",
+            images: [""],
+            name: "wazzup",
+            artistName: "holla"
+          }
+        ]} />
+         
           
           </ScrollView>
         ) : (

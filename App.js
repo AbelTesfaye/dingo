@@ -18,10 +18,10 @@ import TrackPlayer from "react-native-track-player";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import Icon from "react-native-ionicons";
 import { MiniPlayerProgressBar } from "./MiniPlayerProgressBar";
-import { TrackItem } from "./TrackItem";
+import { TrackList } from "./TrackList";
 import { AlbumList } from "./AlbumList";
 import { AlbumItem } from "./AlbumItem";
-import { ArtistListPage } from "./ArtistListPage";
+import { ArtistList } from "./ArtistList";
 import utils from "./utils";
 import { ScreenDetail } from "./ScreenDetail";
 
@@ -380,12 +380,13 @@ const SearchPage = props => {
           </Text>
 
           <View style={{ marginHorizontal: 10 }}>
-            <ArtistListPage
+            <ArtistList
               data={
                 AppInstance.state
                   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse
               }
               AppInstance={AppInstance}
+              maxItems={2}
             />
           </View>
 
@@ -399,39 +400,34 @@ const SearchPage = props => {
                   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse
               }
               AppInstance={AppInstance}
+              maxItems={2}
             />
           </View>
           <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
             Tracks
           </Text>
           <View style={{ marginHorizontal: 10 }}>
-            <FlatList
-              keyExtractor={(item, index) => index.toString()}
-              style={{
-                backgroundColor: "white"
-              }}
-              ListFooterComponent={() => {
-                return (
-                  <Text style={{ marginTop: 10, textAlign: "center" }}>
-                    Show more
-                  </Text>
-                );
-              }}
+            <TrackList
               data={
                 AppInstance.state
                   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse
               }
-              renderItem={({ item, index }) => {
-                return (
-                  <TrackItem
-                    onTrackPress={AppInstance._onSearchTracksPress}
-                    item={item}
-                    index={index}
-                  />
-                );
-              }}
+              onTrackPress={(item, index) =>
+                AppInstance.startInPlayer(
+                  utils.convertToTrackPlayerFormat(
+                    AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse.slice(
+                      index
+                    )
+                  )
+                )
+              }
+              AppInstance={AppInstance}
+              maxItems={2}
             />
           </View>
+
+          {/* //TODO: work on this when more important features are done
+          
           <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
             YouTube
           </Text>
@@ -490,7 +486,7 @@ const SearchPage = props => {
                 );
               }}
             />
-          </View>
+          </View> */}
         </View>
       </View>
     </ScrollView>
@@ -533,7 +529,10 @@ export default class App extends Component<Props> {
 
       screenStates_screenDetailStates_activePage: null,
       screenStates_screenDetailStates_pageArtistInfoStates_artistName: null,
-      screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName: null
+      screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName: null,
+      screenStates_screenDetailStates_pageArtistListStates_artists: null,
+      screenStates_screenDetailStates_pageAlbumListStates_albums: null,
+      screenStates_screenDetailStates_pageTrackListStates_tracks: null
     };
   }
   componentDidMount = () => {
@@ -771,6 +770,33 @@ export default class App extends Component<Props> {
         artistName,
         albumName
       }
+    });
+  };
+
+  openArtistListPage = artists => {
+    this.setState({
+      activeScreen: "DETAIL_SCREEN",
+      screenStates_screenDetailStates_activePage: "PAGE_ARTIST_LIST",
+
+      screenStates_screenDetailStates_pageArtistListStates_artists: artists
+    });
+  };
+
+  openAlbumListPage = albums => {
+    this.setState({
+      activeScreen: "DETAIL_SCREEN",
+      screenStates_screenDetailStates_activePage: "PAGE_ALBUM_LIST",
+
+      screenStates_screenDetailStates_pageAlbumListStates_albums: albums
+    });
+  };
+
+  openTrackListPage = tracks => {
+    this.setState({
+      activeScreen: "DETAIL_SCREEN",
+      screenStates_screenDetailStates_activePage: "PAGE_TRACK_LIST",
+
+      screenStates_screenDetailStates_pageTrackListStates_tracks: tracks
     });
   };
 

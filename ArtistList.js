@@ -1,21 +1,24 @@
 import React from "react";
-import { FlatList, Text,TouchableWithoutFeedback } from "react-native";
-import { TrackItem } from "./TrackItem";
-export class TrackList extends React.Component {
+import { Text, FlatList,TouchableWithoutFeedback } from "react-native";
+import { ArtistItem } from "./ArtistItem";
+
+export class ArtistList extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
     const AppInstance = this.props.AppInstance
     return (
-      
       <FlatList
         keyExtractor={(item, index) => index.toString()}
+        style={{
+          backgroundColor: "white"
+        }}
         ListFooterComponent={() => {
           return (
             (this.props.data && this.props.maxItems <= this.props.data.length)?
             <TouchableWithoutFeedback onPress={()=>{
-              AppInstance.openTrackListPage(this.props.data)
+              AppInstance.openArtistListPage(this.props.data)
             }}>
             <Text
               style={{
@@ -29,17 +32,12 @@ export class TrackList extends React.Component {
             :null
           );
         }}
-        style={{
-          backgroundColor: "white"
-        }}
-      
         data={this.props.data?this.props.data.slice(0,this.props.maxItems):null}
-        renderItem={({ item, index }) => {
+        renderItem={({ item }) => {
           return (
-            <TrackItem
-              onTrackPress={this.props.onTrackPress}
-              item={item}
-              index={index}
+            <ArtistItem
+              AppInstance={this.props.AppInstance}
+              artistInfo={item}
             />
           );
         }}

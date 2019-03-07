@@ -64,16 +64,15 @@ export class ScreenDetail extends React.Component {
         ) : AppInstance.state.screenStates_screenDetailStates_activePage ==
           "PAGE_TRACK_LIST" ? (
           <TrackListPage
-            onTrackPress={() => {
-              alert("Track pressed");
-            }}
+            data={AppInstance.state.screenStates_screenDetailStates_pageTrackListStates_tracks}
+            AppInstance={AppInstance}
           />
         ) : AppInstance.state.screenStates_screenDetailStates_activePage ==
           "PAGE_ALBUM_LIST" ? (
-          <AlbumListPage />
+          <AlbumListPage AppInstance={AppInstance} data={AppInstance.state.screenStates_screenDetailStates_pageAlbumListStates_albums}/>
         ) : AppInstance.state.screenStates_screenDetailStates_activePage ==
           "PAGE_ARTIST_LIST" ? (
-          <ArtistListPage />
+          <ArtistListPage AppInstance={AppInstance} data={AppInstance.state.screenStates_screenDetailStates_pageArtistListStates_artists} />
         ) : (
           <Text>
             Could not find page:{" "}

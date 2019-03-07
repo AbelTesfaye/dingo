@@ -1,6 +1,6 @@
 import React from "react";
-import { Text, FlatList } from "react-native";
-import { ArtistItem } from "./ArtistItem";
+import { ArtistList } from "./ArtistList";
+
 
 export class ArtistListPage extends React.Component {
   constructor(props) {
@@ -8,33 +8,7 @@ export class ArtistListPage extends React.Component {
   }
   render() {
     return (
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        style={{
-          backgroundColor: "white"
-        }}
-        ListFooterComponent={() => {
-          return (
-            <Text
-              style={{
-                marginTop: 10,
-                textAlign: "center"
-              }}
-            >
-              Show more
-            </Text>
-          );
-        }}
-        data={this.props.data}
-        renderItem={({ item }) => {
-          return (
-            <ArtistItem
-              AppInstance={this.props.AppInstance}
-              artistInfo={item}
-            />
-          );
-        }}
-      />
+         <ArtistList AppInstance={this.props.AppInstance} data={this.props.data}/>   
     );
   }
 }

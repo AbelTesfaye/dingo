@@ -6,60 +6,17 @@ export class AlbumListGrid extends React.Component {
     super(props);
   }
   render() {
+    const AppInstance = this.props.AppInstance
     return (
       <FlatList
         keyExtractor={(item, index) => index.toString()}
         style={{
           backgroundColor: "white"
         }}
-        data={[
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          }
-        ]}
+        data={this.props.data}
         numColumns={2}
         renderItem={({ item }) => {
-          const albumInfo = item;
-          return <AlbumListGridItem albumInfo={albumInfo} />;
+          return <AlbumListGridItem AppInstance={AppInstance} albumInfo={item} />;
         }}
       />
     );

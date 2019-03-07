@@ -1,11 +1,17 @@
 import React from "react";
-import { Text, View, Image } from "react-native";
+import { Text, View, Image,TouchableNativeFeedback } from "react-native";
 export class AlbumListItemGrid extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
+    const AppInstance = this.props.AppInstance
     return (
+      <TouchableNativeFeedback
+      onPress={() =>
+        AppInstance._showPageAlbumInfo(this.props.albumInfo.artistName,this.props.albumInfo.name)
+      }
+    >
       <View
         style={{
           margin: 10,
@@ -22,10 +28,9 @@ export class AlbumListItemGrid extends React.Component {
           style={{
             flex: 1,
             alignSelf: "stretch",
-            backgroundColor: "#eee"
           }}
           source={{
-            uri: this.props.albumInfo.images[this.props.albumInfo.images.length - 1]
+            uri: this.props.albumInfo?this.props.albumInfo.images[this.props.albumInfo.images.length - 1]:null
           }}
         />
         <View
@@ -39,6 +44,7 @@ export class AlbumListItemGrid extends React.Component {
           </Text>
         </View>
       </View>
+      </TouchableNativeFeedback>
     );
   }
 }

@@ -7,8 +7,9 @@ export class AlbumListPage extends React.Component {
     super(props);
   }
   render() {
+    const AppInstance = this.props.AppInstance
     return (
-         <AlbumListGrid/>   
+         <AlbumListGrid AppInstance={AppInstance} data={this.props.data}/>   
     );
   }
 }

@@ -192,10 +192,15 @@ export default class ScreenPlayer extends Component {
                   .screenStates_screenPlayerStates_pageQueueStates_tracksInQueue
               }
               renderItem={({ item, index }) => {
+                {
+                    console.log("this.props.AppInstance.state  .screenStates_screenPlayerStates_pageQueueStates_playingQueueIndexthis.props.AppInstance.state  .screenStates_screenPlayerStates_pageQueueStates_playingQueueIndexthis.props.AppInstance.state  .screenStates_screenPlayerStates_pageQueueStates_playingQueueIndexthis.props.AppInstance.state  .screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: "+this.props.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex)
+                  }
+                  
                 return (
                   <TouchableNativeFeedback
                     onPress={() => this._onPlaylistItemPress(item, index)}
                   >
+                  
                     <View
                       style={{
                         backgroundColor: "white",

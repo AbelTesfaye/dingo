@@ -56,10 +56,9 @@ addPropertiesToObjectsInArray = (array, propertiesToAdd) => {
 
 convertToTrackPlayerFormat = tracks => {
   newTracks = [];
-  tracks.map(item => {
+  tracks.map((item,index )=> {
     newTracks.push({
-      key: item.key,
-      id: item.key,
+      id: index.toString(),
       title: item.name,
       artist: item.artistName,
       artwork: item.images

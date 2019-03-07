@@ -1,11 +1,17 @@
 import React from "react";
-import { Text, View, Image } from "react-native";
+import { Text, View, Image,TouchableNativeFeedback} from "react-native";
 export class ArtistItem extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
+    const AppInstance = this.props.AppInstance
     return (
+      <TouchableNativeFeedback
+      onPress={() =>
+        AppInstance._showArtistInfo(this.props.artistInfo.name)
+      }
+    >
       <View
         style={{
           backgroundColor: "white",
@@ -41,6 +47,7 @@ export class ArtistItem extends React.Component {
           </Text>
         </View>
       </View>
+      </TouchableNativeFeedback>
     );
   }
 }

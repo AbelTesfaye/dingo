@@ -1,5 +1,5 @@
 import TrackPlayer from "react-native-track-player";
-
+import util from "./utils"
 module.exports = async data => {
   _getIndexOfTrackUsingId = (tracks, trackId) => {
     let foundIndex = -1;
@@ -36,18 +36,7 @@ module.exports = async data => {
     return tracks.slice(currentIndex - howManyToTheLeft, currentIndex);
   };
 
-  _fetchFromEndpoint = (endpoint, callback) => {
-    const url = "https://dingo-backend.now.sh/";
 
-    fetch(`${url}${endpoint}`)
-      .then(response => response.json())
-      .then(responseJson => {
-        callback(responseJson);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  };
 
   //use this to save listened tracks into files
   console.log("data.type: " + data.type);
@@ -90,7 +79,7 @@ module.exports = async data => {
                 if (item.youtubeId) {
                   //get playable url from youtube
 
-                  _fetchFromEndpoint(
+                  utils.fetchFromEndpoint(
                     `getHighestQualityAudio?id=${encodeURIComponent(
                       item.youtubeId
                     )}`,
@@ -111,7 +100,7 @@ module.exports = async data => {
                     }
                   );
                 } else if (item.title && item.artist) {
-                  _fetchFromEndpoint(
+                  utils.fetchFromEndpoint(
                     `getHighestQualityAudioUsingArtistAndSong?artist=${encodeURIComponent(
                       item.artist
                     )}&song=${encodeURIComponent(item.title)}`,

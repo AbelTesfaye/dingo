@@ -19,25 +19,26 @@ import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import Icon from "react-native-ionicons";
 import { MiniPlayerProgressBar } from "./MiniPlayerProgressBar";
 import { TrackItem } from "./TrackItem";
-import { AlbumPage } from "./AlbumPage";
+import { AlbumInfoPage } from "./AlbumInfoPage";
 import { AlbumList } from "./AlbumList";
-import { ArtistPage } from "./ArtistPage";
+import { ArtistInfoPage } from "./ArtistInfoPage";
 import { TrackListPage } from "./TrackListPage";
 import { AlbumItem } from "./AlbumItem";
 import { AlbumListPage } from "./AlbumListPage";
-import { ArtistList as ArtistListPage } from "./ArtistListPage";
+import { ArtistListPage } from "./ArtistListPage";
+import utils from "./utils";
 
 const { width, height } = Dimensions.get("window");
 
 type Props = {};
 
-pad = (n, width, z) => {
-  z = z || "0";
-  n = n + "";
-  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-};
-
 const HomePage = props => {
+  _pad = (n, width, z) => {
+    z = z || "0";
+    n = n + "";
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+  };
+
   const AppInstance = props.AppInstance;
   return (
     <ScrollView>
@@ -179,7 +180,7 @@ const HomePage = props => {
                           width: 30
                         }}
                       >
-                        {`#${pad(index + 1, 2, " ")}  `}
+                        {`#${_pad(index + 1, 2, " ")}  `}
                       </Text>
                       <Image
                         style={{
@@ -387,6 +388,7 @@ const SearchPage = props => {
                 AppInstance.state
                   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse
               }
+              AppInstance={AppInstance}
             />
           </View>
 
@@ -399,6 +401,7 @@ const SearchPage = props => {
                 AppInstance.state
                   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse
               }
+              AppInstance={AppInstance}
             />
           </View>
           <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
@@ -529,7 +532,11 @@ export default class App extends Component<Props> {
       screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: [],
       screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: {},
       screenStates_screenPlayerStates_pageQueueStates_playerState: "",
-      screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: 0
+      screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: 0,
+
+      screenStates_screenDetailStates_activePage: null,
+      screenStates_screenDetailStates_pageArtistInfoStates_artistName: null,
+      screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName: null
     };
   }
   componentDidMount = () => {
@@ -622,33 +629,8 @@ export default class App extends Component<Props> {
     });
   };
 
-  _fetchFromEndpoint = (endpoint, callback) => {
-    const url = "https://dingo-backend.now.sh/";
-
-    fetch(`${url}${endpoint}`)
-      .then(response => response.json())
-      .then(responseJson => {
-        callback(responseJson);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  };
-  _fetchFromEndpointWithoutParsing = (endpoint, callback) => {
-    const url = "https://dingo-backend.now.sh/";
-
-    fetch(`${url}${endpoint}`)
-      .then(response => response.text())
-      .then(response => {
-        callback(response);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  };
-
   _searchArtists = (query, callback) => {
-    this._fetchFromEndpoint(
+    utils.fetchFromEndpoint(
       `searchArtist?q=${encodeURIComponent(query)}`,
       responseJson => {
         callback(responseJson);
@@ -656,7 +638,7 @@ export default class App extends Component<Props> {
     );
   };
   _searchAlbums = (query, callback) => {
-    this._fetchFromEndpoint(
+    utils.fetchFromEndpoint(
       `searchAlbum?q=${encodeURIComponent(query)}`,
       responseJson => {
         callback(responseJson);
@@ -664,7 +646,7 @@ export default class App extends Component<Props> {
     );
   };
   _searchTracks = (query, callback) => {
-    this._fetchFromEndpoint(
+    utils.fetchFromEndpoint(
       `searchTrack?q=${encodeURIComponent(query)}`,
       responseJson => {
         callback(responseJson);
@@ -672,7 +654,7 @@ export default class App extends Component<Props> {
     );
   };
   _searchYouTube = (query, callback) => {
-    this._fetchFromEndpoint(
+    utils.fetchFromEndpoint(
       `searchYouTube?q=${encodeURIComponent(query)}`,
       responseJson => {
         callback(responseJson);
@@ -681,13 +663,13 @@ export default class App extends Component<Props> {
   };
 
   _getNewReleasedTracks = callback => {
-    this._fetchFromEndpoint(`getChartTopTracks`, responseJson => {
+    utils.fetchFromEndpoint(`getChartTopTracks`, responseJson => {
       callback(responseJson);
     });
   };
   getNewReleasedTracksAndPutThemInState = () => {
     this._getNewReleasedTracks(responseJson => {
-      const results = this._insertKeyToArrayItems(responseJson.result);
+      const results = utils.insertKeyToArrayItems(responseJson.result);
       this.setState({
         screenStates_screenNavigatorStates_pageHomeStates_newReleasedTracksResponse: results
       });
@@ -695,7 +677,7 @@ export default class App extends Component<Props> {
   };
 
   _getVideo = (artistName, songName, callback) => {
-    this._fetchFromEndpointWithoutParsing(
+    utils.fetchFromEndpointWithoutParsing(
       `getVideo?artist=${encodeURIComponent(
         artistName
       )}&song=${encodeURIComponent(songName)}`,
@@ -704,13 +686,7 @@ export default class App extends Component<Props> {
       }
     );
   };
-  _insertKeyToArrayItems = array => {
-    newArray = [];
-    array.map(item => {
-      newArray.push({ ...item, key: shortid.generate() });
-    });
-    return newArray;
-  };
+
   _convertToTrackPlayerFormat = tracks => {
     newTracks = [];
     tracks.map(item => {
@@ -728,7 +704,7 @@ export default class App extends Component<Props> {
     // playlistItems = [track];
     playlistItems = this.state
       .screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse;
-    playlistItems = this._insertKeyToArrayItems(playlistItems);
+    playlistItems = utils.insertKeyToArrayItems(playlistItems);
 
     playlistItems = this._convertToTrackPlayerFormat(playlistItems);
 
@@ -792,6 +768,28 @@ export default class App extends Component<Props> {
       });
     });
   };
+
+  _showArtistInfo = artistName => {
+    this.setState({
+      activeScreen: "DETAIL_SCREEN",
+      screenStates_screenDetailStates_activePage: "PAGE_ARTIST_INFO",
+
+      screenStates_screenDetailStates_pageArtistInfoStates_artistName: artistName
+    });
+  };
+
+  _showAlbumInfo = (artistName, albumName) => {
+    this.setState({
+      activeScreen: "DETAIL_SCREEN",
+      screenStates_screenDetailStates_activePage: "PAGE_ALBUM_INFO",
+
+      screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName: {
+        artistName,
+        albumName
+      }
+    });
+  };
+
   _renderTabBar = props => (
     <TabBar
       {...props}
@@ -860,8 +858,6 @@ export default class App extends Component<Props> {
   );
 
   render() {
-    this.state.activeScreen = "DETAIL_SCREEN";
-
     const miniPlayerTrack = this.state
       .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack;
 
@@ -968,134 +964,51 @@ export default class App extends Component<Props> {
           />
         ) : this.state.activeScreen == "DETAIL_SCREEN" ? (
           <ScrollView>
-            {/* <AlbumPage onTrackPress={()=>{alert("Track pressed")}} /> */}
-            {/* <ArtistPage onTrackPress={()=>{alert("Track pressed")}}/> */}
-            {/* <TrackListPage onTrackPress={()=>{alert("Track pressed")}}></TrackLPage> */}
-            {/* <AlbumListPage /> */}
-            <ArtistListPage
-              data={[
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                },
-                {
-                  key: "a",
-                  images: [""],
-                  name: "wazzup",
-                  artistName: "holla"
-                }
-              ]}
-            />
+            {this.state.screenStates_screenDetailStates_activePage ==
+            "PAGE_ALBUM_INFO" ? (
+              <AlbumInfoPage
+                album={{
+                  name: this.state
+                    .screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName
+                    .albumName,
+                  artistName: this.state
+                    .screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName
+                    .artistName
+                }}
+                onTrackPress={() => {
+                  alert("Track pressed");
+                }}
+              />
+            ) : this.state.screenStates_screenDetailStates_activePage ==
+              "PAGE_ARTIST_INFO" ? (
+              <ArtistInfoPage
+                artist={{
+                  name: this.state
+                    .screenStates_screenDetailStates_pageArtistInfoStates_artistName
+                }}
+                onTrackPress={() => {
+                  alert("Track pressed");
+                }}
+              />
+            ) : this.state.screenStates_screenDetailStates_activePage ==
+              "PAGE_TRACK_LIST" ? (
+              <TrackListPage
+                onTrackPress={() => {
+                  alert("Track pressed");
+                }}
+              />
+            ) : this.state.screenStates_screenDetailStates_activePage ==
+              "PAGE_ALBUM_LIST" ? (
+              <AlbumListPage />
+            ) : this.state.screenStates_screenDetailStates_activePage ==
+              "PAGE_ARTIST_LIST" ? (
+              <ArtistListPage />
+            ) : (
+              <Text>
+                Could not find page:{" "}
+                {this.state.screenStates_screenDetailStates_activePage}{" "}
+              </Text>
+            )}
           </ScrollView>
         ) : (
           <Text style={styles.welcome}>Unknown screen</Text>

@@ -1,11 +1,18 @@
 import React from "react";
-import { Text, View, Image } from "react-native";
+import { Text, View, Image,TouchableNativeFeedback } from "react-native";
 export class AlbumItem extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
+    const AppInstance = this.props.AppInstance
     return (
+      
+      <TouchableNativeFeedback
+      onPress={() =>
+        AppInstance._showAlbumInfo(this.props.albumInfo.artistName,this.props.albumInfo.name)
+      }
+    >
       <View
         style={{
           margin: 10,
@@ -23,7 +30,7 @@ export class AlbumItem extends React.Component {
           style={{
             flex: 1,
             alignSelf: "stretch",
-            backgroundColor: "#eee"
+            backgroundColor: "#fff"
           }}
           source={{
             uri: this.props.albumInfo.images[this.props.albumInfo.images.length - 1]
@@ -40,6 +47,7 @@ export class AlbumItem extends React.Component {
           </Text>
         </View>
       </View>
+      </TouchableNativeFeedback>
     );
   }
 }

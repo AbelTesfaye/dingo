@@ -21,22 +21,9 @@ const { width, height } = Dimensions.get("window");
 
 import SlidingPanel from "./SlidingPanel";
 import ProgressBar from "./ProgressBar";
+import utils from "./utils"
 
 export default class Player extends Component {
-  _fetchFromEndpoint = (endpoint, callback) => {
-    console.log("connecting to endpoint: " + endpoint);
-    const url = "https://dingo-backend.now.sh/";
-
-    fetch(`${url}${endpoint}`)
-      .then(response => response.json())
-      .then(responseJson => {
-        callback(responseJson);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  };
-
   constructor(props) {
     super(props);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -79,7 +66,7 @@ export default class Player extends Component {
           typeof tracksToPlay[indexToPlay].url === "undefined" ||
           tracksToPlay[indexToPlay].url.length <= "http://".length
         ) {
-          this._fetchFromEndpoint(
+         utils.fetchFromEndpoint(
             `getHighestQualityAudioUsingArtistAndSong?artist=${encodeURIComponent(
               tracksToPlay[indexToPlay].artist
             )}&song=${encodeURIComponent(tracksToPlay[indexToPlay].title)}`,

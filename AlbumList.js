@@ -14,44 +14,10 @@ export class AlbumList extends React.Component {
         style={{
           backgroundColor: "white"
         }}
-        ListFooterComponent={() => {
-          return (
-            <Text
-              style={{
-                flex: 1,
-                marginTop: 10,
-                textAlignVertical: "center"
-              }}
-            >
-              Show more
-            </Text>
-          );
-        }}
-        data={[
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },     {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },     {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },     {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-        ]}
+    
+        data={this.props.data}
         renderItem={({ item }) => {
-          return <AlbumItem albumInfo={item} />;
+          return <AlbumItem AppInstance={this.props.AppInstance} albumInfo={item} />;
         }}
       />
     );

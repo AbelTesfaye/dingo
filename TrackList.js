@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList } from "react-native";
+import { FlatList,Text } from "react-native";
 import { TrackItem } from "./TrackItem";
 export class TrackList extends React.Component {
   constructor(props) {

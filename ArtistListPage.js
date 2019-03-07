@@ -9,7 +9,7 @@ export class ArtistListPage extends React.Component {
   render() {
     return (
       <FlatList
-        keyExtractor={(item, index) => item.key}
+        keyExtractor={(item, index) => index.toString()}
         style={{
           backgroundColor: "white"
         }}
@@ -27,7 +27,12 @@ export class ArtistListPage extends React.Component {
         }}
         data={this.props.data}
         renderItem={({ item }) => {
-          return <ArtistItem AppInstance={this.props.AppInstance} artistInfo={item} />;
+          return (
+            <ArtistItem
+              AppInstance={this.props.AppInstance}
+              artistInfo={item}
+            />
+          );
         }}
       />
     );

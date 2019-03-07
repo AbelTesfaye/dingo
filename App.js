@@ -13,20 +13,17 @@ import {
   Animated
 } from "react-native";
 import shortid from "shortid";
-import Player from "./Player";
+import ScreenPlayer from "./ScreenPlayer";
 import TrackPlayer from "react-native-track-player";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import Icon from "react-native-ionicons";
 import { MiniPlayerProgressBar } from "./MiniPlayerProgressBar";
 import { TrackItem } from "./TrackItem";
-import { AlbumInfoPage } from "./AlbumInfoPage";
 import { AlbumList } from "./AlbumList";
-import { ArtistInfoPage } from "./ArtistInfoPage";
-import { TrackListPage } from "./TrackListPage";
 import { AlbumItem } from "./AlbumItem";
-import { AlbumListPage } from "./AlbumListPage";
 import { ArtistListPage } from "./ArtistListPage";
 import utils from "./utils";
+import { ScreenDetail } from "./ScreenDetail";
 
 const { width, height } = Dimensions.get("window");
 
@@ -66,7 +63,7 @@ const HomePage = props => {
               }}
             >
               <FlatList
-                keyExtractor={(item, index) => item.key}
+                keyExtractor={(item, index) => index.toString()}
                 horizontal={true}
                 style={{
                   backgroundColor: "white"
@@ -143,7 +140,7 @@ const HomePage = props => {
               }}
             >
               <FlatList
-                keyExtractor={(item, index) => item.key}
+                keyExtractor={(item, index) => index.toString()}
                 ListFooterComponent={() => {
                   return (
                     <Text
@@ -223,7 +220,7 @@ const HomePage = props => {
               }}
             >
               <FlatList
-                keyExtractor={(item, index) => item.key}
+                keyExtractor={(item, index) => index.toString()}
                 horizontal={true}
                 style={{
                   backgroundColor: "white"
@@ -300,7 +297,7 @@ const HomePage = props => {
               }}
             >
               <FlatList
-                keyExtractor={(item, index) => item.key}
+                keyExtractor={(item, index) => index.toString()}
                 ListFooterComponent={() => {
                   return (
                     <Text
@@ -409,7 +406,7 @@ const SearchPage = props => {
           </Text>
           <View style={{ marginHorizontal: 10 }}>
             <FlatList
-              keyExtractor={(item, index) => item.key}
+              keyExtractor={(item, index) => index.toString()}
               style={{
                 backgroundColor: "white"
               }}
@@ -440,7 +437,7 @@ const SearchPage = props => {
           </Text>
           <View style={{ marginHorizontal: 10 }}>
             <FlatList
-              keyExtractor={(item, index) => item.key}
+              keyExtractor={(item, index) => index.toString()}
               style={{
                 backgroundColor: "white"
               }}
@@ -517,13 +514,13 @@ export default class App extends Component<Props> {
       ],
 
       activeScreen: null,
+      screenAndPageStack: [],
 
       screenStates_screenNavigatorStates_newQueueItems: [],
 
       screenStates_screenNavigatorStates_pageHomeStates_newReleasedTracksResponse: null,
 
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryText: null,
-
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse: null,
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse: null,
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: null,
@@ -669,7 +666,7 @@ export default class App extends Component<Props> {
   };
   getNewReleasedTracksAndPutThemInState = () => {
     this._getNewReleasedTracks(responseJson => {
-      const results = utils.insertKeyToArrayItems(responseJson.result);
+      const results = responseJson.result;
       this.setState({
         screenStates_screenNavigatorStates_pageHomeStates_newReleasedTracksResponse: results
       });
@@ -687,31 +684,18 @@ export default class App extends Component<Props> {
     );
   };
 
-  _convertToTrackPlayerFormat = tracks => {
-    newTracks = [];
-    tracks.map(item => {
-      newTracks.push({
-        key: item.key,
-        id: item.key,
-        title: item.name,
-        artist: item.artistName,
-        artwork: item.images[item.images.length - 1]
-      });
-    });
-    return newTracks;
-  };
   _onSearchTracksPress = (track, index) => {
     // playlistItems = [track];
     playlistItems = this.state
       .screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse;
-    playlistItems = utils.insertKeyToArrayItems(playlistItems);
+    playlistItems = playlistItems;
 
-    playlistItems = this._convertToTrackPlayerFormat(playlistItems);
-
+    playlistItems = utils.convertToTrackPlayerFormat(playlistItems);
+    this.startInPlayer(playlistItems.slice(index));
+  };
+  startInPlayer = tracks => {
     this.setState({
-      screenStates_screenNavigatorStates_newQueueItems: playlistItems.slice(
-        index
-      ),
+      screenStates_screenNavigatorStates_newQueueItems: tracks,
       activeScreen: "PLAYER_SCREEN"
     });
   };
@@ -769,7 +753,7 @@ export default class App extends Component<Props> {
     });
   };
 
-  _showArtistInfo = artistName => {
+  _showPageArtistInfo = artistName => {
     this.setState({
       activeScreen: "DETAIL_SCREEN",
       screenStates_screenDetailStates_activePage: "PAGE_ARTIST_INFO",
@@ -778,7 +762,7 @@ export default class App extends Component<Props> {
     });
   };
 
-  _showAlbumInfo = (artistName, albumName) => {
+  _showPageAlbumInfo = (artistName, albumName) => {
     this.setState({
       activeScreen: "DETAIL_SCREEN",
       screenStates_screenDetailStates_activePage: "PAGE_ALBUM_INFO",
@@ -860,7 +844,7 @@ export default class App extends Component<Props> {
   render() {
     const miniPlayerTrack = this.state
       .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack;
-
+    const AppInstance = this;
     return (
       <View style={{ flex: 1 }}>
         {this.state.activeScreen == "NAVIGATOR_SCREEN" ||
@@ -873,11 +857,11 @@ export default class App extends Component<Props> {
                 renderScene={({ route }) => {
                   switch (route.key) {
                     case "home":
-                      return <HomePage AppInstance={this} />;
+                      return <HomePage AppInstance={AppInstance} />;
                     case "search":
-                      return <SearchPage AppInstance={this} />;
+                      return <SearchPage AppInstance={AppInstance} />;
                     case "library":
-                      return <LibraryPage AppInstance={this} />;
+                      return <LibraryPage AppInstance={AppInstance} />;
                     default:
                       return null;
                   }
@@ -957,59 +941,12 @@ export default class App extends Component<Props> {
             ) : null}
           </View>
         ) : this.state.activeScreen == "PLAYER_SCREEN" ? (
-          <Player
-            AppInstance={this}
+          <ScreenPlayer
+            AppInstance={AppInstance}
             tracks={this.state.screenStates_screenNavigatorStates_newQueueItems}
-            indexToStartAt={1}
           />
         ) : this.state.activeScreen == "DETAIL_SCREEN" ? (
-          <ScrollView>
-            {this.state.screenStates_screenDetailStates_activePage ==
-            "PAGE_ALBUM_INFO" ? (
-              <AlbumInfoPage
-                album={{
-                  name: this.state
-                    .screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName
-                    .albumName,
-                  artistName: this.state
-                    .screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName
-                    .artistName
-                }}
-                onTrackPress={() => {
-                  alert("Track pressed");
-                }}
-              />
-            ) : this.state.screenStates_screenDetailStates_activePage ==
-              "PAGE_ARTIST_INFO" ? (
-              <ArtistInfoPage
-                artist={{
-                  name: this.state
-                    .screenStates_screenDetailStates_pageArtistInfoStates_artistName
-                }}
-                onTrackPress={() => {
-                  alert("Track pressed");
-                }}
-              />
-            ) : this.state.screenStates_screenDetailStates_activePage ==
-              "PAGE_TRACK_LIST" ? (
-              <TrackListPage
-                onTrackPress={() => {
-                  alert("Track pressed");
-                }}
-              />
-            ) : this.state.screenStates_screenDetailStates_activePage ==
-              "PAGE_ALBUM_LIST" ? (
-              <AlbumListPage />
-            ) : this.state.screenStates_screenDetailStates_activePage ==
-              "PAGE_ARTIST_LIST" ? (
-              <ArtistListPage />
-            ) : (
-              <Text>
-                Could not find page:{" "}
-                {this.state.screenStates_screenDetailStates_activePage}{" "}
-              </Text>
-            )}
-          </ScrollView>
+          <ScreenDetail AppInstance={AppInstance} />
         ) : (
           <Text style={styles.welcome}>Unknown screen</Text>
         )}

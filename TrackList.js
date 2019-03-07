@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList,Text } from "react-native";
+import { FlatList, Text } from "react-native";
 import { TrackItem } from "./TrackItem";
 export class TrackList extends React.Component {
   constructor(props) {
@@ -8,7 +8,7 @@ export class TrackList extends React.Component {
   render() {
     return (
       <FlatList
-        keyExtractor={(item, index) => item.key}
+        keyExtractor={(item, index) => index.toString()}
         style={{
           backgroundColor: "white"
         }}

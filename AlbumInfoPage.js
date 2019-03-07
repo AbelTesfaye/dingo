@@ -8,28 +8,32 @@ import {
 } from "react-native";
 import { TrackList } from "./TrackList";
 import utils from "./utils";
+import App from "./App";
 
 export class AlbumInfoPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      albumInfo: null
+      albumInfo: null,
+      albumTracks: null
     };
   }
+
   componentDidMount = () => {
     utils.fetchFromEndpoint(
       `albumInfo?artistName=${encodeURIComponent(
         this.props.album.artistName
       )}&name=${encodeURIComponent(this.props.album.name)}`,
       response => {
-        console.log("response: " + response);
         this.setState({
-          albumInfo: response
+          albumInfo: response,
+          albumTracks: response.tracks
         });
       }
     );
   };
   render() {
+    const AppInstance = this.props.AppInstance;
     return (
       <View>
         <View
@@ -72,21 +76,35 @@ export class AlbumInfoPage extends React.Component {
         </Text>
 
         <FlatList
-          keyExtractor={(item, index) => item.key}
+          keyExtractor={(item, index) => index.toString()}
           style={{
             backgroundColor: "white"
           }}
-          data={
-            this.state.albumInfo
-              ? utils.insertKeyToArrayItems(this.state.albumInfo.tracks)
-              : null
-          }
+          data={this.state.albumTracks}
           renderItem={({ item, index }) => {
             return (
               <TouchableNativeFeedback
-                onPress={() =>
-                  this.props.onTrackPress(this.props.item, this.props.index)
-                }
+                onPress={() => {
+                  console.log(
+                    "this.state.albumTracks: " +
+                      JSON.stringify(this.state.albumTracks)
+                  );
+
+                  AppInstance.startInPlayer(
+                    utils.convertToTrackPlayerFormat(
+                      utils.addPropertiesToObjectsInArray(
+                        this.state.albumTracks.slice(index),
+                        {
+                          albumart: this.state.albumInfo
+                            ? this.state.albumInfo.images[
+                                this.state.albumInfo.images.length - 1
+                              ]
+                            : null
+                        }
+                      )
+                    )
+                  );
+                }}
               >
                 <View
                   style={{

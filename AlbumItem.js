@@ -10,7 +10,7 @@ export class AlbumItem extends React.Component {
       
       <TouchableNativeFeedback
       onPress={() =>
-        AppInstance._showAlbumInfo(this.props.albumInfo.artistName,this.props.albumInfo.name)
+        AppInstance._showPageAlbumInfo(this.props.albumInfo.artistName,this.props.albumInfo.name)
       }
     >
       <View

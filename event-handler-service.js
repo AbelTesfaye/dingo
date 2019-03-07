@@ -1,5 +1,5 @@
 import TrackPlayer from "react-native-track-player";
-import util from "./utils"
+import utils from "./utils"
 module.exports = async data => {
   _getIndexOfTrackUsingId = (tracks, trackId) => {
     let foundIndex = -1;

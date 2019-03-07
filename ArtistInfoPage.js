@@ -3,11 +3,9 @@ import { Text, View, Image, ImageBackground } from "react-native";
 import { TrackList } from "./TrackList";
 import { AlbumList } from "./AlbumList";
 import shortid from "shortid";
-import utils from "./utils"
+import utils from "./utils";
 
 export class ArtistInfoPage extends React.Component {
-
-
   constructor(props) {
     super(props);
     this.state = {
@@ -22,7 +20,7 @@ export class ArtistInfoPage extends React.Component {
       `artistTopAlbums?name=${encodeURIComponent(this.props.artist.name)}`,
       response => {
         this.setState({
-          artistTopAlbumsResponse: utils.insertKeyToArrayItems(response.result)
+          artistTopAlbumsResponse: (response.result)
         });
       }
     );
@@ -31,7 +29,7 @@ export class ArtistInfoPage extends React.Component {
       `artistTopTracks?name=${encodeURIComponent(this.props.artist.name)}`,
       response => {
         this.setState({
-          artistTopTracksResponse: utils.insertKeyToArrayItems(response.result)
+          artistTopTracksResponse: (response.result)
         });
       }
     );
@@ -47,6 +45,7 @@ export class ArtistInfoPage extends React.Component {
   };
 
   render() {
+    const AppInstance = this.props.AppInstance
     return (
       <View>
         <Image
@@ -101,7 +100,10 @@ export class ArtistInfoPage extends React.Component {
           >
             Albums
           </Text>
-          <AlbumList data={this.state.artistTopAlbumsResponse} />
+          <AlbumList
+            AppInstance={AppInstance}
+            data={this.state.artistTopAlbumsResponse}
+          />
           <Text
             style={{
               margin: 10
@@ -110,7 +112,10 @@ export class ArtistInfoPage extends React.Component {
             Top Tracks
           </Text>
           <TrackList
-            onTrackPress={this.props.onTrackPress}
+            AppInstance={AppInstance}
+            onTrackPress={(item, index) =>
+              AppInstance.startInPlayer(utils.convertToTrackPlayerFormat(this.state.artistTopTracksResponse.slice(index)))
+            }
             data={this.state.artistTopTracksResponse}
           />
         </View>

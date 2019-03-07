@@ -8,11 +8,10 @@ export class AlbumListGrid extends React.Component {
   render() {
     return (
       <FlatList
-        keyExtractor={(item, index) => item.key}
+        keyExtractor={(item, index) => index.toString()}
         style={{
           backgroundColor: "white"
         }}
-     
         data={[
           {
             key: "a",

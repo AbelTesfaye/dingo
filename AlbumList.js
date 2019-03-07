@@ -9,15 +9,16 @@ export class AlbumList extends React.Component {
   render() {
     return (
       <FlatList
-        keyExtractor={(item, index) => item.key}
+        keyExtractor={(item, index) => index.toString()}
         horizontal={true}
         style={{
           backgroundColor: "white"
         }}
-    
         data={this.props.data}
         renderItem={({ item }) => {
-          return <AlbumItem AppInstance={this.props.AppInstance} albumInfo={item} />;
+          return (
+            <AlbumItem AppInstance={this.props.AppInstance} albumInfo={item} />
+          );
         }}
       />
     );

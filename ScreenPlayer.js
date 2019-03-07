@@ -21,9 +21,9 @@ const { width, height } = Dimensions.get("window");
 
 import SlidingPanel from "./SlidingPanel";
 import ProgressBar from "./ProgressBar";
-import utils from "./utils"
+import utils from "./utils";
 
-export default class Player extends Component {
+export default class ScreenPlayer extends Component {
   constructor(props) {
     super(props);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -66,7 +66,7 @@ export default class Player extends Component {
           typeof tracksToPlay[indexToPlay].url === "undefined" ||
           tracksToPlay[indexToPlay].url.length <= "http://".length
         ) {
-         utils.fetchFromEndpoint(
+          utils.fetchFromEndpoint(
             `getHighestQualityAudioUsingArtistAndSong?artist=${encodeURIComponent(
               tracksToPlay[indexToPlay].artist
             )}&song=${encodeURIComponent(tracksToPlay[indexToPlay].title)}`,
@@ -180,7 +180,7 @@ export default class Player extends Component {
         <View style={{ ...styles.bodyViewStyle, flex: 1 }}>
           <View style={{ marginHorizontal: 10, flex: 1 }}>
             <FlatList
-              keyExtractor={(item, index) => item.key}
+              keyExtractor={(item, index) => index.toString()}
               style={{
                 backgroundColor: "white",
                 flex: 1,
@@ -449,9 +449,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: "cover",
-    
-    
+    resizeMode: "cover"
   },
   view: {
     flex: 1,

@@ -9,7 +9,7 @@ export class ArtistItem extends React.Component {
     return (
       <TouchableNativeFeedback
       onPress={() =>
-        AppInstance._showArtistInfo(this.props.artistInfo.name)
+        AppInstance._showPageArtistInfo(this.props.artistInfo.name)
       }
     >
       <View

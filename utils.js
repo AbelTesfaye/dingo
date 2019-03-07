@@ -1,6 +1,3 @@
-import shortid from "shortid";
-
-
 function formatTwoDigits(n) {
   return n < 10 ? "0" + n : n;
 }
@@ -8,7 +5,7 @@ function formatTwoDigits(n) {
 /**
  * Format time to "HH:mm:ss" or "mm:ss"
  */
-export const formatTime=(seconds)=> {
+export const formatTime = seconds => {
   const ss = Math.floor(seconds) % 60;
   const mm = Math.floor(seconds / 60) % 60;
   const hh = Math.floor(seconds / 3600);
@@ -18,7 +15,7 @@ export const formatTime=(seconds)=> {
   } else {
     return mm + ":" + formatTwoDigits(ss);
   }
-}
+};
 
 fetchFromEndpoint = (endpoint, callback) => {
   const url = "https://dingo-backend.now.sh/";
@@ -45,17 +42,42 @@ fetchFromEndpointWithoutParsing = (endpoint, callback) => {
       console.error(error);
     });
 };
-insertKeyToArrayItems = array => {
+
+addPropertiesToObjectsInArray = (array, propertiesToAdd) => {
   newArray = [];
   array.map(item => {
-    newArray.push({ ...item, key: shortid.generate() });
+    newArray.push({ ...item, ...propertiesToAdd });
   });
   return newArray;
 };
 
+
+
+
+convertToTrackPlayerFormat = tracks => {
+  newTracks = [];
+  tracks.map(item => {
+    newTracks.push({
+      key: item.key,
+      id: item.key,
+      title: item.name,
+      artist: item.artistName,
+      artwork: item.images
+        ? item.images[item.images.length - 1]
+        : item.albumart
+        ? item.albumart
+        : ""
+    });
+  });
+  return newTracks;
+};
+
+
 const utils = {
   fetchFromEndpoint,
   fetchFromEndpointWithoutParsing,
-  insertKeyToArrayItems
+  addPropertiesToObjectsInArray,
+  convertToTrackPlayerFormat,
+  
 };
 export default utils;

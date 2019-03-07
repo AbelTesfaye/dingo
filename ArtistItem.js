@@ -21,7 +21,7 @@ export class ArtistItem extends React.Component {
             height: 50
           }}
           source={{
-            uri: item.images[0]
+            uri: this.props.artistInfo.images[0]
           }}
         />
         <View
@@ -37,7 +37,7 @@ export class ArtistItem extends React.Component {
               fontSize: 15
             }}
           >
-            {this.props.name}
+            {this.props.artistInfo.name}
           </Text>
         </View>
       </View>

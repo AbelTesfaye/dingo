@@ -357,7 +357,6 @@ const HomePage = props => {
   );
 };
 
-
 const SearchPage = props => {
   const AppInstance = props.AppInstance;
   return (
@@ -383,10 +382,12 @@ const SearchPage = props => {
           </Text>
 
           <View style={{ marginHorizontal: 10 }}>
-            <ArtistListPage data={
-              AppInstance.state
+            <ArtistListPage
+              data={
+                AppInstance.state
                   .screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse
-            }/>
+              }
+            />
           </View>
 
           <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
@@ -971,130 +972,130 @@ export default class App extends Component<Props> {
             {/* <ArtistPage onTrackPress={()=>{alert("Track pressed")}}/> */}
             {/* <TrackListPage onTrackPress={()=>{alert("Track pressed")}}></TrackLPage> */}
             {/* <AlbumListPage /> */}
-              <ArtistListPage data={[
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          },
-          {
-            key: "a",
-            images: [""],
-            name: "wazzup",
-            artistName: "holla"
-          }
-        ]} />
-         
-          
+            <ArtistListPage
+              data={[
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                },
+                {
+                  key: "a",
+                  images: [""],
+                  name: "wazzup",
+                  artistName: "holla"
+                }
+              ]}
+            />
           </ScrollView>
         ) : (
           <Text style={styles.welcome}>Unknown screen</Text>

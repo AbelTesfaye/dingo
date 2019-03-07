@@ -27,7 +27,7 @@ export class ArtistList extends React.Component {
         }}
         data={this.props.data}
         renderItem={({ item }) => {
-          return <ArtistItem name={item.name} />;
+          return <ArtistItem artistInfo={item} />;
         }}
       />
     );

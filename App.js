@@ -132,74 +132,29 @@ const HomePage = props => {
                 fontSize: 15
               }}
             >
-              New Released Tracks
+             Top Tracks Chart
             </Text>
             <View
               style={{
                 backgroundColor: "blue"
               }}
             >
-              <FlatList
-                keyExtractor={(item, index) => index.toString()}
-                ListFooterComponent={() => {
-                  return (
-                    <Text
-                      style={{
-                        marginTop: 10,
-                        textAlign: "center"
-                      }}
-                    >
-                      Show more
-                    </Text>
-                  );
-                }}
-                style={{
-                  backgroundColor: "white"
-                }}
+              <TrackList
+                maxItems={5}
+                AppInstance={AppInstance}
+                onTrackPress={(item, index) =>
+                  AppInstance.startInPlayer(
+                    utils.convertToTrackPlayerFormat(
+                      AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse.slice(
+                        index
+                      )
+                    )
+                  )
+                }
                 data={
                   AppInstance.state
-                    .screenStates_screenNavigatorStates_pageHomeStates_newReleasedTracksResponse
+                    .screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse
                 }
-                renderItem={({ item, index }) => {
-                  return (
-                    <View
-                      style={{
-                        backgroundColor: "white",
-                        flexDirection: "row",
-                        margin: 5
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontWeight: "bold",
-                          textAlignVertical: "center",
-                          margin: 5,
-                          width: 30
-                        }}
-                      >
-                        {`#${_pad(index + 1, 2, " ")}  `}
-                      </Text>
-                      <Image
-                        style={{
-                          backgroundColor: "#ddd",
-                          width: 50,
-                          height: 50
-                        }}
-                        source={{ uri: item.images[0] }}
-                      />
-                      <View
-                        style={{
-                          marginHorizontal: 10,
-                          justifyContent: "flex-start",
-                          alignItems: "flex-start"
-                        }}
-                      >
-                        <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
-                        <Text>{item.artistName}</Text>
-                      </View>
-                    </View>
-                  );
-                }}
               />
             </View>
           </View>
@@ -504,9 +459,9 @@ export default class App extends Component<Props> {
     this.state = {
       index: 0,
       routes: [
-        { key: "home", icon: "home", color: "#F44336" },
-        { key: "search", icon: "search", color: "#3F51B5" },
-        { key: "library", icon: "ios-albums", color: "#4CAF50" }
+        { key: "PAGE_HOME", icon: "home", color: "#F44336" },
+        { key: "PAGE_SEARCH", icon: "search", color: "#3F51B5" },
+        { key: "PAGE_LIBRARY", icon: "ios-albums", color: "#4CAF50" }
       ],
 
       activeScreen: null,
@@ -514,7 +469,7 @@ export default class App extends Component<Props> {
 
       screenStates_screenNavigatorStates_newQueueItems: [],
 
-      screenStates_screenNavigatorStates_pageHomeStates_newReleasedTracksResponse: null,
+      screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse: null,
 
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryText: null,
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse: null,
@@ -536,7 +491,7 @@ export default class App extends Component<Props> {
     };
   }
   componentDidMount = () => {
-    this.getNewReleasedTracksAndPutThemInState();
+    this.getChartTopTracksAndPutThemInState();
 
     this._onTrackChanged = TrackPlayer.addEventListener(
       "playback-track-changed",
@@ -658,16 +613,16 @@ export default class App extends Component<Props> {
     );
   };
 
-  _getNewReleasedTracks = callback => {
+  _getChartTopTracks = callback => {
     utils.fetchFromEndpoint(`getChartTopTracks`, responseJson => {
       callback(responseJson);
     });
   };
-  getNewReleasedTracksAndPutThemInState = () => {
-    this._getNewReleasedTracks(responseJson => {
+  getChartTopTracksAndPutThemInState = () => {
+    this._getChartTopTracks(responseJson => {
       const results = responseJson.result;
       this.setState({
-        screenStates_screenNavigatorStates_pageHomeStates_newReleasedTracksResponse: results
+        screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse: results
       });
     });
   };
@@ -695,7 +650,7 @@ export default class App extends Component<Props> {
   startInPlayer = tracks => {
     this.setState({
       screenStates_screenNavigatorStates_newQueueItems: tracks,
-      activeScreen: "PLAYER_SCREEN"
+      activeScreen: "SCREEN_PLAYER"
     });
   };
   _startSearch = () => {
@@ -754,7 +709,7 @@ export default class App extends Component<Props> {
 
   _showPageArtistInfo = artistName => {
     this.setState({
-      activeScreen: "DETAIL_SCREEN",
+      activeScreen: "SCREEN_DETAIL",
       screenStates_screenDetailStates_activePage: "PAGE_ARTIST_INFO",
 
       screenStates_screenDetailStates_pageArtistInfoStates_artistName: artistName
@@ -763,7 +718,7 @@ export default class App extends Component<Props> {
 
   _showPageAlbumInfo = (artistName, albumName) => {
     this.setState({
-      activeScreen: "DETAIL_SCREEN",
+      activeScreen: "SCREEN_DETAIL",
       screenStates_screenDetailStates_activePage: "PAGE_ALBUM_INFO",
 
       screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName: {
@@ -775,7 +730,7 @@ export default class App extends Component<Props> {
 
   openArtistListPage = artists => {
     this.setState({
-      activeScreen: "DETAIL_SCREEN",
+      activeScreen: "SCREEN_DETAIL",
       screenStates_screenDetailStates_activePage: "PAGE_ARTIST_LIST",
 
       screenStates_screenDetailStates_pageArtistListStates_artists: artists
@@ -784,7 +739,7 @@ export default class App extends Component<Props> {
 
   openAlbumListPage = albums => {
     this.setState({
-      activeScreen: "DETAIL_SCREEN",
+      activeScreen: "SCREEN_DETAIL",
       screenStates_screenDetailStates_activePage: "PAGE_ALBUM_LIST",
 
       screenStates_screenDetailStates_pageAlbumListStates_albums: albums
@@ -793,7 +748,7 @@ export default class App extends Component<Props> {
 
   openTrackListPage = tracks => {
     this.setState({
-      activeScreen: "DETAIL_SCREEN",
+      activeScreen: "SCREEN_DETAIL",
       screenStates_screenDetailStates_activePage: "PAGE_TRACK_LIST",
 
       screenStates_screenDetailStates_pageTrackListStates_tracks: tracks
@@ -873,7 +828,7 @@ export default class App extends Component<Props> {
     const AppInstance = this;
     return (
       <View style={{ flex: 1 }}>
-        {this.state.activeScreen == "NAVIGATOR_SCREEN" ||
+        {this.state.activeScreen == "SCREEN_NAVIGATOR" ||
         this.state.activeScreen == null ? (
           <View style={{ flex: 1, backgroundColor: "white" }}>
             <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -882,11 +837,11 @@ export default class App extends Component<Props> {
                 renderTabBar={this._renderTabBar}
                 renderScene={({ route }) => {
                   switch (route.key) {
-                    case "home":
+                    case "PAGE_HOME":
                       return <HomePage AppInstance={AppInstance} />;
-                    case "search":
+                    case "PAGE_SEARCH":
                       return <SearchPage AppInstance={AppInstance} />;
-                    case "library":
+                    case "PAGE_LIBRARY":
                       return <LibraryPage AppInstance={AppInstance} />;
                     default:
                       return null;
@@ -906,7 +861,7 @@ export default class App extends Component<Props> {
               <TouchableNativeFeedback
                 onPress={() => {
                   this.setState({
-                    activeScreen: "PLAYER_SCREEN",
+                    activeScreen: "SCREEN_PLAYER",
                     screenStates_screenNavigatorStates_newQueueItems: []
                   });
                 }}
@@ -966,12 +921,12 @@ export default class App extends Component<Props> {
               </TouchableNativeFeedback>
             ) : null}
           </View>
-        ) : this.state.activeScreen == "PLAYER_SCREEN" ? (
+        ) : this.state.activeScreen == "SCREEN_PLAYER" ? (
           <ScreenPlayer
             AppInstance={AppInstance}
             tracks={this.state.screenStates_screenNavigatorStates_newQueueItems}
           />
-        ) : this.state.activeScreen == "DETAIL_SCREEN" ? (
+        ) : this.state.activeScreen == "SCREEN_DETAIL" ? (
           <ScreenDetail AppInstance={AppInstance} />
         ) : (
           <Text style={styles.welcome}>Unknown screen</Text>

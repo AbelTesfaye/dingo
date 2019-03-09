@@ -107,7 +107,7 @@ export default class ScreenPlayer extends Component {
 
   handleBackButtonClick() {
     this.props.AppInstance.setState({
-      activeScreen: "NAVIGATOR_SCREEN"
+      activeScreen: "SCREEN_NAVIGATOR"
     });
     return true;
   }

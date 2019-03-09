@@ -28,7 +28,7 @@ export class ScreenDetail extends React.Component {
 
   handleBackButtonClick() {
     this.props.AppInstance.setState({
-      activeScreen: "NAVIGATOR_SCREEN"
+      activeScreen: "SCREEN_NAVIGATOR"
     });
     return true;
   }

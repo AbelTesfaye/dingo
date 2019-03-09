@@ -11,6 +11,7 @@
     "react": "16.6.3",
     "react-native": "^0.58.6",
     "react-native-ionicons": "^4.5.5",
+    "react-native-sqlite-storage": "^3.3.10",
     "react-native-tab-view": "^1.3.2",
     "react-native-track-player": "^1.1.2",
     "rn-sliding-up-panel": "^1.3.1",

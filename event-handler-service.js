@@ -1,16 +1,21 @@
 import TrackPlayer from "react-native-track-player";
-import utils from "./utils"
-module.exports = async data => {
-  _getIndexOfTrackUsingId = (tracks, trackId) => {
-    let foundIndex = -1;
-    tracks.map((item, index) => {
-      if (item.id === trackId) foundIndex = index;
-    });
-    return foundIndex;
-  };
+import utils from "./utils";
+import { openDatabase } from "react-native-sqlite-storage";
 
+var db = openDatabase(
+  { name: "sqlite.db", createFromLocation: "~sqlite.db" },
+  () => {
+    console.log("db opened");
+  },
+  err => {
+    console.log("SQL Error: " + err);
+  }
+);
+const previousPlayingTrack = { title: "", artist: "", artwork: "" };
+
+module.exports = async data => {
   _updateTrackPlayerQueueItem = (tracks, trackId, newProperties, callback) => {
-    const itemIndex = this._getIndexOfTrackUsingId(tracks, trackId);
+    const itemIndex = utils.getIndexOfTrackUsingId(tracks, trackId);
     let trackItem = tracks[itemIndex];
 
     insertBeforeId = null;
@@ -36,7 +41,17 @@ module.exports = async data => {
     return tracks.slice(currentIndex - howManyToTheLeft, currentIndex);
   };
 
-
+  writeRecentTrack = (timestamp, trackName, artistName, image) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        "INSERT INTO recent (timestamp,trackName, artistName, image) VALUES (?,?,?,?)",
+        [timestamp, trackName, artistName, image],
+        (tx, results) => {
+          console.log("Query completed");
+        }
+      );
+    });
+  };
 
   //use this to save listened tracks into files
   console.log("data.type: " + data.type);
@@ -50,6 +65,26 @@ module.exports = async data => {
     }
     if (data.state == TrackPlayer.STATE_PLAYING) {
       console.log("STATE_PLAYING");
+      TrackPlayer.getCurrentTrack().then(currentTrackId => {
+        TrackPlayer.getTrack(currentTrackId).then(track => {
+          if (
+            previousPlayingTrack.title !== track.title &&
+            previousPlayingTrack.artist !== track.artist &&
+            previousPlayingTrack.artwork !== track.artwork
+          ) {
+            this.writeRecentTrack(
+              new Date().getTime(),
+              track.title,
+              track.artist,
+              track.artwork
+            );
+          }
+
+          previousPlayingTrack.title = track.title;
+          previousPlayingTrack.artist = track.artist;
+          previousPlayingTrack.artwork = track.artwork;
+        });
+      });
     }
     if (data.state == TrackPlayer.STATE_PAUSED) {
       console.log("STATE_PAUSED");
@@ -63,7 +98,7 @@ module.exports = async data => {
       TrackPlayer.getQueue()
         .then(tracks => {
           TrackPlayer.getCurrentTrack().then(currentTrackId => {
-            const itemIndex = this._getIndexOfTrackUsingId(
+            const itemIndex = utils.getIndexOfTrackUsingId(
               tracks,
               currentTrackId
             );
@@ -113,7 +148,7 @@ module.exports = async data => {
                         },
                         () => {
                           console.log(
-                            "using artist and song finsihsed getting url for youtube id:" +
+                            "using artist and song finsihsed getting url for artis and title:" +
                               item.artist +
                               item.title
                           );

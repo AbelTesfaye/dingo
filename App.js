@@ -24,6 +24,17 @@ import { AlbumItem } from "./AlbumItem";
 import { ArtistList } from "./ArtistList";
 import utils from "./utils";
 import { ScreenDetail } from "./ScreenDetail";
+import { openDatabase } from "react-native-sqlite-storage";
+
+var db = openDatabase(
+  { name: "sqlite.db", createFromLocation: "~sqlite.db" },
+  () => {
+    console.log("db opened");
+  },
+  err => {
+    console.log("SQL Error: " + err);
+  }
+);
 
 const { width, height } = Dimensions.get("window");
 
@@ -55,71 +66,20 @@ const HomePage = props => {
                 fontSize: 15
               }}
             >
-              Similar Playlists
+              Similar Albums
             </Text>
             <View
               style={{
                 backgroundColor: "blue"
               }}
             >
-              <FlatList
-                keyExtractor={(item, index) => index.toString()}
-                horizontal={true}
-                style={{
-                  backgroundColor: "white"
-                }}
-                data={[
-                  { key: "a" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" }
-                ]}
-                renderItem={item => {
-                  return (
-                    <View
-                      style={{
-                        backgroundColor: "white",
-                        elevation: 5,
-                        margin: 5,
-                        padding: 5,
-
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center"
-                      }}
-                    >
-                      <Image
-                        style={{
-                          width: 100,
-                          height: 100,
-                          backgroundColor: "#ddd"
-                        }}
-                        source={require("./fire.png")}
-                      />
-                      <Text
-                        style={{
-                          flex: 1,
-                          textAlignVertical: "bottom",
-                          fontWeight: "bold"
-                        }}
-                      >
-                        Item name {item.key}
-                      </Text>
-                      <Text
-                        style={{
-                          flex: 1,
-                          textAlignVertical: "bottom"
-                        }}
-                      >
-                        Playlist • 50+ Tracks
-                      </Text>
-                    </View>
-                  );
-                }}
+              <AlbumList
+                data={
+                  AppInstance.state
+                    .screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse
+                }
+                AppInstance={AppInstance}
+                maxItems={5}
               />
             </View>
           </View>
@@ -132,7 +92,7 @@ const HomePage = props => {
                 fontSize: 15
               }}
             >
-             Top Tracks Chart
+              Top Tracks Chart
             </Text>
             <View
               style={{
@@ -174,133 +134,22 @@ const HomePage = props => {
                 backgroundColor: "blue"
               }}
             >
-              <FlatList
-                keyExtractor={(item, index) => index.toString()}
-                horizontal={true}
-                style={{
-                  backgroundColor: "white"
-                }}
-                data={[
-                  { key: "a" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" },
-                  { key: "b" }
-                ]}
-                renderItem={item => {
-                  return (
-                    <View
-                      style={{
-                        backgroundColor: "white",
-                        elevation: 5,
-                        margin: 5,
-                        padding: 5,
-
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center"
-                      }}
-                    >
-                      <Image
-                        style={{
-                          width: 100,
-                          height: 100,
-                          backgroundColor: "#ddd"
-                        }}
-                        source={require("./fire.png")}
-                      />
-                      <Text
-                        style={{
-                          flex: 1,
-                          textAlignVertical: "bottom",
-                          fontWeight: "bold"
-                        }}
-                      >
-                        Item name {item.key}
-                      </Text>
-                      <Text
-                        style={{
-                          flex: 1,
-                          textAlignVertical: "bottom"
-                        }}
-                      >
-                        Item type • {item.key}
-                      </Text>
-                    </View>
-                  );
-                }}
-              />
-            </View>
-          </View>
-
-          <View style={{}}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                margin: 10,
-                fontSize: 15
-              }}
-            >
-              Most Played Tracks
-            </Text>
-            <View
-              style={{
-                backgroundColor: "blue"
-              }}
-            >
-              <FlatList
-                keyExtractor={(item, index) => index.toString()}
-                ListFooterComponent={() => {
-                  return (
-                    <Text
-                      style={{
-                        marginTop: 10,
-                        textAlign: "center"
-                      }}
-                    >
-                      Show more
-                    </Text>
-                  );
-                }}
-                style={{
-                  backgroundColor: "white"
-                }}
-                data={[{ key: "a" }, { key: "b" }, { key: "b" }]}
-                renderItem={item => {
-                  return (
-                    <View
-                      style={{
-                        backgroundColor: "white",
-                        flexDirection: "row",
-                        margin: 5
-                      }}
-                    >
-                      <Image
-                        style={{
-                          backgroundColor: "#ddd",
-                          width: 50,
-                          height: 50
-                        }}
-                        source={require("./fire.png")}
-                      />
-                      <View
-                        style={{
-                          marginHorizontal: 10,
-                          justifyContent: "center",
-                          alignItems: "center"
-                        }}
-                      >
-                        <Text style={{ fontWeight: "bold" }}>
-                          some Item name {item.key}
-                        </Text>
-                        <Text>some Item name {item.key}</Text>
-                      </View>
-                    </View>
-                  );
-                }}
+              <TrackList
+                maxItems={5}
+                AppInstance={AppInstance}
+                onTrackPress={(item, index) =>
+                  AppInstance.startInPlayer(
+                    utils.convertToTrackPlayerFormat(
+                      AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse.slice(
+                        index
+                      )
+                    )
+                  )
+                }
+                data={
+                  AppInstance.state
+                    .screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse
+                }
               />
             </View>
           </View>
@@ -470,6 +319,8 @@ export default class App extends Component<Props> {
       screenStates_screenNavigatorStates_newQueueItems: [],
 
       screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse: null,
+      screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse: null,
+      screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: null,
 
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryText: null,
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse: null,
@@ -490,8 +341,47 @@ export default class App extends Component<Props> {
       screenStates_screenDetailStates_pageTrackListStates_tracks: null
     };
   }
+
+  getRecentTracks = callback => {
+    recentTracks = [];
+    db.transaction(tx => {
+      tx.executeSql("SELECT * FROM recent ORDER BY timestamp DESC limit 100", [], (tx, results) => {
+        console.log("Query completed");
+
+        var len = results.rows.length;
+        for (let i = 0; i < len; i++) {
+          let row = results.rows.item(i);
+
+          recentTracks.push({
+            id: row.timestamp,
+            name: row.trackName,
+            artistName: row.artistName,
+            images: [row.image || ""]
+          });
+        }
+
+        callback(recentTracks);
+      });
+    });
+  };
+
+
+  getRecentTracksAndPutThemInState = () => {
+    this.getRecentTracks(recentTracks => {
+      console.log("inside getrecenttracks");
+      recentTracks.map(item => {
+        this.setState({
+          screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: recentTracks
+        });
+      });
+    });
+  };
+
+  
   componentDidMount = () => {
     this.getChartTopTracksAndPutThemInState();
+    //this.getSimilarAlbumsAndPutThemInState('ariana');//TODO: hook this up with recent tracks
+    this.getRecentTracksAndPutThemInState();
 
     this._onTrackChanged = TrackPlayer.addEventListener(
       "playback-track-changed",
@@ -623,6 +513,26 @@ export default class App extends Component<Props> {
       const results = responseJson.result;
       this.setState({
         screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse: results
+      });
+    });
+  };
+
+  _getSimilarAlbums = (tag, callback) => {
+    utils.fetchFromEndpoint(
+      `tagTopAlbums?tag=${encodeURIComponent(tag)}`,
+      responseJson => {
+        callback(responseJson);
+      }
+    );
+  };
+  getSimilarAlbumsAndPutThemInState = tag => {
+    this._getSimilarAlbums(tag, responseJson => {
+      const albums = responseJson.album;
+
+      this.setState({
+        screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse: utils.convertAlbumFromTagResultToAppFormat(
+          albums
+        )
       });
     });
   };

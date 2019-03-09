@@ -71,12 +71,37 @@ convertToTrackPlayerFormat = tracks => {
   return newTracks;
 };
 
+convertAlbumFromTagResultToAppFormat = albums => {
+  newTracks = [];
+  albums.map((item,index )=> {
+    newTracks.push({
+
+      id: index.toString(),
+      name: item.name,
+      artistName: item.artist.name,
+      images: item.image.map(item=>{return item["#text"]}),
+
+    });
+
+  });
+  return newTracks;
+};
+
+getIndexOfTrackUsingId = (tracks, trackId) => {
+  let foundIndex = -1;
+  tracks.map((item, index) => {
+    if (item.id === trackId) foundIndex = index;
+  });
+  return foundIndex;
+};
 
 const utils = {
   fetchFromEndpoint,
   fetchFromEndpointWithoutParsing,
   addPropertiesToObjectsInArray,
   convertToTrackPlayerFormat,
+  convertAlbumFromTagResultToAppFormat,
+  getIndexOfTrackUsingId,
   
 };
 export default utils;

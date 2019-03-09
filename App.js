@@ -66,6 +66,41 @@ const HomePage = props => {
                 fontSize: 15
               }}
             >
+              From Last Time
+            </Text>
+            <View
+              style={{
+                backgroundColor: "blue"
+              }}
+            >
+              <TrackList
+                maxItems={5}
+                AppInstance={AppInstance}
+                onTrackPress={(item, index) =>
+                  AppInstance.startInPlayer(
+                    utils.convertToTrackPlayerFormat(
+                      AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse.slice(
+                        index
+                      )
+                    )
+                  )
+                }
+                data={
+                  AppInstance.state
+                    .screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse
+                }
+              />
+            </View>
+          </View>
+
+          <View style={{}}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                margin: 10,
+                fontSize: 15
+              }}
+            >
               Similar Albums
             </Text>
             <View
@@ -100,7 +135,7 @@ const HomePage = props => {
               }}
             >
               <TrackList
-                maxItems={5}
+                maxItems={10}
                 AppInstance={AppInstance}
                 onTrackPress={(item, index) =>
                   AppInstance.startInPlayer(
@@ -114,41 +149,6 @@ const HomePage = props => {
                 data={
                   AppInstance.state
                     .screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse
-                }
-              />
-            </View>
-          </View>
-
-          <View style={{}}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                margin: 10,
-                fontSize: 15
-              }}
-            >
-              Recent
-            </Text>
-            <View
-              style={{
-                backgroundColor: "blue"
-              }}
-            >
-              <TrackList
-                maxItems={5}
-                AppInstance={AppInstance}
-                onTrackPress={(item, index) =>
-                  AppInstance.startInPlayer(
-                    utils.convertToTrackPlayerFormat(
-                      AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse.slice(
-                        index
-                      )
-                    )
-                  )
-                }
-                data={
-                  AppInstance.state
-                    .screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse
                 }
               />
             </View>
@@ -345,42 +345,44 @@ export default class App extends Component<Props> {
   getRecentTracks = callback => {
     recentTracks = [];
     db.transaction(tx => {
-      tx.executeSql("SELECT * FROM recent ORDER BY timestamp DESC limit 100", [], (tx, results) => {
-        console.log("Query completed");
+      tx.executeSql(
+        "SELECT * FROM recent ORDER BY timestamp DESC limit 100",
+        [],
+        (tx, results) => {
+          console.log("Query completed");
 
-        var len = results.rows.length;
-        for (let i = 0; i < len; i++) {
-          let row = results.rows.item(i);
+          var len = results.rows.length;
+          for (let i = 0; i < len; i++) {
+            let row = results.rows.item(i);
 
-          recentTracks.push({
-            id: row.timestamp,
-            name: row.trackName,
-            artistName: row.artistName,
-            images: [row.image || ""]
-          });
+            recentTracks.push({
+              id: row.timestamp,
+              name: row.trackName,
+              artistName: row.artistName,
+              images: [row.image || ""]
+            });
+          }
+
+          callback(recentTracks);
         }
-
-        callback(recentTracks);
-      });
+      );
     });
   };
-
 
   getRecentTracksAndPutThemInState = () => {
     this.getRecentTracks(recentTracks => {
       console.log("inside getrecenttracks");
-      recentTracks.map(item => {
-        this.setState({
-          screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: recentTracks
-        });
+
+      this.setState({
+        screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: recentTracks
       });
+      this.getSimilarAlbumsAndPutThemInState();
     });
   };
 
-  
   componentDidMount = () => {
     this.getChartTopTracksAndPutThemInState();
-    //this.getSimilarAlbumsAndPutThemInState('ariana');//TODO: hook this up with recent tracks
+
     this.getRecentTracksAndPutThemInState();
 
     this._onTrackChanged = TrackPlayer.addEventListener(
@@ -518,6 +520,7 @@ export default class App extends Component<Props> {
   };
 
   _getSimilarAlbums = (tag, callback) => {
+    console.log("getting similar albums for: " + tag);
     utils.fetchFromEndpoint(
       `tagTopAlbums?tag=${encodeURIComponent(tag)}`,
       responseJson => {
@@ -525,16 +528,24 @@ export default class App extends Component<Props> {
       }
     );
   };
-  getSimilarAlbumsAndPutThemInState = tag => {
-    this._getSimilarAlbums(tag, responseJson => {
-      const albums = responseJson.album;
+  getSimilarAlbumsAndPutThemInState = () => {
+    recentItems = this.state
+      .screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse;
 
-      this.setState({
-        screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse: utils.convertAlbumFromTagResultToAppFormat(
-          albums
-        )
+    if (recentItems) {
+      randomTrack = recentItems[Math.floor(Math.random() * recentItems.length)];
+      bigTag = randomTrack.artistName.split(" ");
+      tag = bigTag[Math.floor(Math.random() * bigTag.length)];
+      this._getSimilarAlbums(tag, responseJson => {
+        const albums = responseJson.album;
+
+        this.setState({
+          screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse: utils.convertAlbumFromTagResultToAppFormat(
+            albums
+          )
+        });
       });
-    });
+    }
   };
 
   _getVideo = (artistName, songName, callback) => {

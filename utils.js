@@ -122,7 +122,11 @@ map((e,i,final) =>final.indexOf(e) === i && i)
 return unique
 
 }
-
+padText = (n, width, z) => {
+  z = z || "0";
+  n = n + "";
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+};
 
 const utils = {
   fetchFromEndpoint,
@@ -132,7 +136,8 @@ const utils = {
   convertToTrackPlayerFormatFromGeneratedPlaylist,
   convertAlbumFromTagResultToAppFormat,
   getIndexOfTrackUsingId,
-  getUnique
+  getUnique,
+  padText
   
 };
 export default utils;

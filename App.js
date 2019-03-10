@@ -4,26 +4,24 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   FlatList,
-  ScrollView,
   Dimensions,
-  Animated,
-  ActivityIndicator
-} from "react-native";
+  Animated} from "react-native";
 import shortid from "shortid";
 import ScreenPlayer from "./ScreenPlayer";
 import TrackPlayer from "react-native-track-player";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import Icon from "react-native-ionicons";
-import { TrackList } from "./TrackList";
-import { AlbumList } from "./AlbumList";
 import { AlbumItem } from "./AlbumItem";
-import { ArtistList } from "./ArtistList";
 import utils from "./utils";
 import { ScreenDetail } from "./ScreenDetail";
 import { openDatabase } from "react-native-sqlite-storage";
 import { MiniPlayer } from "./MiniPlayer";
+import { PageHome } from "./PageHome";
+import { PageSearch } from "./PageSearch";
+import { PageLibrary } from "./PageLibrary";
+
+const { width, height } = Dimensions.get("window");
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -35,391 +33,8 @@ var db = openDatabase(
   }
 );
 
-const { width, height } = Dimensions.get("window");
 
-type Props = {};
-
-const HomePage = props => {
-  _pad = (n, width, z) => {
-    z = z || "0";
-    n = n + "";
-    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-  };
-
-  const AppInstance = props.AppInstance;
-  return (
-    <ScrollView>
-      <View style={{ flex: 1 }}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "white",
-            margin: 10
-          }}
-        >
-          <View style={{}}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                margin: 10,
-                fontSize: 15
-              }}
-            >
-              From Last Time
-            </Text>
-            <View
-              style={{
-                backgroundColor: "blue"
-              }}
-            >
-              <TrackList
-                maxItems={5}
-                AppInstance={AppInstance}
-                onTrackPress={(item, index) =>
-                  AppInstance.startInPlayer(
-                    utils.convertToTrackPlayerFormat(
-                      AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse.slice(
-                        index
-                      )
-                    )
-                  )
-                }
-                data={
-                  AppInstance.state
-                    .screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse
-                }
-              />
-            </View>
-          </View>
-
-          <View style={{}}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                margin: 10,
-                fontSize: 15
-              }}
-            >
-              Similar Albums
-            </Text>
-            <View
-              style={{
-                backgroundColor: "blue"
-              }}
-            >
-              <AlbumList
-                data={
-                  AppInstance.state
-                    .screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse
-                }
-                AppInstance={AppInstance}
-                maxItems={5}
-              />
-            </View>
-          </View>
-
-          <View style={{}}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                margin: 10,
-                fontSize: 15
-              }}
-            >
-              Top Tracks Chart
-            </Text>
-            <View
-              style={{
-                backgroundColor: "blue"
-              }}
-            >
-              <TrackList
-                maxItems={10}
-                AppInstance={AppInstance}
-                onTrackPress={(item, index) =>
-                  AppInstance.startInPlayer(
-                    utils.convertToTrackPlayerFormat(
-                      AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse.slice(
-                        index
-                      )
-                    )
-                  )
-                }
-                data={
-                  AppInstance.state
-                    .screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse
-                }
-              />
-            </View>
-          </View>
-        </View>
-      </View>
-
-      <Text
-        style={{
-          textAlign: "center",
-          color: "#ddd",
-          margin: 5
-        }}
-      >
-        Hit me up here for any comments, suggestions, (thank you)s or just about
-        anything:
-      </Text>
-      <Text
-        style={{
-          textAlign: "center",
-          color: "#ddd",
-          margin: 5
-        }}
-      >
-        abeltesfaye45@gmail.com
-      </Text>
-    </ScrollView>
-  );
-};
-
-const SearchPage = props => {
-  const AppInstance = props.AppInstance;
-  return (
-    <ScrollView>
-      <View>
-        <TextInput
-          onSubmitEditing={() => AppInstance._startSearch()}
-          style={{
-            height: 40,
-            margin: 10,
-            backgroundColor: "#efefef"
-          }}
-          onChangeText={text => AppInstance._updateSearchQueryText(text)}
-          placeholder="Search"
-          value={
-            AppInstance.state
-              .screenStates_screenNavigatorStates_pageSearchStates_searchQueryText
-          }
-        />
-        <View style={{ margin: 10 }}>
-          <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
-            Artists
-          </Text>
-
-          <View style={{ marginHorizontal: 10 }}>
-            <ArtistList
-              data={
-                AppInstance.state
-                  .screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse
-              }
-              AppInstance={AppInstance}
-              maxItems={2}
-            />
-          </View>
-
-          <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
-            Albums
-          </Text>
-          <View style={{ marginHorizontal: 10 }}>
-            <AlbumList
-              data={
-                AppInstance.state
-                  .screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse
-              }
-              AppInstance={AppInstance}
-              maxItems={2}
-            />
-          </View>
-          <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
-            Tracks
-          </Text>
-          <View style={{ marginHorizontal: 10 }}>
-            <TrackList
-              data={
-                AppInstance.state
-                  .screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse
-              }
-              onTrackPress={(item, index) =>
-                AppInstance.startInPlayer(
-                  utils.convertToTrackPlayerFormat(
-                    AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse.slice(
-                      index
-                    )
-                  )
-                )
-              }
-              AppInstance={AppInstance}
-              maxItems={10}
-            />
-          </View>
-
-          {/* //TODO: work on this when more important features are done
-          
-          <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
-            YouTube
-          </Text>
-          <View style={{ marginHorizontal: 10 }}>
-            <FlatList
-              keyExtractor={(item, index) => index.toString()}
-              style={{
-                backgroundColor: "white"
-              }}
-              ListFooterComponent={() => {
-                return (
-                  <Text style={{ marginTop: 10, textAlign: "center" }}>
-                    Show more
-                  </Text>
-                );
-              }}
-              data={
-                AppInstance.state
-                  .screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse
-              }
-              renderItem={({ item, index }) => {
-                return (
-                  <View
-                    style={{
-                      backgroundColor: "white",
-                      flexDirection: "row",
-                      marginVertical: 5
-                    }}
-                  >
-                    <Image
-                      style={{
-                        backgroundColor: "#ddd",
-                        width: 100,
-                        height: 70
-                      }}
-                      source={{ uri: item.YTTumbnail }}
-                    />
-                    <View
-                      style={{
-                        backgroundColor: "white",
-                        flex: 1,
-                        margin: 10
-                      }}
-                    >
-                      <Text
-                        style={{
-                          flex: 1,
-                          fontWeight: "bold",
-                          textAlignVertical: "center"
-                        }}
-                      >
-                        {item.YTTitle}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              }}
-            />
-          </View> */}
-        </View>
-      </View>
-    </ScrollView>
-  );
-};
-const LibraryPage = props => {
-  const AppInstance = props.AppInstance;
-  return (
-    <ScrollView>
-      <View style={{ flex: 1 }}>
-        {AppInstance.state
-          .screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading ? (
-          <ActivityIndicator
-            animating={true}
-            style={{
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              margin: 10,
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 1
-            }}
-            size="large"
-          />
-        ) : null}
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "white",
-            margin: 10
-          }}
-        >
-          <View style={{}}>
-            <View
-              style={{
-                margin: 3
-              }}
-            >
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  fontSize: 15
-                }}
-              >
-                Playlist Generator
-              </Text>
-              <Text
-                style={{
-                  fontSize: 13
-                }}
-              >
-                Pick a song to generate playlist
-              </Text>
-            </View>
-            <View
-              style={{
-                backgroundColor: "blue"
-              }}
-            >
-              <TrackList
-                maxItems={100}
-                AppInstance={AppInstance}
-                onTrackPress={(item, index) => {
-                  AppInstance.setState({
-                    screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading: true
-                  });
-
-                  utils.fetchFromEndpoint(
-                    `getPlaylistUsingTrack?name=${encodeURIComponent(
-                      item.name
-                    )}&artistName=${encodeURIComponent(item.artistName)}`,
-                    responseJson => {
-                      AppInstance.setState({
-                        screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading: false
-                      });
-
-                      const tracks = responseJson.track;
-
-                      if (tracks.length < 1) {
-                        alert(
-                          `Playlist could not be generated for: ${
-                            item.artistName
-                          } - ${item.name}`
-                        );
-                      } else {
-                        AppInstance.startInPlayer(
-                          utils.convertToTrackPlayerFormatFromGeneratedPlaylist(
-                            tracks
-                          )
-                        );
-                      }
-                    }
-                  );
-                }}
-                data={
-                  AppInstance.state
-                    .screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse
-                }
-              />
-            </View>
-          </View>
-        </View>
-      </View>
-    </ScrollView>
-  );
-};
-
-export default class App extends Component<Props> {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -884,11 +499,11 @@ export default class App extends Component<Props> {
                 renderScene={({ route }) => {
                   switch (route.key) {
                     case "PAGE_HOME":
-                      return <HomePage AppInstance={AppInstance} />;
+                      return <PageHome AppInstance={AppInstance} />;
                     case "PAGE_SEARCH":
-                      return <SearchPage AppInstance={AppInstance} />;
+                      return <PageSearch AppInstance={AppInstance} />;
                     case "PAGE_LIBRARY":
-                      return <LibraryPage AppInstance={AppInstance} />;
+                      return <PageLibrary AppInstance={AppInstance} />;
                     default:
                       return null;
                   }

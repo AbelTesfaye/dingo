@@ -179,16 +179,12 @@ module.exports = async data => {
     if (data.permanent) TrackPlayer.stop();
     if (data.ducking) {
       const prevVolume = await TrackPlayer.getVolume();
-      console.log("prevVolume: "+prevVolume)
-
       TrackPlayer.setVolume(0.1);
       
       BackgroundTimer.setTimeout(() => {
         TrackPlayer.setVolume(prevVolume);
-        console.log("setting volume to:"+prevVolume)
       }, 3*1000);
  
-    
     }
   }
 };

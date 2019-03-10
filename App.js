@@ -8,7 +8,8 @@ import {
   FlatList,
   ScrollView,
   Dimensions,
-  Animated
+  Animated,
+  ActivityIndicator
 } from "react-native";
 import shortid from "shortid";
 import ScreenPlayer from "./ScreenPlayer";
@@ -294,11 +295,109 @@ const SearchPage = props => {
     </ScrollView>
   );
 };
-const LibraryPage = props => (
-  <View>
-    <Text> My Library is active</Text>
-  </View>
-);
+const LibraryPage = props => {
+  const AppInstance = props.AppInstance;
+  return (
+    <ScrollView>
+      <View style={{ flex: 1 }}>
+        {AppInstance.state
+          .screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading ? (
+          <ActivityIndicator
+            animating={true}
+            style={{
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              margin: 10,
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1
+            }}
+            size="large"
+          />
+        ) : null}
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "white",
+            margin: 10
+          }}
+        >
+          <View style={{}}>
+            <View
+              style={{
+                margin: 3
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 15
+                }}
+              >
+                Playlist Generator
+              </Text>
+              <Text
+                style={{
+                  fontSize: 13
+                }}
+              >
+                Pick a song to generate playlist
+              </Text>
+            </View>
+            <View
+              style={{
+                backgroundColor: "blue"
+              }}
+            >
+              <TrackList
+                maxItems={100}
+                AppInstance={AppInstance}
+                onTrackPress={(item, index) => {
+                  AppInstance.setState({
+                    screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading: true
+                  });
+
+                  utils.fetchFromEndpoint(
+                    `getPlaylistUsingTrack?name=${encodeURIComponent(
+                      item.name
+                    )}&artistName=${encodeURIComponent(item.artistName)}`,
+                    responseJson => {
+                      AppInstance.setState({
+                        screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading: false
+                      });
+
+                      const tracks = responseJson.track;
+
+                      if (tracks.length < 1) {
+                        alert(
+                          `Playlist could not be generated for: ${
+                            item.artistName
+                          } - ${item.name}`
+                        );
+                      } else {
+                        AppInstance.startInPlayer(
+                          utils.convertToTrackPlayerFormatFromGeneratedPlaylist(
+                            tracks
+                          )
+                        );
+                      }
+                    }
+                  );
+                }}
+                data={
+                  AppInstance.state
+                    .screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse
+                }
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
+  );
+};
 
 export default class App extends Component<Props> {
   constructor(props) {
@@ -325,6 +424,8 @@ export default class App extends Component<Props> {
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse: null,
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: null,
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse: null,
+
+      screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading: false,
 
       screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: [],
       screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: {},
@@ -367,7 +468,7 @@ export default class App extends Component<Props> {
     });
   };
 
-  getRecentTracksAndPutThemInState = () => {
+  _getRecentTracksAndPutThemInState = () => {
     this.getRecentTracks(recentTracks => {
       console.log("inside getrecenttracks");
 
@@ -381,7 +482,7 @@ export default class App extends Component<Props> {
   componentDidMount = () => {
     this.getChartTopTracksAndPutThemInState();
 
-    this.getRecentTracksAndPutThemInState();
+    this._getRecentTracksAndPutThemInState();
 
     this._onTrackChanged = TrackPlayer.addEventListener(
       "playback-track-changed",
@@ -395,6 +496,7 @@ export default class App extends Component<Props> {
         }
         this._getTrackPlayerQueueToState();
         this._updateCurrentPlayingTrackState();
+        this._getRecentTracksAndPutThemInState();
       }
     );
 

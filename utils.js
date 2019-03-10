@@ -71,6 +71,20 @@ convertToTrackPlayerFormat = tracks => {
   return newTracks;
 };
 
+convertToTrackPlayerFormatFromGeneratedPlaylist = tracks => {
+  newTracks = [];
+  tracks.map((item,index )=> {
+    newTracks.push({
+      id: index.toString(),
+      title: item.name,
+      artist: item.artist.name,
+      artwork: item.image[item.image.length-1]["#text"]
+    });
+  });
+  return newTracks;
+};
+
+
 convertAlbumFromTagResultToAppFormat = albums => {
   newTracks = [];
   albums.map((item,index )=> {
@@ -100,6 +114,7 @@ const utils = {
   fetchFromEndpointWithoutParsing,
   addPropertiesToObjectsInArray,
   convertToTrackPlayerFormat,
+  convertToTrackPlayerFormatFromGeneratedPlaylist,
   convertAlbumFromTagResultToAppFormat,
   getIndexOfTrackUsingId,
   

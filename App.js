@@ -6,7 +6,8 @@ import {
   View,
   FlatList,
   Dimensions,
-  Animated} from "react-native";
+  Animated
+} from "react-native";
 import shortid from "shortid";
 import ScreenPlayer from "./ScreenPlayer";
 import TrackPlayer from "react-native-track-player";
@@ -33,16 +34,15 @@ var db = openDatabase(
   }
 );
 
-
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       index: 0,
       routes: [
-        { key: "PAGE_HOME", icon: "home", color: "#F44336" },
-        { key: "PAGE_SEARCH", icon: "search", color: "#3F51B5" },
-        { key: "PAGE_LIBRARY", icon: "ios-albums", color: "#4CAF50" }
+        { key: "PAGE_HOME", icon: "home", color: "#ffb74d" },
+        { key: "PAGE_SEARCH", icon: "search", color: "#ffb74d" },
+        { key: "PAGE_LIBRARY", icon: "ios-albums", color: "#ffb74d" }
       ],
 
       activeScreen: null,
@@ -564,12 +564,12 @@ const styles = StyleSheet.create({
     resizeMode: "cover" // or 'stretch'
   },
   tabbar: {
-    backgroundColor: "#263238",
+    backgroundColor: "#fff",
     overflow: "hidden"
   },
   icon: {
     backgroundColor: "transparent",
-    color: "white"
+    color: "#000"
   },
   container: {
     flex: 1,

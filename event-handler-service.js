@@ -68,8 +68,8 @@ module.exports = async data => {
       TrackPlayer.getCurrentTrack().then(currentTrackId => {
         TrackPlayer.getTrack(currentTrackId).then(track => {
           if (
-            previousPlayingTrack.title !== track.title &&
-            previousPlayingTrack.artist !== track.artist &&
+            previousPlayingTrack.title !== track.title ||
+            previousPlayingTrack.artist !== track.artist ||
             previousPlayingTrack.artwork !== track.artwork
           ) {
             this.writeRecentTrack(

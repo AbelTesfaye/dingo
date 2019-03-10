@@ -226,7 +226,7 @@ const SearchPage = props => {
                 )
               }
               AppInstance={AppInstance}
-              maxItems={2}
+              maxItems={10}
             />
           </View>
 

@@ -4,8 +4,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
-  TouchableNativeFeedback,
   TextInput,
   FlatList,
   ScrollView,
@@ -17,7 +15,6 @@ import ScreenPlayer from "./ScreenPlayer";
 import TrackPlayer from "react-native-track-player";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import Icon from "react-native-ionicons";
-import { MiniPlayerProgressBar } from "./MiniPlayerProgressBar";
 import { TrackList } from "./TrackList";
 import { AlbumList } from "./AlbumList";
 import { AlbumItem } from "./AlbumItem";
@@ -25,6 +22,7 @@ import { ArtistList } from "./ArtistList";
 import utils from "./utils";
 import { ScreenDetail } from "./ScreenDetail";
 import { openDatabase } from "react-native-sqlite-storage";
+import { MiniPlayer } from "./MiniPlayer";
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -776,71 +774,8 @@ export default class App extends Component<Props> {
                 useNativeDriver
               />
             </View>
-            {this.state
-              .screenStates_screenPlayerStates_pageQueueStates_playerState !==
-            TrackPlayer.STATE_NONE ? (
-              <TouchableNativeFeedback
-                onPress={() => {
-                  this.setState({
-                    activeScreen: "SCREEN_PLAYER",
-                    screenStates_screenNavigatorStates_newQueueItems: []
-                  });
-                }}
-              >
-                <View
-                  elevation={5}
-                  style={{
-                    width: width,
-                    height: 55,
-                    backgroundColor: "white"
-                  }}
-                >
-                  <MiniPlayerProgressBar style={{ zIndex: 1 }} />
 
-                  <View
-                    style={{
-                      height: 50,
-                      backgroundColor: "#fafafa",
-                      flexDirection: "row",
-                      alignItems: "center"
-                    }}
-                  >
-                    <Image
-                      style={{
-                        height: 50,
-                        width: 50
-                      }}
-                      source={{
-                        uri: miniPlayerTrack.artwork
-                      }}
-                    />
-
-                    <View
-                      style={{
-                        marginHorizontal: 10,
-                        justifyContent: "flex-start",
-                        alignItems: "flex-start",
-                        flex: 1
-                      }}
-                    >
-                      <Text
-                        numberOfLines={1}
-                        ellipsizeMode={"tail"}
-                        style={{
-                          fontWeight: "bold"
-                        }}
-                      >
-                        {miniPlayerTrack.title}
-                      </Text>
-
-                      <Text numberOfLines={1} ellipsizeMode={"tail"} style={{}}>
-                        {miniPlayerTrack.artist}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableNativeFeedback>
-            ) : null}
+            <MiniPlayer AppInstance={AppInstance} />
           </View>
         ) : this.state.activeScreen == "SCREEN_PLAYER" ? (
           <ScreenPlayer

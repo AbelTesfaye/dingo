@@ -1,22 +1,14 @@
 
-import React from 'react';
+import React ,{Component} from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import TrackPlayer, { ProgressComponent } from 'react-native-track-player';
 
-import { formatTime } from './utils';
-
-export class MiniPlayerProgressBar extends ProgressComponent {
+export class MiniPlayerProgressBar extends Component {
 
     render() {
-        const position = formatTime(Math.floor(this.state.position));
-        const duration = formatTime(Math.floor(this.state.duration));
-        const info = position + ' / ' + duration;
-
-        let progress = this.getProgress() * 100;
-        let buffered = this.getBufferedProgress() * 100;
+        let progress = this.props.progress * 100;
+        let buffered = this.props.bufferedProgress * 100;
         buffered -= progress;
         if(buffered < 0) buffered = 0;
-
 
         return (
             <View style={styles.view}>

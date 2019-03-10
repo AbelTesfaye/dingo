@@ -158,7 +158,7 @@ const HomePage = props => {
       <Text
         style={{
           textAlign: "center",
-          color: "#eee",
+          color: "#ddd",
           margin: 5
         }}
       >

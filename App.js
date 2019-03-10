@@ -469,7 +469,7 @@ export default class App extends Component<Props> {
         "SELECT * FROM recent ORDER BY timestamp DESC limit 100",
         [],
         (tx, results) => {
-          console.log("Query completed");
+          console.log("Read from recent tracks successfully");
 
           var len = results.rows.length;
           for (let i = 0; i < len; i++) {

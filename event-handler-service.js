@@ -1,6 +1,7 @@
 import TrackPlayer from "react-native-track-player";
 import utils from "./utils";
 import { openDatabase } from "react-native-sqlite-storage";
+import BackgroundTimer from 'react-native-background-timer';
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -47,7 +48,7 @@ module.exports = async data => {
         "INSERT INTO recent (timestamp,trackName, artistName, image) VALUES (?,?,?,?)",
         [timestamp, trackName, artistName, image],
         (tx, results) => {
-          console.log("Query completed");
+          console.log("Inserted into recent tracks successfully");
         }
       );
     });
@@ -172,8 +173,22 @@ module.exports = async data => {
   } else if (data.type == "remote-previous") {
     TrackPlayer.skipToPrevious();
   } else if (data.type == "remote-seek") {
-    // Again, we can forward this command to the player using
-    //TrackPlayer.seekTo(data.position);
+    TrackPlayer.seekTo(data.position);
+  } else if (data.type == "remote-duck") {
+    if (data.paused) TrackPlayer.pause();
+    if (data.permanent) TrackPlayer.stop();
+    if (data.ducking) {
+      const prevVolume = await TrackPlayer.getVolume();
+      console.log("prevVolume: "+prevVolume)
+
+      TrackPlayer.setVolume(0.1);
+      
+      BackgroundTimer.setTimeout(() => {
+        TrackPlayer.setVolume(prevVolume);
+        console.log("setting volume to:"+prevVolume)
+      }, 3*1000);
+ 
+    
+    }
   }
-  // ...
 };

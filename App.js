@@ -154,6 +154,26 @@ const HomePage = props => {
           </View>
         </View>
       </View>
+
+      <Text
+        style={{
+          textAlign: "center",
+          color: "#eee",
+          margin: 5
+        }}
+      >
+        Hit me up here for any comments, suggestions, (thank you)s or just about
+        anything:
+      </Text>
+      <Text
+        style={{
+          textAlign: "center",
+          color: "#ddd",
+          margin: 5
+        }}
+      >
+        abeltesfaye45@gmail.com
+      </Text>
     </ScrollView>
   );
 };
@@ -388,7 +408,7 @@ const LibraryPage = props => {
                 }}
                 data={
                   AppInstance.state
-                    .screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse
+                    .screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse
                 }
               />
             </View>
@@ -426,6 +446,7 @@ export default class App extends Component<Props> {
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse: null,
 
       screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading: false,
+      screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse: false,
 
       screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: [],
       screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: {},
@@ -473,7 +494,11 @@ export default class App extends Component<Props> {
       console.log("inside getrecenttracks");
 
       this.setState({
-        screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: recentTracks
+        screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: recentTracks,
+        screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse: utils.getUnique(
+          recentTracks,
+          "name"
+        )
       });
       this.getSimilarAlbumsAndPutThemInState();
     });

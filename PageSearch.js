@@ -29,7 +29,7 @@ export const PageSearch = props => {
           </Text>
         <View style={{ marginHorizontal: 10 }}>
           <AlbumList data={AppInstance.state
-            .screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse} AppInstance={AppInstance} maxItems={2} />
+            .screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse} AppInstance={AppInstance} maxItems={4} />
         </View>
         <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
           Tracks

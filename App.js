@@ -21,6 +21,8 @@ import { MiniPlayer } from "./MiniPlayer";
 import { PageHome } from "./PageHome";
 import { PageSearch } from "./PageSearch";
 import { PageLibrary } from "./PageLibrary";
+import SplashScreen from 'react-native-splash-screen'
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -120,6 +122,9 @@ export default class App extends Component {
   };
 
   componentDidMount = () => {
+    SplashScreen.hide();
+
+    
     this.getChartTopTracksAndPutThemInState();
 
     this._getRecentTracksAndPutThemInState();

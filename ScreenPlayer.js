@@ -27,11 +27,16 @@ export default class ScreenPlayer extends Component {
   constructor(props) {
     super(props);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
-
+  }
+  componentDidMount() {
     let tracksToPlay = this.props.tracks;
     const indexToPlay = 0;
 
-    if (!tracksToPlay.length < 1) {
+    console.log("before setup player");
+
+    if (!(tracksToPlay.length < 1)) {
+
+      
       TrackPlayer.setupPlayer({
         maxCacheFiles: 20,
         maxCacheSize: 1024 * 50 //50 megabytes
@@ -41,16 +46,13 @@ export default class ScreenPlayer extends Component {
             TrackPlayer.CAPABILITY_PLAY,
             TrackPlayer.CAPABILITY_PAUSE,
             TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
-            TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
-            TrackPlayer.CAPABILITY_STOP
-
+            TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS
           ],
           compactCapabilities: [
             TrackPlayer.CAPABILITY_PLAY,
             TrackPlayer.CAPABILITY_PAUSE,
             TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
-            TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
-            TrackPlayer.CAPABILITY_STOP
+            TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS
           ],
 
           // Notification Color (Must be an ARGB Hexadecimal number)
@@ -62,32 +64,20 @@ export default class ScreenPlayer extends Component {
           "tracksToPlaytracksToPlaytracksToPlay: " +
             JSON.stringify(tracksToPlay)
         );
-        if (
-          typeof tracksToPlay[indexToPlay].url === "undefined" ||
-          tracksToPlay[indexToPlay].url.length <= "http://".length
-        ) {
-          utils.fetchFromEndpoint(
-            `getHighestQualityAudioUsingArtistAndSong?artist=${encodeURIComponent(
-              tracksToPlay[indexToPlay].artist
-            )}&song=${encodeURIComponent(tracksToPlay[indexToPlay].title)}`,
-            response => {
-              tracksToPlay[indexToPlay].url = response.url;
+        this._putTracksFromPropToState();
+        console.log("afer _putTracksFromPropToState");
 
-              this._putTracksFromPropToState();
-              this._addToQueue(tracksToPlay, null, () => {});
-
-              this._play();
-            }
-          );
-        } else {
-          this._putTracksFromPropToState();
-          this._addToQueue(tracksToPlay, null, () => {});
-
+       
+          //what to do if there already is a url in the track object
+          this._addToTrackPlayerQueue(tracksToPlay, null, () => {});
           this._play();
-        }
+        
       });
     } else {
-      //find a way to check if TrackPlayer is already setup
+      //if started from miniplayer
+
+        AppInstance._getTrackPlayerQueueToState()
+        AppInstance._updateCurrentPlayingTrackState()
     }
   }
 
@@ -111,10 +101,6 @@ export default class ScreenPlayer extends Component {
     });
     return true;
   }
-  _loadCurrentUrl = () => {
-    this.props.AppInstance.state
-      .screenStates_screenPlayerStates_pageQueueStates_tracksInQueue;
-  };
 
   _play = () => {
     TrackPlayer.play();
@@ -149,7 +135,7 @@ export default class ScreenPlayer extends Component {
     TrackPlayer.reset();
   };
 
-  _addToQueue = (tracks, insertBefore, callback) => {
+  _addToTrackPlayerQueue = (tracks, insertBefore, callback) => {
     TrackPlayer.add(tracks, insertBefore)
       .then(() => {
         callback();
@@ -158,19 +144,21 @@ export default class ScreenPlayer extends Component {
         console.error(e);
       });
   };
+  _updateTracksInState = tracks => {
+    this.props.AppInstance.setState({
+      screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: tracks
+    });
+  };
 
   _putTracksFromPropToState = () => {
-    this.props.AppInstance.setState({
-      screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: this.props
-        .tracks
-    });
+    this._updateTracksInState(this.props.tracks);
   };
   _onPlaylistItemPress = (item, index) => {
     this.props.AppInstance.setState({
       screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: index
     });
     TrackPlayer.skip(item.id)
-      .then()
+      .then(this._play())
       .catch(e => console.error(e));
   };
 

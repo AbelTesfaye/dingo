@@ -1,7 +1,7 @@
 import TrackPlayer from "react-native-track-player";
 import utils from "./utils";
 import { openDatabase } from "react-native-sqlite-storage";
-import BackgroundTimer from 'react-native-background-timer';
+import BackgroundTimer from "react-native-background-timer";
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -13,28 +13,44 @@ var db = openDatabase(
   }
 );
 const previousPlayingTrack = { title: "", artist: "", artwork: "" };
+let trackCurrent = { title: "", artist: "", artwork: "" };
 
 module.exports = async data => {
   _updateTrackPlayerQueueItem = (tracks, trackId, newProperties, callback) => {
-    const itemIndex = utils.getIndexOfTrackUsingId(tracks, trackId);
-    let trackItem = tracks[itemIndex];
+    const currentItemIndex = utils.getIndexOfTrackUsingId(tracks, trackId);
+    let trackItem = tracks[currentItemIndex];
 
     insertBeforeId = null;
-    if (itemIndex + 1 < tracks.length)
-      insertBeforeId = tracks[itemIndex + 1].id;
+    if (currentItemIndex + 1 < tracks.length)
+      insertBeforeId = tracks[currentItemIndex + 1].id;
+
+    console.log("insertBeforeId:" + insertBeforeId);
 
     trackItem = {
       ...trackItem,
       ...newProperties
     };
+    console.log("llltrackItemtrackItemtrackItem: " + JSON.stringify(trackItem));
 
-    TrackPlayer.remove([trackId])
-      .then(() => {
-        TrackPlayer.add(trackItem, insertBeforeId);
-        callback();
-      })
-      .catch(e => console.error(e));
+    if (trackItem.id === trackCurrent.id) {
+      t = [...tracks]
+      t[currentItemIndex] = trackItem;
+      TrackPlayer.reset();
+
+      TrackPlayer.add(t).then(() => {
+        TrackPlayer.skip(trackItem.id).then(callback());
+      });
+    } else {
+      TrackPlayer.remove(trackId)
+        .then(() => {
+          TrackPlayer.add(trackItem, insertBeforeId).then(() => {
+            callback();
+          });
+        })
+        .catch(e => console.error(e));
+    }
   };
+
   _getTracksToRight = (tracks, currentIndex, howManyToTheRight) => {
     return tracks.slice(currentIndex + 1, currentIndex + 1 + howManyToTheRight);
   };
@@ -63,55 +79,31 @@ module.exports = async data => {
 
     if (data.state == TrackPlayer.STATE_NONE) {
       console.log("STATE_NONE");
-    }
-    if (data.state == TrackPlayer.STATE_PLAYING) {
-      console.log("STATE_PLAYING");
-      TrackPlayer.getCurrentTrack().then(currentTrackId => {
-        TrackPlayer.getTrack(currentTrackId).then(track => {
-          if (
-            previousPlayingTrack.title !== track.title ||
-            previousPlayingTrack.artist !== track.artist ||
-            previousPlayingTrack.artwork !== track.artwork
-          ) {
-            this.writeRecentTrack(
-              new Date().getTime(),
-              track.title,
-              track.artist,
-              track.artwork
-            );
-          }
-
-          previousPlayingTrack.title = track.title;
-          previousPlayingTrack.artist = track.artist;
-          previousPlayingTrack.artwork = track.artwork;
-        });
-      });
-    }
-    if (data.state == TrackPlayer.STATE_PAUSED) {
-      console.log("STATE_PAUSED");
-    }
-    if (data.state == TrackPlayer.STATE_STOPPED) {
-      console.log("STATE_STOPPED");
-    }
-    if (data.state == TrackPlayer.STATE_BUFFERING) {
-      console.log("STATE_BUFFERING");
 
       TrackPlayer.getQueue()
         .then(tracks => {
           TrackPlayer.getCurrentTrack().then(currentTrackId => {
-            const itemIndex = utils.getIndexOfTrackUsingId(
+            const currentItemIndex = utils.getIndexOfTrackUsingId(
               tracks,
               currentTrackId
             );
 
-            const tracksToLeft = this._getTracksToLeft(tracks, itemIndex, 1);
-            const tracksToRight = this._getTracksToRight(tracks, itemIndex, 1);
+            const tracksToLeft = this._getTracksToLeft(
+              tracks,
+              currentItemIndex,
+              1
+            );
+            trackCurrent = tracks[currentItemIndex];
+            const tracksToRight = this._getTracksToRight(
+              tracks,
+              currentItemIndex,
+              1
+            );
 
-            tracksToRight.concat(tracksToLeft).map((item, index) => {
-              if (
-                typeof item.url === "undefined" ||
-                item.url.length <= "http://".length
-              ) {
+            [trackCurrent, ...tracksToRight, ...tracksToLeft].map(item => {
+              console.log("trackCurrent: " + JSON.stringify(trackCurrent));
+              console.log("itemitemitem: " + JSON.stringify(item));
+              if (!item.url || item.url.length <= "http://".length) {
                 if (item.youtubeId) {
                   //get playable url from youtube
 
@@ -153,6 +145,8 @@ module.exports = async data => {
                               item.artist +
                               item.title
                           );
+                          TrackPlayer.play()
+
                         }
                       );
                     }
@@ -163,6 +157,38 @@ module.exports = async data => {
           });
         })
         .catch(e => console.error(e));
+    }
+    if (data.state == TrackPlayer.STATE_PLAYING) {
+      console.log("STATE_PLAYING");
+      TrackPlayer.getCurrentTrack().then(currentTrackId => {
+        TrackPlayer.getTrack(currentTrackId).then(track => {
+          if (
+            previousPlayingTrack.title !== track.title ||
+            previousPlayingTrack.artist !== track.artist ||
+            previousPlayingTrack.artwork !== track.artwork
+          ) {
+            this.writeRecentTrack(
+              new Date().getTime(),
+              track.title,
+              track.artist,
+              track.artwork
+            );
+          }
+
+          previousPlayingTrack.title = track.title;
+          previousPlayingTrack.artist = track.artist;
+          previousPlayingTrack.artwork = track.artwork;
+        });
+      });
+    }
+    if (data.state == TrackPlayer.STATE_PAUSED) {
+      console.log("STATE_PAUSED");
+    }
+    if (data.state == TrackPlayer.STATE_STOPPED) {
+      console.log("STATE_STOPPED");
+    }
+    if (data.state == TrackPlayer.STATE_BUFFERING) {
+      console.log("STATE_BUFFERING");
     }
   } else if (data.type == "remote-play") {
     TrackPlayer.play();
@@ -180,11 +206,10 @@ module.exports = async data => {
     if (data.ducking) {
       const prevVolume = await TrackPlayer.getVolume();
       TrackPlayer.setVolume(0.1);
-      
+
       BackgroundTimer.setTimeout(() => {
         TrackPlayer.setVolume(prevVolume);
-      }, 3*1000);
- 
+      }, 3 * 1000);
     }
   }
 };

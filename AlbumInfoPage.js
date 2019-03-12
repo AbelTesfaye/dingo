@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { TrackList } from "./TrackList";
 import utils from "./utils";
-import App from "./App";
 
 export class AlbumInfoPage extends React.Component {
   constructor(props) {

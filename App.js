@@ -20,7 +20,6 @@ import { openDatabase } from "react-native-sqlite-storage";
 import SplashScreen from "react-native-splash-screen";
 import { ScreenNavigator } from "./ScreenNavigator";
 
-
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
   () => {
@@ -30,7 +29,6 @@ var db = openDatabase(
     console.log("SQL Error: " + err);
   }
 );
-
 
 export default class App extends Component {
   constructor(props) {
@@ -128,7 +126,9 @@ export default class App extends Component {
       "playback-track-changed",
       async data => {
         if (globals.shouldUIRespondToEvents) {
-          console.log("playback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changed")
+          console.log(
+            "playback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changed"
+          );
           if (data.nextTrack) {
             const track = await TrackPlayer.getTrack(data.nextTrack);
 
@@ -146,7 +146,9 @@ export default class App extends Component {
       "playback-state",
       data => {
         if (globals.shouldUIRespondToEvents) {
-          console.log("playback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-state")
+          console.log(
+            "playback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-state"
+          );
           this.setState({
             screenStates_screenPlayerStates_pageQueueStates_playerState:
               data.state
@@ -421,16 +423,13 @@ export default class App extends Component {
     });
   };
 
-
   render() {
-    const miniPlayerTrack = this.state
-      .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack;
     const AppInstance = this;
     return (
       <View style={{ flex: 1 }}>
         {this.state.activeScreen == "SCREEN_NAVIGATOR" ||
         this.state.activeScreen == null ? (
-          <ScreenNavigator AppInstance={AppInstance}/>
+          <ScreenNavigator AppInstance={AppInstance} />
         ) : this.state.activeScreen == "SCREEN_PLAYER" ? (
           <ScreenPlayer
             AppInstance={AppInstance}

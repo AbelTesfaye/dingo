@@ -50,7 +50,6 @@ module.exports = async data => {
       TrackPlayer.remove(trackId)
         .then(() => {
           TrackPlayer.add(trackItem, insertBeforeId).then(() => {
-            callback();
             globals.shouldUIRespondToEvents = true;
           });
         })
@@ -107,7 +106,7 @@ module.exports = async data => {
               1
             );
 
-            [trackCurrent, ...tracksToRight, ...tracksToLeft].map(item => {
+            [ ...tracksToRight, ...tracksToLeft,trackCurrent].map(item => {
               console.log("trackCurrent: " + JSON.stringify(trackCurrent));
               console.log("itemitemitem: " + JSON.stringify(item));
               if (!item.url || item.url.length <= "http://".length) {

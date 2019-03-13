@@ -30,7 +30,7 @@ export default class ScreenPlayer extends Component {
 
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
   }
-  componentDidMount (){    
+  componentDidMount() {
     let tracksToPlay = this.props.tracks;
     const indexToPlay = 0;
 
@@ -74,10 +74,10 @@ export default class ScreenPlayer extends Component {
     } else {
       //if started from miniplayer
 
-      this.AppInstance._getTrackPlayerQueueToState();
-      this.AppInstance._updateCurrentPlayingTrackState();
+      this.AppInstance.getTrackPlayerQueueToState();
+      this.AppInstance.updateCurrentPlayingTrackState();
     }
-  };
+  }
 
   componentWillMount() {
     BackHandler.addEventListener(

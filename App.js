@@ -139,8 +139,8 @@ export default class App extends Component {
               screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: track
             });
           }
-          this._getTrackPlayerQueueToState();
-          this._updateCurrentPlayingTrackState();
+          this.getTrackPlayerQueueToState();
+          this.updateCurrentPlayingTrackState();
         }
       }
     );
@@ -155,7 +155,7 @@ export default class App extends Component {
               data.state
           });
 
-          this._getTrackPlayerQueueToState();
+          this.getTrackPlayerQueueToState();
         }
       }
     );
@@ -174,7 +174,7 @@ export default class App extends Component {
       .catch(e => console.error(e));
   };
 
-  _getTrackPlayerQueueToState = () => {
+  getTrackPlayerQueueToState = () => {
     TrackPlayer.getQueue()
       .then(tracks => {
         this.setState({
@@ -201,7 +201,7 @@ export default class App extends Component {
     );
   };
 
-  _updateCurrentPlayingTrackState = () => {
+  updateCurrentPlayingTrackState = () => {
     this._getCurrentTrackId(trackid => {
       TrackPlayer.getTrack(trackid)
         .then(track => {

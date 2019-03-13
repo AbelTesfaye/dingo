@@ -41,9 +41,9 @@ export default class App extends Component {
     this.state = {
       index: 0,
       routes: [
-        { key: "PAGE_HOME", icon: "home", color: "#ffb74d" },
-        { key: "PAGE_SEARCH", icon: "search", color: "#ffb74d" },
-        { key: "PAGE_LIBRARY", icon: "ios-albums", color: "#ffb74d" }
+        { key: "PAGE_HOME", icon: "home", color: "#ff8400" },
+        { key: "PAGE_SEARCH", icon: "search", color: "#ff8400" },
+        { key: "PAGE_LIBRARY", icon: "ios-albums", color: "#ff8400" }
       ],
 
       activeScreen: null,

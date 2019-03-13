@@ -141,7 +141,6 @@ export default class App extends Component {
         }
         this._getTrackPlayerQueueToState();
         this._updateCurrentPlayingTrackState();
-        this._getRecentTracksAndPutThemInState();
       }
     );
 

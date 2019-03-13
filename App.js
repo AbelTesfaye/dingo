@@ -23,12 +23,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      index: 0,
-      routes: [
-        { key: "PAGE_HOME", icon: "home", color: "#ff8400" },
-        { key: "PAGE_SEARCH", icon: "search", color: "#ff8400" },
-        { key: "PAGE_LIBRARY", icon: "ios-albums", color: "#ff8400" }
-      ],
+    
 
       activeScreen: null,
       screenAndPageStack: [],

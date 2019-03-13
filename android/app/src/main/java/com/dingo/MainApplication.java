@@ -3,6 +3,8 @@ package com.dingo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.swmansion.reanimated.ReanimatedPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
 import com.guichaguri.trackplayer.TrackPlayer;
 import com.facebook.react.ReactNativeHost;
@@ -40,6 +42,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNGestureHandlerPackage(),
+            new ReanimatedPackage(),
             new SplashScreenReactPackage(),
             new BackgroundTimerPackage(),
           new TrackPlayer(),

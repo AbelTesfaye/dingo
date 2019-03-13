@@ -11,19 +11,13 @@ import {
 import shortid from "shortid";
 import ScreenPlayer from "./ScreenPlayer";
 import TrackPlayer from "react-native-track-player";
-import { TabView, TabBar, SceneMap } from "react-native-tab-view";
-import Icon from "react-native-ionicons";
-import { AlbumItem } from "./AlbumItem";
+
 import utils from "./utils";
 import { ScreenDetail } from "./ScreenDetail";
 import { openDatabase } from "react-native-sqlite-storage";
-import { MiniPlayer } from "./MiniPlayer";
-import { PageHome } from "./PageHome";
-import { PageSearch } from "./PageSearch";
-import { PageLibrary } from "./PageLibrary";
 import SplashScreen from "react-native-splash-screen";
+import { ScreenNavigator } from "./ScreenNavigator";
 
-const { width, height } = Dimensions.get("window");
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -34,6 +28,7 @@ var db = openDatabase(
     console.log("SQL Error: " + err);
   }
 );
+
 
 export default class App extends Component {
   constructor(props) {
@@ -424,72 +419,6 @@ export default class App extends Component {
     });
   };
 
-  _renderTabBar = props => (
-    <TabBar
-      {...props}
-      renderIcon={this._renderIcon}
-      renderIndicator={this._renderIndicator}
-      style={styles.tabbar}
-      useNativeDriver={true}
-      bounces={true}
-    />
-  );
-  _renderIndicator = props => {
-    const { width, position } = props;
-    const inputRange = [
-      0,
-      0.48,
-      0.49,
-      0.51,
-      0.52,
-      0.52,
-      1,
-      1.48,
-      1.49,
-      1.51,
-      1.52,
-      2
-    ];
-
-    const scale = position.interpolate({
-      inputRange,
-      outputRange: inputRange.map(x => (Math.trunc(x) === x ? 2 : 0.1))
-    });
-    const opacity = position.interpolate({
-      inputRange,
-      outputRange: inputRange.map(x => {
-        const d = x - Math.trunc(x);
-        return d === 0.49 || d === 0.51 ? 0 : 1;
-      })
-    });
-    const translateX = position.interpolate({
-      inputRange: inputRange,
-      outputRange: inputRange.map(x => Math.round(x) * width)
-    });
-    const backgroundColor = position.interpolate({
-      inputRange,
-      outputRange: inputRange.map(
-        x => props.navigationState.routes[Math.round(x)].color
-      )
-    });
-
-    return (
-      <Animated.View
-        style={[styles.container, { width, transform: [{ translateX }] }]}
-      >
-        <Animated.View
-          style={[
-            styles.indicator,
-            { backgroundColor, opacity, transform: [{ scale }] }
-          ]}
-        />
-      </Animated.View>
-    );
-  };
-
-  _renderIcon = ({ route }) => (
-    <Icon name={route.icon} size={24} style={styles.icon} />
-  );
 
   render() {
     const miniPlayerTrack = this.state
@@ -499,34 +428,7 @@ export default class App extends Component {
       <View style={{ flex: 1 }}>
         {this.state.activeScreen == "SCREEN_NAVIGATOR" ||
         this.state.activeScreen == null ? (
-          <View style={{ flex: 1, backgroundColor: "white" }}>
-            <View style={{ flex: 1, backgroundColor: "white" }}>
-              <TabView
-                navigationState={this.state}
-                renderTabBar={this._renderTabBar}
-                renderScene={({ route }) => {
-                  switch (route.key) {
-                    case "PAGE_HOME":
-                      return <PageHome AppInstance={AppInstance} />;
-                    case "PAGE_SEARCH":
-                      return <PageSearch AppInstance={AppInstance} />;
-                    case "PAGE_LIBRARY":
-                      return <PageLibrary AppInstance={AppInstance} />;
-                    default:
-                      return null;
-                  }
-                }}
-                onIndexChange={index => this.setState({ index })}
-                initialLayout={{
-                  height: 0,
-                  width: width
-                }}
-                useNativeDriver
-              />
-            </View>
-
-            <MiniPlayer AppInstance={AppInstance} />
-          </View>
+          <ScreenNavigator AppInstance={AppInstance}/>
         ) : this.state.activeScreen == "SCREEN_PLAYER" ? (
           <ScreenPlayer
             AppInstance={AppInstance}

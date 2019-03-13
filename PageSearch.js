@@ -8,11 +8,11 @@ export const PageSearch = props => {
   const AppInstance = props.AppInstance;
   return (<ScrollView>
     <View>
-      <TextInput onSubmitEditing={() => AppInstance._startSearch()} style={{
+      <TextInput onSubmitEditing={() => AppInstance.startSearch()} style={{
         height: 40,
         margin: 10,
         backgroundColor: "#efefef"
-      }} onChangeText={text => AppInstance._updateSearchQueryText(text)} placeholder="Search" value={AppInstance.state
+      }} onChangeText={text => AppInstance.updateSearchQueryText(text)} placeholder="Search" value={AppInstance.state
         .screenStates_screenNavigatorStates_pageSearchStates_searchQueryText} />
       <View style={{ margin: 10 }}>
         <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>

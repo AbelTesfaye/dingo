@@ -9,7 +9,7 @@ export class AlbumListItemGrid extends React.Component {
     return (
       <TouchableNativeFeedback
       onPress={() =>
-        AppInstance._showPageAlbumInfo(this.props.albumInfo.artistName,this.props.albumInfo.name)
+        AppInstance.showPageAlbumInfo(this.props.albumInfo.artistName,this.props.albumInfo.name)
       }
     >
       <View

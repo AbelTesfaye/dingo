@@ -214,7 +214,7 @@ export default class App extends Component {
     });
   };
 
-  _updateSearchQueryText = query => {
+  updateSearchQueryText = query => {
     this.setState({
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryText: query
     });
@@ -322,7 +322,7 @@ export default class App extends Component {
       activeScreen: "SCREEN_PLAYER"
     });
   };
-  _startSearch = () => {
+  startSearch = () => {
     const query = this.state
       .screenStates_screenNavigatorStates_pageSearchStates_searchQueryText;
     console.log("Searching for: " + query);
@@ -376,7 +376,7 @@ export default class App extends Component {
     });
   };
 
-  _showPageArtistInfo = artistName => {
+  showPageArtistInfo = artistName => {
     this.setState({
       activeScreen: "SCREEN_DETAIL",
       screenStates_screenDetailStates_activePage: "PAGE_ARTIST_INFO",
@@ -385,7 +385,7 @@ export default class App extends Component {
     });
   };
 
-  _showPageAlbumInfo = (artistName, albumName) => {
+  showPageAlbumInfo = (artistName, albumName) => {
     this.setState({
       activeScreen: "SCREEN_DETAIL",
       screenStates_screenDetailStates_activePage: "PAGE_ALBUM_INFO",

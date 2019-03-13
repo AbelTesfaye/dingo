@@ -24,32 +24,35 @@ module.exports = async data => {
       ...newProperties
     };
 
-    mutableTracks = [...tracks];
-    mutableTracks[currentItemIndex] = track;
-
     globals.shouldUIRespondToEvents = false;
 
-    TrackPlayer.reset();
-    console.log(
-      "tracktracktracktracktracktracktracktracktrack: " + JSON.stringify(track)
-    );
-    console.log(
-      "trackCurrenttrackCurrenttrackCurrenttrackCurrenttrackCurrent: " +
-        JSON.stringify(trackCurrent)
-    );
-    TrackPlayer.add(mutableTracks)
-      .then(() => {
-        if (track.id === trackCurrent.id) {
-          console.log(
-            "skiping and playingskiping and playingskiping and playingskiping and playingskiping and playingskiping and playingskiping and playingskiping and playingskiping and playingskiping and playingskiping and playingskiping and playing"
-          );
-          TrackPlayer.skip(trackCurrent.id).then(() => {
+    if (track.id === trackCurrent.id) {
+      mutableTracks = [...tracks];
+      mutableTracks[currentItemIndex] = track;
+
+      TrackPlayer.reset();
+
+      TrackPlayer.add(mutableTracks).then(() => {
+        TrackPlayer.skip(track.id).then(() => {
+          callback();
+          globals.shouldUIRespondToEvents = true;
+        });
+      });
+    } else {
+      insertBeforeId = null;
+      if (currentItemIndex + 1 < tracks.length)
+        insertBeforeId = tracks[currentItemIndex + 1].id;
+     
+        console.log("removing track.idtrack.idtrack.idtrack.id" + track.id);
+      TrackPlayer.remove(track.id)
+        .then(() => {
+          TrackPlayer.add(track, insertBeforeId).then(() => {
             callback();
             globals.shouldUIRespondToEvents = true;
           });
-        }
-      })
-      .catch(e => console.error(e));
+        })
+        .catch(e => console.error(e));
+    }
   };
 
   _getTracksToRight = (tracks, currentIndex, howManyToTheRight) => {
@@ -80,7 +83,6 @@ module.exports = async data => {
 
     if (data.state == TrackPlayer.STATE_NONE) {
       console.log("STATE_NONE");
-
     }
     if (data.state == TrackPlayer.STATE_PLAYING) {
       console.log("STATE_PLAYING");
@@ -134,7 +136,7 @@ module.exports = async data => {
               1
             );
 
-            [...tracksToRight, ...tracksToLeft, trackCurrent].map(item => {
+            [trackCurrent, ...tracksToRight, ...tracksToLeft].map(item => {
               if (!item.url || item.url.length <= "http://".length) {
                 if (item.youtubeId) {
                   //get playable url from youtube

@@ -22,7 +22,7 @@ import { PageHome } from "./PageHome";
 import { PageSearch } from "./PageSearch";
 import { PageLibrary } from "./PageLibrary";
 import SplashScreen from "react-native-splash-screen";
-global.globals.holla = "not holla";
+
 const { width, height } = Dimensions.get("window");
 
 var db = openDatabase(

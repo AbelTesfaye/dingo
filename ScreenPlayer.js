@@ -152,12 +152,18 @@ export default class ScreenPlayer extends Component {
     this._updateTracksInState(this.props.tracks);
   };
   _onPlaylistItemPress = (item, index) => {
-    this.AppInstance.setState({
-      screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: index
-    });
-    TrackPlayer.skip(item.id)
-      .then(this._play())
-      .catch(e => console.error(e));
+    if (
+      index !==
+      this.AppInstance.
+        state.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex
+    ) {
+      this.AppInstance.setState({
+        screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: index
+      });
+      TrackPlayer.skip(item.id)
+        .then(this._play())
+        .catch(e => console.error(e));
+    }
   };
 
   render() {
@@ -189,7 +195,7 @@ export default class ScreenPlayer extends Component {
                         margin: 5,
                         backgroundColor:
                           this.AppInstance.state
-                            .screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex ==
+                            .screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex ===
                           index
                             ? "#ffb74d"
                             : "#fff"

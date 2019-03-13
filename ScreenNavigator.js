@@ -1,26 +1,26 @@
 import React from "react";
-import {  Dimensions, StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import Icon from "react-native-ionicons";
 import { TabBar, TabView } from "react-native-tab-view";
 import { MiniPlayer } from "./MiniPlayer";
 import { PageHome } from "./PageHome";
 import { PageLibrary } from "./PageLibrary";
 import { PageSearch } from "./PageSearch";
-import Animated from 'react-native-reanimated';
+import Animated from "react-native-reanimated";
 
 const { width, height } = Dimensions.get("window");
 
 export class ScreenNavigator extends React.Component {
   constructor(props) {
     super(props);
-    this.state={
+    this.state = {
       index: 0,
       routes: [
         { key: "PAGE_HOME", icon: "home", color: [255, 132, 0] },
-        { key: "PAGE_SEARCH", icon: "search", color: [255, 132, 0]},
+        { key: "PAGE_SEARCH", icon: "search", color: [255, 132, 0] },
         { key: "PAGE_LIBRARY", icon: "ios-albums", color: [255, 132, 0] }
-      ],
-}
+      ]
+    };
     this.AppInstance = this.props.AppInstance;
   }
 
@@ -46,12 +46,12 @@ export class ScreenNavigator extends React.Component {
       1.49,
       1.51,
       1.52,
-      2,
+      2
     ];
 
     const scale = Animated.interpolate(position, {
       inputRange,
-      outputRange: inputRange.map(x => (Math.trunc(x) === x ? 2 : 0.1)),
+      outputRange: inputRange.map(x => (Math.trunc(x) === x ? 2 : 0.1))
     });
 
     const opacity = Animated.interpolate(position, {
@@ -59,19 +59,19 @@ export class ScreenNavigator extends React.Component {
       outputRange: inputRange.map(x => {
         const d = x - Math.trunc(x);
         return d === 0.49 || d === 0.51 ? 0 : 1;
-      }),
+      })
     });
 
     const translateX = Animated.interpolate(position, {
       inputRange: inputRange,
-      outputRange: inputRange.map(x => Math.round(x) * width),
+      outputRange: inputRange.map(x => Math.round(x) * width)
     });
 
     const backgroundColor = Animated.interpolate(position, {
       inputRange,
       outputRange: inputRange.map(x =>
         Animated.color(...navigationState.routes[Math.round(x)].color)
-      ),
+      )
     });
 
     return (
@@ -80,20 +80,19 @@ export class ScreenNavigator extends React.Component {
           styles.container,
           {
             width: `${100 / navigationState.routes.length}%`,
-            transform: [{ translateX }],
-          },
+            transform: [{ translateX }]
+          }
         ]}
       >
         <Animated.View
           style={[
             styles.indicator,
-            { opacity, backgroundColor, transform: [{ scale }] },
+            { opacity, backgroundColor, transform: [{ scale }] }
           ]}
         />
       </Animated.View>
     );
   };
-
 
   _renderIcon = ({ route }) => (
     <Icon name={route.icon} size={24} style={styles.icon} />
@@ -165,7 +164,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#0084ff",
     margin: 6
-  },
+  }
 });

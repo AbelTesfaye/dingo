@@ -23,7 +23,6 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      
       activeScreen: null,
       screenAndPageStack: [],
 
@@ -471,13 +470,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     opacity: 0.8
   },
-  indicator: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "#0084ff",
-    margin: 6
-  },
+
   badge: {
     marginTop: 4,
     marginRight: 32,

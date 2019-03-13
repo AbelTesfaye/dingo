@@ -1,24 +1,13 @@
 import React, { Component } from "react";
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Dimensions,
-  Animated
-} from "react-native";
-import shortid from "shortid";
-import ScreenPlayer from "./ScreenPlayer";
-import TrackPlayer from "react-native-track-player";
-import { TabBar, SceneMap } from "react-native-tab-view";
-import Icon from "react-native-ionicons";
-import { AlbumItem } from "./AlbumItem";
-import utils from "./utils";
-import { ScreenDetail } from "./ScreenDetail";
+import { StyleSheet, Text, View } from "react-native";
 import { openDatabase } from "react-native-sqlite-storage";
-import SplashScreen from "react-native-splash-screen";
+import TrackPlayer from "react-native-track-player";
+import shortid from "shortid";
+import { ScreenDetail } from "./ScreenDetail";
 import { ScreenNavigator } from "./ScreenNavigator";
+import ScreenPlayer from "./ScreenPlayer";
+import SplashScreen from "./SplashScreen";
+import utils from "./utils";
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },

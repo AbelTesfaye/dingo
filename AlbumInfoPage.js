@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Text,
-  View,
-  Image,
-  FlatList,
-  TouchableNativeFeedback
-} from "react-native";
-import { TrackList } from "./TrackList";
+import { FlatList, Image, Text, TouchableNativeFeedback, View } from "react-native";
 import utils from "./utils";
 
 export class AlbumInfoPage extends React.Component {

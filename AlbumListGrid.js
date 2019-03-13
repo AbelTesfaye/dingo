@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, FlatList } from "react-native";
+import { FlatList } from "react-native";
 import { AlbumListItemGrid as AlbumListGridItem } from "./AlbumListGridItem";
 export class AlbumListGrid extends React.Component {
   constructor(props) {

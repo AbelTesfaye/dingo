@@ -141,7 +141,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-splash-screen')
     implementation project(':react-native-background-timer')
     implementation project(':react-native-track-player')
     implementation fileTree(dir: "libs", include: ["*.jar"])

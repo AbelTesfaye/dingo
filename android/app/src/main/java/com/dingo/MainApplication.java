@@ -3,7 +3,6 @@ package com.dingo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
 import com.guichaguri.trackplayer.TrackPlayer;
 import com.facebook.react.ReactNativeHost;
@@ -13,7 +12,21 @@ import com.facebook.soloader.SoLoader;
 import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import com.facebook.react.bridge.JavaScriptModule;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.os.Build;
+
+import java.lang.ref.WeakReference;
+import android.view.animation.*;
+import android.view.animation.Animation.AnimationListener;
 
 public class MainApplication extends Application implements ReactApplication {
 

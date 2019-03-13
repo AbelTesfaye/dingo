@@ -1,12 +1,11 @@
 import React from "react";
-import { View, Dimensions, StyleSheet, Animated } from "react-native";
-import { TabView } from "react-native-tab-view";
+import { Animated, Dimensions, StyleSheet, View } from "react-native";
+import Icon from "react-native-ionicons";
+import { TabBar, TabView } from "react-native-tab-view";
 import { MiniPlayer } from "./MiniPlayer";
 import { PageHome } from "./PageHome";
-import { PageSearch } from "./PageSearch";
 import { PageLibrary } from "./PageLibrary";
-import { TabBar, SceneMap } from "react-native-tab-view";
-import Icon from "react-native-ionicons";
+import { PageSearch } from "./PageSearch";
 
 const { width, height } = Dimensions.get("window");
 
@@ -135,7 +134,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: "#FFF"
   },
 
   tabbar: {
@@ -145,13 +144,5 @@ const styles = StyleSheet.create({
   icon: {
     backgroundColor: "transparent",
     color: "#000"
-  },
-
-  indicator: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "#0084ff",
-    margin: 6
   }
 });

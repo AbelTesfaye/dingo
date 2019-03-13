@@ -1,27 +1,21 @@
 import React, { Component } from "react";
 import {
+  BackHandler,
+  Dimensions,
+  FlatList,
+  Image,
+  ImageBackground,
   Platform,
   StyleSheet,
   Text,
-  View,
-  ImageBackground,
   TouchableNativeFeedback,
-  TextInput,
-  FlatList,
-  ScrollView,
-  Image,
-  Button,
-  Dimensions,
-  BackHandler
+  View
 } from "react-native";
+import TrackPlayer from "react-native-track-player";
 import ImageButton from "./ImageButton";
-import shortid from "shortid";
-import TrackPlayer, { pause } from "react-native-track-player";
-const { width, height } = Dimensions.get("window");
-
-import SlidingPanel from "./SlidingPanel";
 import ProgressBar from "./ProgressBar";
-import utils from "./utils";
+import SlidingPanel from "./SlidingPanel";
+const { width, height } = Dimensions.get("window");
 
 export default class ScreenPlayer extends Component {
   constructor(props) {
@@ -154,8 +148,8 @@ export default class ScreenPlayer extends Component {
   _onPlaylistItemPress = (item, index) => {
     if (
       index !==
-      this.AppInstance.
-        state.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex
+      this.AppInstance.state
+        .screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex
     ) {
       this.AppInstance.setState({
         screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: index

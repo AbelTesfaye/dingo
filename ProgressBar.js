@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import TrackPlayer, { ProgressComponent } from "react-native-track-player";
 import Slider from "./Slider";
 

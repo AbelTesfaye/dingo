@@ -1,15 +1,6 @@
-import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  Dimensions,
-  PanResponder,
-  TouchableOpacity
-} from "react-native";
+import React, { Component } from "react";
+import { Animated, Dimensions, PanResponder, Platform, StyleSheet, Text, View } from "react-native";
 const { width, height } = Dimensions.get("window");
 let sliderPosition = 0;
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, FlatList, TouchableWithoutFeedback, View } from "react-native";
+import { FlatList, Text, TouchableWithoutFeedback, View } from "react-native";
 import { AlbumItem } from "./AlbumItem";
 
 export class AlbumList extends React.Component {

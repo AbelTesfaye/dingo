@@ -1,15 +1,14 @@
 import React from "react";
-import { Text, ScrollView,BackHandler,View } from "react-native";
+import { BackHandler, ScrollView, Text } from "react-native";
 import { AlbumInfoPage } from "./AlbumInfoPage";
-import { ArtistInfoPage } from "./ArtistInfoPage";
-import { TrackListPage } from "./TrackListPage";
 import { AlbumListPage } from "./AlbumListPage";
+import { ArtistInfoPage } from "./ArtistInfoPage";
 import { ArtistListPage } from "./ArtistListPage";
+import { TrackListPage } from "./TrackListPage";
 export class ScreenDetail extends React.Component {
   constructor(props) {
     super(props);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
-
   }
 
   componentWillMount() {
@@ -33,46 +32,61 @@ export class ScreenDetail extends React.Component {
     return true;
   }
   render() {
-      const AppInstance = this.props.AppInstance
+    const AppInstance = this.props.AppInstance;
     return (
       <ScrollView>
         {AppInstance.state.screenStates_screenDetailStates_activePage ==
         "PAGE_ALBUM_INFO" ? (
           <AlbumInfoPage
-                      AppInstance={AppInstance}
-
+            AppInstance={AppInstance}
             album={{
-              name: AppInstance.state
-                .screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName
-                .albumName,
-              artistName: AppInstance.state
-                .screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName
-                .artistName
+              name:
+                AppInstance.state
+                  .screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName
+                  .albumName,
+              artistName:
+                AppInstance.state
+                  .screenStates_screenDetailStates_pageAlbumInfoStates_artistAndAlbumName
+                  .artistName
             }}
-           
           />
         ) : AppInstance.state.screenStates_screenDetailStates_activePage ==
           "PAGE_ARTIST_INFO" ? (
           <ArtistInfoPage
             AppInstance={AppInstance}
             artist={{
-              name: AppInstance.state
-                .screenStates_screenDetailStates_pageArtistInfoStates_artistName
+              name:
+                AppInstance.state
+                  .screenStates_screenDetailStates_pageArtistInfoStates_artistName
             }}
-           
           />
         ) : AppInstance.state.screenStates_screenDetailStates_activePage ==
           "PAGE_TRACK_LIST" ? (
           <TrackListPage
-            data={AppInstance.state.screenStates_screenDetailStates_pageTrackListStates_tracks}
+            data={
+              AppInstance.state
+                .screenStates_screenDetailStates_pageTrackListStates_tracks
+            }
             AppInstance={AppInstance}
           />
         ) : AppInstance.state.screenStates_screenDetailStates_activePage ==
           "PAGE_ALBUM_LIST" ? (
-          <AlbumListPage AppInstance={AppInstance} data={AppInstance.state.screenStates_screenDetailStates_pageAlbumListStates_albums}/>
+          <AlbumListPage
+            AppInstance={AppInstance}
+            data={
+              AppInstance.state
+                .screenStates_screenDetailStates_pageAlbumListStates_albums
+            }
+          />
         ) : AppInstance.state.screenStates_screenDetailStates_activePage ==
           "PAGE_ARTIST_LIST" ? (
-          <ArtistListPage AppInstance={AppInstance} data={AppInstance.state.screenStates_screenDetailStates_pageArtistListStates_artists} />
+          <ArtistListPage
+            AppInstance={AppInstance}
+            data={
+              AppInstance.state
+                .screenStates_screenDetailStates_pageArtistListStates_artists
+            }
+          />
         ) : (
           <Text>
             Could not find page:{" "}

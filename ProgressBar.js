@@ -20,7 +20,7 @@ function formatTime(seconds) {
 }
 class ProgressBar extends ProgressComponent {
   render() {
-    const position = formatTime(Math.floor(this.state.position));
+    const position = formatTime(Math.ceil(this.state.position));
     const duration = formatTime(Math.floor(this.state.duration));
 
     let progress = this.state.isProgressBarSliding

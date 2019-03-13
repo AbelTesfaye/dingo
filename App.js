@@ -11,19 +11,15 @@ import {
 import shortid from "shortid";
 import ScreenPlayer from "./ScreenPlayer";
 import TrackPlayer from "react-native-track-player";
-import { TabView, TabBar, SceneMap } from "react-native-tab-view";
+import { TabBar, SceneMap } from "react-native-tab-view";
 import Icon from "react-native-ionicons";
 import { AlbumItem } from "./AlbumItem";
 import utils from "./utils";
 import { ScreenDetail } from "./ScreenDetail";
 import { openDatabase } from "react-native-sqlite-storage";
-import { MiniPlayer } from "./MiniPlayer";
-import { PageHome } from "./PageHome";
-import { PageSearch } from "./PageSearch";
-import { PageLibrary } from "./PageLibrary";
 import SplashScreen from "react-native-splash-screen";
+import { ScreenNavigator } from "./ScreenNavigator";
 
-const { width, height } = Dimensions.get("window");
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -34,6 +30,7 @@ var db = openDatabase(
     console.log("SQL Error: " + err);
   }
 );
+
 
 export default class App extends Component {
   constructor(props) {
@@ -131,9 +128,7 @@ export default class App extends Component {
       "playback-track-changed",
       async data => {
         if (globals.shouldUIRespondToEvents) {
-          console.log(
-            "playback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changed"
-          );
+          console.log("playback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changed")
           if (data.nextTrack) {
             const track = await TrackPlayer.getTrack(data.nextTrack);
 
@@ -151,9 +146,7 @@ export default class App extends Component {
       "playback-state",
       data => {
         if (globals.shouldUIRespondToEvents) {
-          console.log(
-            "playback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-state"
-          );
+          console.log("playback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-state")
           this.setState({
             screenStates_screenPlayerStates_pageQueueStates_playerState:
               data.state
@@ -428,159 +421,26 @@ export default class App extends Component {
     });
   };
 
-  _renderTabBar = props => (
-    <TabBar
-      {...props}
-      renderIcon={this._renderIcon}
-      renderIndicator={this._renderIndicator}
-      style={styles.tabbar}
-      useNativeDriver={true}
-      bounces={true}
-    />
-  );
-  _renderIndicator = props => {
-    const { width, position } = props;
-    const inputRange = [
-      0,
-      0.48,
-      0.49,
-      0.51,
-      0.52,
-      0.52,
-      1,
-      1.48,
-      1.49,
-      1.51,
-      1.52,
-      2
-    ];
-
-    const scale = position.interpolate({
-      inputRange,
-      outputRange: inputRange.map(x => (Math.trunc(x) === x ? 2 : 0.1))
-    });
-    const opacity = position.interpolate({
-      inputRange,
-      outputRange: inputRange.map(x => {
-        const d = x - Math.trunc(x);
-        return d === 0.49 || d === 0.51 ? 0 : 1;
-      })
-    });
-    const translateX = position.interpolate({
-      inputRange: inputRange,
-      outputRange: inputRange.map(x => Math.round(x) * width)
-    });
-    const backgroundColor = position.interpolate({
-      inputRange,
-      outputRange: inputRange.map(
-        x => props.navigationState.routes[Math.round(x)].color
-      )
-    });
-
-    return (
-      <Animated.View
-        style={[styles.container, { width, transform: [{ translateX }] }]}
-      >
-        <Animated.View
-          style={[
-            styles.indicator,
-            { backgroundColor, opacity, transform: [{ scale }] }
-          ]}
-        />
-      </Animated.View>
-    );
-  };
-
-  _renderIcon = ({ route }) => (
-    <Icon name={route.icon} size={24} style={styles.icon} />
-  );
 
   render() {
     const miniPlayerTrack = this.state
       .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack;
     const AppInstance = this;
     return (
-      <View style={{ flex: 1, zIndex: 0 }}>
-        <View
-          style={{
-            zIndex: Number(
-              this.state.activeScreen == null ||
-                this.state.activeScreen === "SCREEN_NAVIGATOR"
-            ),
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            position: "absolute",
-            backgroundColor: "white"
-          }}
-        >
-          <ScreenNavigator AppInstance={AppInstance} />
-        </View>
-        <View
-          style={{
-            zIndex: Number(this.state.activeScreen === "SCREEN_PLAYER"),
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            position: "absolute",
-            backgroundColor: "#fff"
-          }}
-        >
+      <View style={{ flex: 1 }}>
+        {this.state.activeScreen == "SCREEN_NAVIGATOR" ||
+        this.state.activeScreen == null ? (
+          <ScreenNavigator AppInstance={AppInstance}/>
+        ) : this.state.activeScreen == "SCREEN_PLAYER" ? (
           <ScreenPlayer
             AppInstance={AppInstance}
             tracks={this.state.screenStates_screenNavigatorStates_newQueueItems}
           />
-        </View>
-        <View
-          style={{
-            zIndex: Number(this.state.activeScreen === "SCREEN_DETAIL"),
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            position: "absolute",
-            backgroundColor: "#fff"
-          }}
-        >
-          <ScreenDetail
-            style={{
-              flex: 1,
-              zIndex: 1,
-              top: 0,
-              left: 0,
-              height: height,
-              width: width,
-              position: "absolute"
-            }}
-            AppInstance={AppInstance}
-          />
-        </View>
-        <View
-          style={{
-            zIndex: Number(
-              this.state.activeScreen !== "SCREEN_NAVIGATOR" &&
-                this.state.activeScreen !== "SCREEN_PLAYER" &&
-                this.state.activeScreen !== "SCREEN_DETAIL" &&
-                this.state.activeScreen != null
-            ),
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            position: "absolute",
-            backgroundColor: "white"
-          }}
-        >
-          <Text style={styles.welcome}>
-            Unknown screen{" "}
-            {console.log(
-              "this.state.activeScreenthis.state.activeScreen: " +
-                this.state.activeScreen
-            )}
-          </Text>
-        </View>
+        ) : this.state.activeScreen == "SCREEN_DETAIL" ? (
+          <ScreenDetail AppInstance={AppInstance} />
+        ) : (
+          <Text style={styles.welcome}>Unknown screen</Text>
+        )}
       </View>
     );
   }

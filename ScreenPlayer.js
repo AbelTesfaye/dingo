@@ -26,17 +26,17 @@ import utils from "./utils";
 export default class ScreenPlayer extends Component {
   constructor(props) {
     super(props);
+    this.AppInstance = this.props.AppInstance;
+
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
   }
-  componentDidMount() {
+  componentDidMount (){    
     let tracksToPlay = this.props.tracks;
     const indexToPlay = 0;
 
     console.log("before setup player");
 
     if (!(tracksToPlay.length < 1)) {
-
-      
       TrackPlayer.setupPlayer({
         maxCacheFiles: 20,
         maxCacheSize: 1024 * 50 //50 megabytes
@@ -67,19 +67,17 @@ export default class ScreenPlayer extends Component {
         this._putTracksFromPropToState();
         console.log("afer _putTracksFromPropToState");
 
-       
-          //what to do if there already is a url in the track object
-          this._addToTrackPlayerQueue(tracksToPlay, null, () => {});
-          this._play();
-        
+        //what to do if there already is a url in the track object
+        this._addToTrackPlayerQueue(tracksToPlay, null, () => {});
+        this._play();
       });
     } else {
       //if started from miniplayer
 
-        AppInstance._getTrackPlayerQueueToState()
-        AppInstance._updateCurrentPlayingTrackState()
+      this.AppInstance._getTrackPlayerQueueToState();
+      this.AppInstance._updateCurrentPlayingTrackState();
     }
-  }
+  };
 
   componentWillMount() {
     BackHandler.addEventListener(
@@ -96,7 +94,7 @@ export default class ScreenPlayer extends Component {
   }
 
   handleBackButtonClick() {
-    this.props.AppInstance.setState({
+    this.AppInstance.setState({
       activeScreen: "SCREEN_NAVIGATOR"
     });
     return true;
@@ -110,7 +108,7 @@ export default class ScreenPlayer extends Component {
   };
 
   _playOrPauseToggle = () => {
-    this.props.AppInstance.state
+    this.AppInstance.state
       .screenStates_screenPlayerStates_pageQueueStates_playerState !==
     TrackPlayer.STATE_PLAYING
       ? this._play()
@@ -145,7 +143,7 @@ export default class ScreenPlayer extends Component {
       });
   };
   _updateTracksInState = tracks => {
-    this.props.AppInstance.setState({
+    this.AppInstance.setState({
       screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: tracks
     });
   };
@@ -154,7 +152,7 @@ export default class ScreenPlayer extends Component {
     this._updateTracksInState(this.props.tracks);
   };
   _onPlaylistItemPress = (item, index) => {
-    this.props.AppInstance.setState({
+    this.AppInstance.setState({
       screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: index
     });
     TrackPlayer.skip(item.id)
@@ -176,7 +174,7 @@ export default class ScreenPlayer extends Component {
                 marginBottom: 50
               }}
               data={
-                this.props.AppInstance.state
+                this.AppInstance.state
                   .screenStates_screenPlayerStates_pageQueueStates_tracksInQueue
               }
               renderItem={({ item, index }) => {
@@ -190,7 +188,7 @@ export default class ScreenPlayer extends Component {
                         flexDirection: "row",
                         margin: 5,
                         backgroundColor:
-                          this.props.AppInstance.state
+                          this.AppInstance.state
                             .screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex ==
                           index
                             ? "#ffb74d"
@@ -290,9 +288,9 @@ export default class ScreenPlayer extends Component {
                   resizeMethod="resize"
                   blurRadius={3}
                   source={{
-                    uri: this.props.AppInstance.state
+                    uri: this.AppInstance.state
                       .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-                      ? this.props.AppInstance.state
+                      ? this.AppInstance.state
                           .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
                           .artwork
                       : null
@@ -317,9 +315,9 @@ export default class ScreenPlayer extends Component {
                         margin: 10
                       }}
                       source={{
-                        uri: this.props.AppInstance.state
+                        uri: this.AppInstance.state
                           .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-                          ? this.props.AppInstance.state
+                          ? this.AppInstance.state
                               .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
                               .artwork
                           : null
@@ -349,17 +347,17 @@ export default class ScreenPlayer extends Component {
                             textAlign: "center"
                           }}
                         >
-                          {this.props.AppInstance.state
+                          {this.AppInstance.state
                             .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-                            ? this.props.AppInstance.state
+                            ? this.AppInstance.state
                                 .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
                                 .title
                             : null}
                         </Text>
                         <Text style={{ textAlign: "center" }}>
-                          {this.props.AppInstance.state
+                          {this.AppInstance.state
                             .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-                            ? this.props.AppInstance.state
+                            ? this.AppInstance.state
                                 .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
                                 .artist
                             : null}
@@ -375,7 +373,7 @@ export default class ScreenPlayer extends Component {
                         />
                         <ImageButton
                           source={
-                            this.props.AppInstance.state
+                            this.AppInstance.state
                               .screenStates_screenPlayerStates_pageQueueStates_playerState !==
                             TrackPlayer.STATE_PLAYING
                               ? require("./icons/play.png")

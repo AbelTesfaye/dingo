@@ -32,19 +32,26 @@ module.exports = async data => {
     };
     console.log("llltrackItemtrackItemtrackItem: " + JSON.stringify(trackItem));
 
+    globals.shouldUIRespondToEvents = false;
+
     if (trackItem.id === trackCurrent.id) {
-      t = [...tracks]
-      t[currentItemIndex] = trackItem;
+      mutableTracks = [...tracks];
+      mutableTracks[currentItemIndex] = trackItem;
+
       TrackPlayer.reset();
 
-      TrackPlayer.add(t).then(() => {
-        TrackPlayer.skip(trackItem.id).then(callback());
+      TrackPlayer.add(mutableTracks).then(() => {
+        TrackPlayer.skip(trackItem.id).then(() => {
+          callback();
+          globals.shouldUIRespondToEvents = true;
+        });
       });
     } else {
       TrackPlayer.remove(trackId)
         .then(() => {
           TrackPlayer.add(trackItem, insertBeforeId).then(() => {
             callback();
+            globals.shouldUIRespondToEvents = true;
           });
         })
         .catch(e => console.error(e));
@@ -123,6 +130,7 @@ module.exports = async data => {
                             "finsihsed getting url for youtube id:" +
                               item.youtubeId
                           );
+                          TrackPlayer.play();
                         }
                       );
                     }
@@ -145,8 +153,7 @@ module.exports = async data => {
                               item.artist +
                               item.title
                           );
-                          TrackPlayer.play()
-
+                          TrackPlayer.play();
                         }
                       );
                     }

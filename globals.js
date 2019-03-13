@@ -1,0 +1,3 @@
+global.globals = {
+    shouldUIRespondToEvents:true
+};

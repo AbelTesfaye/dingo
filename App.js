@@ -21,9 +21,8 @@ import { MiniPlayer } from "./MiniPlayer";
 import { PageHome } from "./PageHome";
 import { PageSearch } from "./PageSearch";
 import { PageLibrary } from "./PageLibrary";
-import SplashScreen from 'react-native-splash-screen'
-
-
+import SplashScreen from "react-native-splash-screen";
+global.globals.holla = "not holla";
 const { width, height } = Dimensions.get("window");
 
 var db = openDatabase(
@@ -124,7 +123,6 @@ export default class App extends Component {
   componentDidMount = () => {
     SplashScreen.hide();
 
-    
     this.getChartTopTracksAndPutThemInState();
 
     this._getRecentTracksAndPutThemInState();
@@ -132,27 +130,33 @@ export default class App extends Component {
     this._onTrackChanged = TrackPlayer.addEventListener(
       "playback-track-changed",
       async data => {
-        if (data.nextTrack) {
-          const track = await TrackPlayer.getTrack(data.nextTrack);
+        if (globals.shouldUIRespondToEvents) {
+          console.log("playback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changed")
+          if (data.nextTrack) {
+            const track = await TrackPlayer.getTrack(data.nextTrack);
 
-          this.setState({
-            screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: track
-          });
+            this.setState({
+              screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: track
+            });
+          }
+          this._getTrackPlayerQueueToState();
+          this._updateCurrentPlayingTrackState();
         }
-        this._getTrackPlayerQueueToState();
-        this._updateCurrentPlayingTrackState();
       }
     );
 
     this._onStateChanged = TrackPlayer.addEventListener(
       "playback-state",
       data => {
-        this.setState({
-          screenStates_screenPlayerStates_pageQueueStates_playerState:
-            data.state
-        });
+        if (globals.shouldUIRespondToEvents) {
+          console.log("playback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-state")
+          this.setState({
+            screenStates_screenPlayerStates_pageQueueStates_playerState:
+              data.state
+          });
 
-        this._getTrackPlayerQueueToState();
+          this._getTrackPlayerQueueToState();
+        }
       }
     );
   };

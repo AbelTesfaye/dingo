@@ -1,17 +1,26 @@
 import React from "react";
-import { Animated, Dimensions, StyleSheet, View } from "react-native";
+import {  Dimensions, StyleSheet, View } from "react-native";
 import Icon from "react-native-ionicons";
 import { TabBar, TabView } from "react-native-tab-view";
 import { MiniPlayer } from "./MiniPlayer";
 import { PageHome } from "./PageHome";
 import { PageLibrary } from "./PageLibrary";
 import { PageSearch } from "./PageSearch";
+import Animated from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get("window");
 
 export class ScreenNavigator extends React.Component {
   constructor(props) {
     super(props);
+    this.state={
+      index: 0,
+      routes: [
+        { key: "PAGE_HOME", icon: "home", color: [255, 132, 0] },
+        { key: "PAGE_SEARCH", icon: "search", color: [255, 132, 0]},
+        { key: "PAGE_LIBRARY", icon: "ios-albums", color: [255, 132, 0] }
+      ],
+}
     this.AppInstance = this.props.AppInstance;
   }
 
@@ -22,61 +31,69 @@ export class ScreenNavigator extends React.Component {
       renderIndicator={this._renderIndicator}
       style={styles.tabbar}
       useNativeDriver={true}
-      bounces={true}
     />
   );
   _renderIndicator = props => {
-    const { width, position } = props;
+    const { width, position, navigationState } = props;
     const inputRange = [
       0,
       0.48,
       0.49,
       0.51,
       0.52,
-      0.52,
       1,
       1.48,
       1.49,
       1.51,
       1.52,
-      2
+      2,
     ];
 
-    const scale = position.interpolate({
+    const scale = Animated.interpolate(position, {
       inputRange,
-      outputRange: inputRange.map(x => (Math.trunc(x) === x ? 2 : 0.1))
+      outputRange: inputRange.map(x => (Math.trunc(x) === x ? 2 : 0.1)),
     });
-    const opacity = position.interpolate({
+
+    const opacity = Animated.interpolate(position, {
       inputRange,
       outputRange: inputRange.map(x => {
         const d = x - Math.trunc(x);
         return d === 0.49 || d === 0.51 ? 0 : 1;
-      })
+      }),
     });
-    const translateX = position.interpolate({
+
+    const translateX = Animated.interpolate(position, {
       inputRange: inputRange,
-      outputRange: inputRange.map(x => Math.round(x) * width)
+      outputRange: inputRange.map(x => Math.round(x) * width),
     });
-    const backgroundColor = position.interpolate({
+
+    const backgroundColor = Animated.interpolate(position, {
       inputRange,
-      outputRange: inputRange.map(
-        x => props.navigationState.routes[Math.round(x)].color
-      )
+      outputRange: inputRange.map(x =>
+        Animated.color(...navigationState.routes[Math.round(x)].color)
+      ),
     });
 
     return (
       <Animated.View
-        style={[styles.container, { width, transform: [{ translateX }] }]}
+        style={[
+          styles.container,
+          {
+            width: `${100 / navigationState.routes.length}%`,
+            transform: [{ translateX }],
+          },
+        ]}
       >
         <Animated.View
           style={[
             styles.indicator,
-            { backgroundColor, opacity, transform: [{ scale }] }
+            { opacity, backgroundColor, transform: [{ scale }] },
           ]}
         />
       </Animated.View>
     );
   };
+
 
   _renderIcon = ({ route }) => (
     <Icon name={route.icon} size={24} style={styles.icon} />
@@ -96,7 +113,7 @@ export class ScreenNavigator extends React.Component {
           }}
         >
           <TabView
-            navigationState={this.AppInstance.state}
+            navigationState={this.state}
             renderTabBar={this._renderTabBar}
             renderScene={({ route }) => {
               switch (route.key) {
@@ -111,15 +128,14 @@ export class ScreenNavigator extends React.Component {
               }
             }}
             onIndexChange={index =>
-              this.AppInstance.setState({
+              this.setState({
                 index
               })
             }
             initialLayout={{
-              height: 0,
               width: width
             }}
-            useNativeDriver
+            useNativeDriver={true}
           />
         </View>
 
@@ -144,5 +160,12 @@ const styles = StyleSheet.create({
   icon: {
     backgroundColor: "transparent",
     color: "#000"
-  }
+  },
+  indicator: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#0084ff",
+    margin: 6
+  },
 });

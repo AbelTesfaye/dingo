@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "367583778293",
+    "firebase_url": "https://dingo-af583.firebaseio.com",
+    "project_id": "dingo-af583",
+    "storage_bucket": "dingo-af583.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367583778293:android:7f24a68b0647c65b",
+        "android_client_info": {
+          "package_name": "com.dingo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367583778293-hubvevkc83f8fvsjm6be2bk3q4917vak.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkZeUa9ophrQPkblm_NdFg0tTHxl7QeXc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

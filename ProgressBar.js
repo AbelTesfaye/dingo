@@ -8,7 +8,7 @@ function formatTwoDigits(n) {
 }
 
 function formatTime(seconds) {
-  const ss = Math.floor(seconds) % 60;
+  const ss = Math.ceil(seconds) % 60;
   const mm = Math.floor(seconds / 60) % 60;
   const hh = Math.floor(seconds / 3600);
 
@@ -21,7 +21,7 @@ function formatTime(seconds) {
 class ProgressBar extends ProgressComponent {
   render() {
     const position = formatTime(Math.ceil(this.state.position));
-    const duration = formatTime(Math.floor(this.state.duration));
+    const duration = formatTime(Math.ceil(this.state.duration));
 
     let progress = this.state.isProgressBarSliding
       ? this.state.progressBeforeSlidingStart

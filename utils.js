@@ -51,12 +51,9 @@ addPropertiesToObjectsInArray = (array, propertiesToAdd) => {
   return newArray;
 };
 
-
-
-
 convertToTrackPlayerFormat = tracks => {
   newTracks = [];
-  tracks.map((item,index )=> {
+  tracks.map((item, index) => {
     newTracks.push({
       id: index.toString(),
       title: item.name,
@@ -73,30 +70,28 @@ convertToTrackPlayerFormat = tracks => {
 
 convertToTrackPlayerFormatFromGeneratedPlaylist = tracks => {
   newTracks = [];
-  tracks.map((item,index )=> {
+  tracks.map((item, index) => {
     newTracks.push({
       id: index.toString(),
       title: item.name,
       artist: item.artist.name,
-      artwork: item.image[item.image.length-1]["#text"]
+      artwork: item.image[item.image.length - 1]["#text"]
     });
   });
   return newTracks;
 };
 
-
 convertAlbumFromTagResultToAppFormat = albums => {
   newTracks = [];
-  albums.map((item,index )=> {
+  albums.map((item, index) => {
     newTracks.push({
-
       id: index.toString(),
       name: item.name,
       artistName: item.artist.name,
-      images: item.image.map(item=>{return item["#text"]}),
-
+      images: item.image.map(item => {
+        return item["#text"];
+      })
     });
-
   });
   return newTracks;
 };
@@ -109,19 +104,15 @@ getIndexOfTrackUsingId = (tracks, trackId) => {
   return foundIndex;
 };
 
+getUnique = (arr, comp) => {
+  const unique = arr
+    .map(e => e[comp])
+    .map((e, i, final) => final.indexOf(e) === i && i)
+    .filter(e => arr[e])
+    .map(e => arr[e]);
 
-getUnique=(arr,comp)=>{
-
-  //store the comparison  values in array
-const unique =  arr.map(e=> e[comp]). 
-// store the keys of the unique objects
-map((e,i,final) =>final.indexOf(e) === i && i) 
-// eliminate the dead keys & return unique objects
-.filter((e)=> arr[e]).map(e=>arr[e]);
-
-return unique
-
-}
+  return unique;
+};
 padText = (n, width, z) => {
   z = z || "0";
   n = n + "";
@@ -138,6 +129,5 @@ const utils = {
   getIndexOfTrackUsingId,
   getUnique,
   padText
-  
 };
 export default utils;

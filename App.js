@@ -8,8 +8,6 @@ import { ScreenNavigator } from "./ScreenNavigator";
 import ScreenPlayer from "./ScreenPlayer";
 import SplashScreen from "./SplashScreen";
 import utils from "./utils";
-import { NativeModules } from "react-native";
-const ProxiedFetch = NativeModules.ProxiedFetch;
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },

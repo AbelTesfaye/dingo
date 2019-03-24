@@ -1,4 +1,4 @@
-package com.dingo;
+package com.dingo.SplashScreen;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -7,6 +7,7 @@ import android.os.Build;
 import java.lang.ref.WeakReference;
 import android.view.animation.*;
 import android.view.animation.Animation.AnimationListener;
+import com.dingo.R;
 
 public class SplashScreen {
     private static Dialog mSplashDialog;
@@ -29,7 +30,7 @@ public class SplashScreen {
                         mSplashDialog.show();
                         if(iv >= 0){
                             Animation animation = new AlphaAnimation(1, 0);
-                            animation.setDuration(2000); 
+                            animation.setDuration(1000);
                             animation.setInterpolator(new LinearInterpolator()); 
                             animation.setRepeatCount(Animation.INFINITE); 
                             animation.setRepeatMode(Animation.REVERSE); 

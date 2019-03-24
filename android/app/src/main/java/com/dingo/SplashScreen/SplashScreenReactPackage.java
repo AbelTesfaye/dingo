@@ -1,4 +1,4 @@
-package com.dingo;
+package com.dingo.SplashScreen;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;

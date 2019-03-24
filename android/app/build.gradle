@@ -99,7 +99,6 @@ android {
         targetCompatibility 1.8
     }
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.dingo"
@@ -138,6 +137,7 @@ android {
             }
         }
     }
+    buildToolsVersion '28.0.3'
 }
 
 dependencies {

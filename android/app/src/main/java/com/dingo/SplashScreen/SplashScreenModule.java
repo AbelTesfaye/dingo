@@ -1,4 +1,4 @@
-package com.dingo;
+package com.dingo.SplashScreen;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -11,7 +11,7 @@ public class SplashScreenModule extends ReactContextBaseJavaModule{
 
     @Override
     public String getName() {
-        return "SplashScreen";
+        return "ProxiedFetch";
     }
 
     @ReactMethod

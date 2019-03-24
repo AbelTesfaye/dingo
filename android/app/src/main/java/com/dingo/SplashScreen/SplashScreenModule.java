@@ -11,7 +11,7 @@ public class SplashScreenModule extends ReactContextBaseJavaModule{
 
     @Override
     public String getName() {
-        return "ProxiedFetch";
+        return "SplashScreen";
     }
 
     @ReactMethod

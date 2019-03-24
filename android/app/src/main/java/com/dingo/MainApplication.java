@@ -3,6 +3,7 @@ package com.dingo;
 import android.app.Application;
 
 import com.dingo.SplashScreen.SplashScreenReactPackage;
+import com.dingo.ProxiedFetch.ProxiedFetchReactPackage;
 import com.facebook.react.ReactApplication;
 import io.invertase.firebase.RNFirebasePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNGestureHandlerPackage(),
             new ReanimatedPackage(),
             new SplashScreenReactPackage(),
+            new ProxiedFetchReactPackage(),
             new BackgroundTimerPackage(),
           new TrackPlayer(),
           new SQLitePluginPackage()  

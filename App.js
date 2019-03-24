@@ -9,7 +9,7 @@ import ScreenPlayer from "./ScreenPlayer";
 import SplashScreen from "./SplashScreen";
 import utils from "./utils";
 import { NativeModules } from "react-native";
-const ProxifiedFetch = NativeModules.ProxifiedFetch;
+const ProxiedFetch = NativeModules.ProxiedFetch;
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -101,14 +101,6 @@ export default class App extends Component {
 
   componentDidMount = () => {
     SplashScreen.hide();
-
-    ProxifiedFetch.proxifiedFetch(
-      "https://icanhazip.com",
-      "164.77.124.195",
-      50854
-    )
-      .then(res => console.error(res))
-      .catch(e => console.error(e));
 
     this.getChartTopTracksAndPutThemInState();
 

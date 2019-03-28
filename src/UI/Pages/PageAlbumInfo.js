@@ -1,6 +1,6 @@
 import React from "react";
 import { FlatList, Image, Text, TouchableNativeFeedback, View } from "react-native";
-import utils from "./utils";
+import utils from "./../../BL/Utils/utils";
 
 export class AlbumInfoPage extends React.Component {
   constructor(props) {

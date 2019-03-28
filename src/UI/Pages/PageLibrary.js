@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, ScrollView, ActivityIndicator } from "react-native";
-import { TrackList } from "./TrackList";
-import utils from "./utils";
+import { TrackList } from "../Lists/ListTrack";
+import utils from "../../BL/Utils/utils";
 export const PageLibrary = props => {
   const AppInstance = props.AppInstance;
   return (<ScrollView>

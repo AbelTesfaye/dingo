@@ -1,9 +1,9 @@
 import React from "react";
 import { Text, View, TextInput, ScrollView } from "react-native";
-import { TrackList } from "./TrackList";
-import { AlbumList } from "./AlbumList";
-import { ArtistList } from "./ArtistList";
-import utils from "./utils";
+import { TrackList } from "../Lists/ListTrack"
+import { AlbumList } from "../Lists/ListAlbum";
+import { ArtistList } from "../Lists/ListArtist";
+import utils from "../../BL/Utils/utils";
 export const PageSearch = props => {
   const AppInstance = props.AppInstance;
   return (<ScrollView>

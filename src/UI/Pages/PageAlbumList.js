@@ -1,5 +1,5 @@
 import React from "react";
-import { AlbumListGrid } from "./AlbumListGrid";
+import { AlbumListGrid } from "../Lists/ListAlbumGrid";
 
 
 export class AlbumListPage extends React.Component {

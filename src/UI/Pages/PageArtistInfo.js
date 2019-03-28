@@ -1,8 +1,8 @@
 import React from "react";
 import { Image, Text, View } from "react-native";
-import { AlbumList } from "./AlbumList";
-import { TrackList } from "./TrackList";
-import utils from "./utils";
+import { AlbumList } from "../Lists/ListAlbum";
+import { TrackList } from "../Lists/ListTrack";
+import utils from "../../BL/Utils/utils";
 
 export class ArtistInfoPage extends React.Component {
   constructor(props) {

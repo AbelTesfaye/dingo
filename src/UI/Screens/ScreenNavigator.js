@@ -2,10 +2,10 @@ import React from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import Icon from "react-native-ionicons";
 import { TabBar, TabView } from "react-native-tab-view";
-import { MiniPlayer } from "./MiniPlayer";
-import { PageHome } from "./PageHome";
-import { PageLibrary } from "./PageLibrary";
-import { PageSearch } from "./PageSearch";
+import { MiniPlayer } from "../CustomModules/JS/MiniPlayer";
+import { PageHome } from "../Pages/PageHome";
+import { PageLibrary } from "../Pages/PageLibrary";
+import { PageSearch } from "../Pages/PageSearch";
 import Animated from "react-native-reanimated";
 
 const { width, height } = Dimensions.get("window");

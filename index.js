@@ -9,4 +9,4 @@ import {name as appName} from './app.json';
 import TrackPlayer from 'react-native-track-player';
 
 AppRegistry.registerComponent(appName, () => App);
-TrackPlayer.registerEventHandler(require('./event-handler-service'));
+TrackPlayer.registerEventHandler(require('./src/BL/Services/event-handler-service'));

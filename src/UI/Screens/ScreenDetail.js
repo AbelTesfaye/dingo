@@ -1,10 +1,10 @@
 import React from "react";
 import { BackHandler, ScrollView, Text } from "react-native";
-import { AlbumInfoPage } from "./AlbumInfoPage";
-import { AlbumListPage } from "./AlbumListPage";
-import { ArtistInfoPage } from "./ArtistInfoPage";
-import { ArtistListPage } from "./ArtistListPage";
-import { TrackListPage } from "./TrackListPage";
+import { AlbumInfoPage } from "../Pages/PageAlbumInfo";
+import { AlbumListPage } from "../Pages/PageAlbumList";
+import { ArtistInfoPage } from "../Pages/PageArtistInfo";
+import { ArtistListPage } from "../Pages/PageArtistList";
+import { TrackListPage } from "../Pages/PageTrackList";
 export class ScreenDetail extends React.Component {
   constructor(props) {
     super(props);

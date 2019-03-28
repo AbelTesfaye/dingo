@@ -12,9 +12,9 @@ import {
   View
 } from "react-native";
 import TrackPlayer from "react-native-track-player";
-import ImageButton from "./ImageButton";
-import ProgressBar from "./ProgressBar";
-import SlidingPanel from "./SlidingPanel";
+import ImageButton from "../CustomModules/JS/ImageButton";
+import ProgressBar from "../CustomModules/JS/ProgressBar";
+import SlidingPanel from "../CustomModules/JS/SlidingPanel";
 const { width, height } = Dimensions.get("window");
 
 export default class ScreenPlayer extends Component {
@@ -272,7 +272,7 @@ export default class ScreenPlayer extends Component {
                       height: 20,
                       width: 20
                     }}
-                    source={require("./icons/down-arrow.png")}
+                    source={require("../../assets/icons/down-arrow.png")}
                   />
                   <Text style={{ textAlignVertical: "center", margin: 5 }}>
                     PLAYLIST
@@ -365,7 +365,7 @@ export default class ScreenPlayer extends Component {
                       </View>
                       <View style={styles.controls}>
                         <ImageButton
-                          source={require("./icons/previous.png")}
+                          source={require("../../assets/icons/previous.png")}
                           onPress={() => {
                             this._skipToPrevious();
                           }}
@@ -376,8 +376,8 @@ export default class ScreenPlayer extends Component {
                             this.AppInstance.state
                               .screenStates_screenPlayerStates_pageQueueStates_playerState !==
                             TrackPlayer.STATE_PLAYING
-                              ? require("./icons/play.png")
-                              : require("./icons/pause.png")
+                              ? require("../../assets/icons/play.png")
+                              : require("../../assets/icons/pause.png")
                           }
                           onPress={() => {
                             this._playOrPauseToggle();
@@ -386,7 +386,7 @@ export default class ScreenPlayer extends Component {
                           imageStyle={styles.controlIcon}
                         />
                         <ImageButton
-                          source={require("./icons/next.png")}
+                          source={require("../../assets/icons/next.png")}
                           onPress={() => {
                             this._skipToNext();
                           }}

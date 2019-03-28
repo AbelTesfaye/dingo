@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import { TrackList } from "./TrackList";
-import utils from './utils'
+import { TrackList } from "../Lists/ListTrack";
+import utils from '../../BL/Utils/utils'
 export class TrackListPage extends React.Component {
   constructor(props) {
     super(props);

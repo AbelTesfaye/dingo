@@ -1,5 +1,5 @@
 import TrackPlayer from "react-native-track-player";
-import utils from "./utils";
+import utils from "../Utils/utils";
 import { openDatabase } from "react-native-sqlite-storage";
 import BackgroundTimer from "react-native-background-timer";
 

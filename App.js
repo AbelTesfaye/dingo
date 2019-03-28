@@ -3,11 +3,11 @@ import { StyleSheet, Text, View } from "react-native";
 import { openDatabase } from "react-native-sqlite-storage";
 import TrackPlayer from "react-native-track-player";
 import shortid from "shortid";
-import { ScreenDetail } from "./ScreenDetail";
-import { ScreenNavigator } from "./ScreenNavigator";
-import ScreenPlayer from "./ScreenPlayer";
-import SplashScreen from "./SplashScreen";
-import utils from "./utils";
+import { ScreenDetail } from "./src/UI/Screens/ScreenDetail";
+import { ScreenNavigator } from "./src/UI/Screens/ScreenNavigator";
+import ScreenPlayer from "./src/UI/Screens/ScreenPlayer";
+import SplashScreen from "./src/UI/CustomModules/Native/SplashScreen";
+import utils from "./src/BL/Utils/utils";
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },

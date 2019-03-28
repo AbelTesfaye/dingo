@@ -1,5 +1,5 @@
 import React from "react";
-import { ArtistList } from "./ArtistList";
+import { ArtistList } from "../Lists/ListArtist";
 
 
 export class ArtistListPage extends React.Component {

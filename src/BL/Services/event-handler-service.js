@@ -2,6 +2,7 @@ import TrackPlayer from "react-native-track-player";
 import utils from "../Utils/utils";
 import { openDatabase } from "react-native-sqlite-storage";
 import BackgroundTimer from "react-native-background-timer";
+import ytdl from "react-native-ytdl";
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -42,8 +43,8 @@ module.exports = async data => {
       insertBeforeId = null;
       if (currentItemIndex + 1 < tracks.length)
         insertBeforeId = tracks[currentItemIndex + 1].id;
-     
-        console.log("removing track.idtrack.idtrack.idtrack.id" + track.id);
+
+      console.log("removing track.idtrack.idtrack.idtrack.id" + track.id);
       TrackPlayer.remove(track.id)
         .then(() => {
           TrackPlayer.add(track, insertBeforeId).then(() => {
@@ -138,51 +139,73 @@ module.exports = async data => {
 
             [trackCurrent, ...tracksToRight, ...tracksToLeft].map(item => {
               if (!item.url || item.url.length <= "http://".length) {
-                if (item.youtubeId) {
-                  //get playable url from youtube
-
-                  utils.fetchFromEndpoint(
-                    `getHighestQualityAudio?id=${encodeURIComponent(
-                      item.youtubeId
-                    )}`,
-                    response => {
-                      this._updateTrackPlayerQueueItem(
-                        tracks,
-                        item,
-                        {
-                          url: response.url
-                        },
-                        () => {
-                          console.log(
-                            "finsihsed getting url for youtube id:" +
-                              item.youtubeId
-                          );
-                          TrackPlayer.play();
-                        }
-                      );
-                    }
-                  );
-                } else if (item.title && item.artist) {
+                if (item.title && item.artist) {
                   utils.fetchFromEndpoint(
                     `getHighestQualityAudioUsingArtistAndSong?artist=${encodeURIComponent(
                       item.artist
                     )}&song=${encodeURIComponent(item.title)}`,
                     response => {
-                      this._updateTrackPlayerQueueItem(
-                        tracks,
-                        item,
-                        {
-                          url: response.url
-                        },
-                        () => {
+                      let urlToPlay = response.url;
+                      fetch(response.url)
+                        .then(res => {
                           console.log(
-                            "using artist and song finsihsed getting url for artis and title:" +
-                              item.artist +
-                              item.title
+                            "resresresresresresresresesresresresresresresresesresresresresresresresesresresresresresresresesresresresresresresres: " +
+                              res.status
                           );
-                          TrackPlayer.play();
-                        }
-                      );
+                          if (res.status === 403) {
+                            ytdl.getInfo(response.videoId, {}, (err, info) => {
+                              if (err) console.log(err);
+                              let audioFormats = ytdl.filterFormats(
+                                info.formats,
+                                "audioonly"
+                              );
+
+                              let highestFormat = audioFormats[0];
+                              audioFormats.map(item => {
+                                if (
+                                  highestFormat.audioBitrate < item.audioBitrate
+                                )
+                                  highestFormat = item;
+                              });
+                              urlToPlay = highestFormat.url;
+
+                              this._updateTrackPlayerQueueItem(
+                                tracks,
+                                item,
+                                {
+                                  url: urlToPlay
+                                },
+                                () => {
+                                  console.log(
+                                    "using artist and song finsihsed getting url for artis and title:" +
+                                      item.artist +
+                                      item.title
+                                  );
+                                  TrackPlayer.play();
+                                }
+                              );
+                            });
+                          } else {
+                            this._updateTrackPlayerQueueItem(
+                              tracks,
+                              item,
+                              {
+                                url: urlToPlay
+                              },
+                              () => {
+                                console.log(
+                                  "using artist and song finsihsed getting url for artis and title:" +
+                                    item.artist +
+                                    item.title
+                                );
+                                TrackPlayer.play();
+                              }
+                            );
+                          }
+                        })
+                        .catch(error => {
+                          console.error(error);
+                        });
                     }
                   );
                 }

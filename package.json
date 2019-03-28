@@ -18,6 +18,7 @@
     "react-native-sqlite-storage": "^3.3.10",
     "react-native-tab-view": "^2.0.2",
     "react-native-track-player": "^1.1.2",
+    "react-native-ytdl": "^1.0.1",
     "rn-sliding-up-panel": "^1.3.1",
     "shortid": "^2.2.14"
   },

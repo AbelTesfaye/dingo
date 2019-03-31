@@ -190,6 +190,8 @@ export default class SlidingPanel extends Component {
         }
       }
     });
+    this.onRequestStart() //start with panel opened
+
   }
 
   onRequestClose() {

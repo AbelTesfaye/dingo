@@ -47,4 +47,4 @@ You can join our community on Telegram
 All pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
-[GNU GPL V3](https://choosealicense.com/licenses/mit/)
+[GNU GPL V3](https://www.gnu.org/licenses/gpl-3.0.en.html)

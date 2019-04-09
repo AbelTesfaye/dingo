@@ -32,7 +32,7 @@ Other alternatives:
 
 
 ## Our community
-You can join our community on Telegram
+You can join [our community on Telegram](https://t.me/dingoCommunity)
 
 
 ## Our TODO list

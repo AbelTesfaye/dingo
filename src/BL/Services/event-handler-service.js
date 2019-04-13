@@ -44,7 +44,6 @@ module.exports = async data => {
       if (currentItemIndex + 1 < tracks.length)
         insertBeforeId = tracks[currentItemIndex + 1].id;
 
-      console.log("removing track.idtrack.idtrack.idtrack.id" + track.id);
       TrackPlayer.remove(track.id)
         .then(() => {
           TrackPlayer.add(track, insertBeforeId).then(() => {
@@ -148,10 +147,6 @@ module.exports = async data => {
                       let urlToPlay = response.url;
                       fetch(response.url)
                         .then(res => {
-                          console.log(
-                            "resresresresresresresresesresresresresresresresesresresresresresresresesresresresresresresresesresresresresresresres: " +
-                              res.status
-                          );
                           if (res.status === 403) {
                             ytdl.getInfo(response.videoId, {}, (err, info) => {
                               if (err) console.log(err);
@@ -176,11 +171,7 @@ module.exports = async data => {
                                   url: urlToPlay
                                 },
                                 () => {
-                                  console.log(
-                                    "using artist and song finsihsed getting url for artis and title:" +
-                                      item.artist +
-                                      item.title
-                                  );
+
                                   TrackPlayer.play();
                                 }
                               );
@@ -193,11 +184,6 @@ module.exports = async data => {
                                 url: urlToPlay
                               },
                               () => {
-                                console.log(
-                                  "using artist and song finsihsed getting url for artis and title:" +
-                                    item.artist +
-                                    item.title
-                                );
                                 TrackPlayer.play();
                               }
                             );

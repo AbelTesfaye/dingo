@@ -28,8 +28,6 @@ export default class ScreenPlayer extends Component {
     let tracksToPlay = this.props.tracks;
     const indexToPlay = 0;
 
-    console.log("before setup player");
-
     if (!(tracksToPlay.length < 1)) {
       TrackPlayer.setupPlayer({
         maxCacheFiles: 20,
@@ -54,12 +52,8 @@ export default class ScreenPlayer extends Component {
           stopWithApp: false
         });
 
-        console.log(
-          "tracksToPlaytracksToPlaytracksToPlay: " +
-            JSON.stringify(tracksToPlay)
-        );
+
         this._putTracksFromPropToState();
-        console.log("afer _putTracksFromPropToState");
 
         //what to do if there already is a url in the track object
         this._addToTrackPlayerQueue(tracksToPlay, null, () => {});
@@ -250,7 +244,6 @@ export default class ScreenPlayer extends Component {
           allowDragging={true}
           AnimationSpeed={100}
           onDragStop={() => {
-            console.log("dragging stopped");
           }}
           snap={true}
           headerLayout={() => (

@@ -129,18 +129,11 @@ export default class SlidingPanel extends Component {
         if (a !== 0) {
           this.props.onDragStop(e, gesture);
           if (this.props.snap) {
-            //console.log("e: "+JSON.stringify(e))
-            console.log("gesture: " + JSON.stringify(gesture));
-            console.log("vy: " + gesture.vy);
             maxHeight =
               Platform.OS === "android"
                 ? height - this.props.headerLayoutHeight - 25
                 : height - this.props.headerLayoutHeight;
 
-            console.log(
-              "this.state.heightAnim: " + this.state.heightAnim._value
-            );
-            console.log("+maxHeight/2: " + maxHeight / 2);
             if ((this.state.heightAnim._value < (maxHeight / 2)) /*&& ( gesture.v > this.props.snapVelocity)*/) {
               this.onRequestClose();
             } else {

@@ -367,11 +367,10 @@ export default class ScreenPlayer extends Component {
                           imageStyle={styles.controlIcon}
                         />
                         <View style={styles.playPause}>
-                        {(this.AppInstance.state
+                        {(globals.isFetchingURL || this.AppInstance.state
                               .screenStates_screenPlayerStates_pageQueueStates_playerState ===
                             TrackPlayer.STATE_BUFFERING)?
                             <ActivityIndicator animating={true} style={styles.controlIcon} />
-
                             :
                           <ImageButton
                           source={

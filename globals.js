@@ -1,3 +1,4 @@
 global.globals = {
-    shouldUIRespondToEvents:true
+    shouldUIRespondToEvents:true,
+    isFetchingURL:false,
 };

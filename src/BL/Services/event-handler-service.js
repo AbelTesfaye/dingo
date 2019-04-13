@@ -77,8 +77,7 @@ module.exports = async data => {
   console.log("data.type: " + data.type);
 
   if (data.type == "playback-error" && data.code == "playback-source") {
-    console.log(JSON.stringify(data));
-
+    globals.isFetchingURL = true;
     TrackPlayer.getQueue()
       .then(tracks => {
         TrackPlayer.getCurrentTrack().then(currentTrackId => {
@@ -153,6 +152,9 @@ module.exports = async data => {
                       })
                       .catch(error => {
                         console.error(error);
+                      })
+                      .finally(() => {
+                        globals.isFetchingURL = false;
                       });
                   }
                 );

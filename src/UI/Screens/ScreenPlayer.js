@@ -321,9 +321,10 @@ export default class ScreenPlayer extends Component {
                     <View
                       style={{
                         backgroundColor: "rgba(255, 255, 255, 0.8)",
-                        flex: 1,
                         width: width,
-                        marginBottom: 30
+                        height:250,
+                        marginBottom: 30,
+                        padding:10,
                       }}
                     >
                       <ProgressBar style={{ backgroundColor: "transparent" }} />

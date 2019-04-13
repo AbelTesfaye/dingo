@@ -9,7 +9,8 @@ import {
   StyleSheet,
   Text,
   TouchableNativeFeedback,
-  View
+  View,
+  ActivityIndicator
 } from "react-native";
 import TrackPlayer from "react-native-track-player";
 import ImageButton from "../CustomModules/JS/ImageButton";
@@ -364,7 +365,13 @@ export default class ScreenPlayer extends Component {
                           }}
                           imageStyle={styles.controlIcon}
                         />
-                        <ImageButton
+                        {(this.AppInstance.state
+                              .screenStates_screenPlayerStates_pageQueueStates_playerState ===
+                            TrackPlayer.STATE_BUFFERING)?
+                            <ActivityIndicator animating={true} />
+
+                            :
+                          <ImageButton
                           source={
                             this.AppInstance.state
                               .screenStates_screenPlayerStates_pageQueueStates_playerState !==
@@ -378,6 +385,7 @@ export default class ScreenPlayer extends Component {
                           style={styles.playPause}
                           imageStyle={styles.controlIcon}
                         />
+                        }
                         <ImageButton
                           source={require("../../assets/icons/next.png")}
                           onPress={() => {

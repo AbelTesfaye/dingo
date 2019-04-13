@@ -77,10 +77,6 @@ export class AlbumInfoPage extends React.Component {
             return (
               <TouchableNativeFeedback
                 onPress={() => {
-                  console.log(
-                    "this.state.albumTracks: " +
-                      JSON.stringify(this.state.albumTracks)
-                  );
 
                   AppInstance.startInPlayer(
                     utils.convertToTrackPlayerFormat(

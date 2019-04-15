@@ -61,23 +61,13 @@ module.exports = async data => {
     return tracks.slice(currentIndex - howManyToTheLeft, currentIndex);
   };
 
-  writeRecentTrack = (timestamp, trackName, artistName, image) => {
-    db.transaction(tx => {
-      tx.executeSql(
-        "INSERT INTO recent (timestamp,trackName, artistName, image) VALUES (?,?,?,?)",
-        [timestamp, trackName, artistName, image],
-        (tx, results) => {
-          console.log("Inserted into recent tracks successfully");
-        }
-      );
-    });
-  };
-
-  //use this to save listened tracks into files
-  console.log("data.type: " + data.type);
-
-  if (data.type == "playback-error" && data.code == "playback-source") {
-    globals.isFetchingURL = true;
+  _fetchURLs = (
+    shouldFetchCurrent,
+    amountOfTracksToLeft,
+    amountOfTracksToRight,
+    afterCurrentFetched,
+    insideFinally
+  ) => {
     TrackPlayer.getQueue()
       .then(tracks => {
         TrackPlayer.getCurrentTrack().then(currentTrackId => {
@@ -89,16 +79,20 @@ module.exports = async data => {
           const tracksToLeft = this._getTracksToLeft(
             tracks,
             currentItemIndex,
-            1
+            amountOfTracksToLeft
           );
           trackCurrent = tracks[currentItemIndex];
           const tracksToRight = this._getTracksToRight(
             tracks,
             currentItemIndex,
-            1
+            amountOfTracksToRight
           );
 
-          [trackCurrent, ...tracksToRight, ...tracksToLeft].map(item => {
+          [
+            shouldFetchCurrent && trackCurrent,
+            ...tracksToRight,
+            ...tracksToLeft
+          ].map((item, index) => {
             if (!item.url || item.url.length <= "http://".length) {
               if (item.title && item.artist) {
                 utils.fetchFromEndpoint(
@@ -133,7 +127,8 @@ module.exports = async data => {
                                 url: urlToPlay
                               },
                               () => {
-                                TrackPlayer.play();
+                                if (shouldFetchCurrent && index === 0)
+                                  afterCurrentFetched();
                               }
                             );
                           });
@@ -145,7 +140,8 @@ module.exports = async data => {
                               url: urlToPlay
                             },
                             () => {
-                              TrackPlayer.play();
+                              if (shouldFetchCurrent && index === 0)
+                                afterCurrentFetched();
                             }
                           );
                         }
@@ -154,7 +150,7 @@ module.exports = async data => {
                         console.error(error);
                       })
                       .finally(() => {
-                        globals.isFetchingURL = false;
+                        insideFinally();
                       });
                   }
                 );
@@ -164,6 +160,32 @@ module.exports = async data => {
         });
       })
       .catch(e => console.error(e));
+  };
+
+  writeRecentTrack = (timestamp, trackName, artistName, image) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        "INSERT INTO recent (timestamp,trackName, artistName, image) VALUES (?,?,?,?)",
+        [timestamp, trackName, artistName, image],
+        (tx, results) => {
+          console.log("Inserted into recent tracks successfully");
+        }
+      );
+    });
+  };
+
+  //use this to save listened tracks into files
+  console.log("data.type: " + data.type);
+
+  if (data.type == "playback-error" && data.code == "playback-source") {
+    globals.isFetchingURL = true;
+    _fetchURLs(
+      true,
+      0,
+      0,
+      () => TrackPlayer.play(),
+      () => (globals.isFetchingURL = false)
+    );
   }
 
   if (data.type == "playback-state") {
@@ -204,6 +226,7 @@ module.exports = async data => {
     }
     if (data.state == TrackPlayer.STATE_BUFFERING) {
       console.log("STATE_BUFFERING");
+      _fetchURLs(false, 1, 1, () => {}, () => {});
     }
   } else if (data.type == "remote-play") {
     TrackPlayer.play();

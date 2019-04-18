@@ -18,7 +18,8 @@ export class ScreenNavigator extends React.Component {
       routes: [
         { key: "PAGE_HOME", icon: "home", color: [255, 132, 0] },
         { key: "PAGE_SEARCH", icon: "search", color: [255, 132, 0] },
-        { key: "PAGE_LIBRARY", icon: "ios-albums", color: [255, 132, 0] }
+        { key: "PAGE_LIBRARY", icon: "ios-albums", color: [255, 132, 0] },
+        { key: "PAGE_SETTINGS", icon: "settings", color: [255, 132, 0] }
       ]
     };
     this.AppInstance = this.props.AppInstance;
@@ -46,7 +47,12 @@ export class ScreenNavigator extends React.Component {
       1.49,
       1.51,
       1.52,
-      2
+      2,
+      2.48,
+      2.49,
+      2.51,
+      2.52,
+      3
     ];
 
     const scale = Animated.interpolate(position, {
@@ -57,8 +63,8 @@ export class ScreenNavigator extends React.Component {
     const opacity = Animated.interpolate(position, {
       inputRange,
       outputRange: inputRange.map(x => {
-        const d = x - Math.trunc(x);
-        return d === 0.49 || d === 0.51 ? 0 : 1;
+        const d = (x - Math.trunc(x)).toFixed(2);
+        return d === 0.49.toFixed(2) || d === 0.51.toFixed(2) ? 0 : 1;
       })
     });
 
@@ -122,6 +128,8 @@ export class ScreenNavigator extends React.Component {
                   return <PageSearch AppInstance={this.AppInstance} />;
                 case "PAGE_LIBRARY":
                   return <PageLibrary AppInstance={this.AppInstance} />;
+                case "PAGE_SETTINGS":
+                  return <View/>;
                 default:
                   return null;
               }

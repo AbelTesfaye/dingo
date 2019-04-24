@@ -31,6 +31,11 @@ Other alternatives:
 - [x86 release](http://s000.tinyupload.com/?file_id=63644582318498219615)
 
 
+**All Releases:**
+
+https://github.com/AbelTesfaye/dingo/releases/
+
+
 ## Our community
 You can join [our community on Telegram](https://t.me/dingoCommunity)
 

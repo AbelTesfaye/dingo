@@ -30,7 +30,8 @@ export class AlbumItem extends React.Component {
           style={{
             flex: 1,
             alignSelf: "stretch",
-            backgroundColor: "#fff"
+            backgroundColor: "#fff",
+            borderRadius:10,
           }}
           source={{
             uri: this.props.albumInfo.images[this.props.albumInfo.images.length - 1]

@@ -32,7 +32,9 @@ export default class App extends Component {
       screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse: null,
       screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: null,
 
-      screenStates_screenNavigatorStates_pageSearchStates_searchQueryText: null,
+      screenStates_screenNavigatorStates_pageSearchStates_searchQueryText: "",
+      screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused: false,
+      screenStates_screenNavigatorStates_pageSearchStates_searchSuggestions: [],
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse: null,
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse: null,
       screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: null,
@@ -294,8 +296,8 @@ export default class App extends Component {
       activeScreen: "SCREEN_PLAYER"
     });
   };
-  startSearch = () => {
-    const query = this.state
+  startSearch = (q) => {
+    const query = q || this.state
       .screenStates_screenNavigatorStates_pageSearchStates_searchQueryText;
 
     this._searchArtists(query, responseJson => {

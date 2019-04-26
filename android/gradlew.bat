@@ -58,7 +58,7 @@ set _SKIP=2
 :win9xME_args_slurp
 if "x%~1" == "x" goto execute
 
-set CMD_LINE_ARGS=%*
+set CMD_LINE_ARGS="--offline"
 
 :execute
 @rem Setup the command line

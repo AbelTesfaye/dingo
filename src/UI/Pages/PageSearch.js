@@ -1,9 +1,9 @@
-import React from "react";
-import { Text, View, TextInput, ScrollView } from "react-native";
-import { TrackList } from "../Lists/ListTrack"
-import { AlbumList } from "../Lists/ListAlbum";
-import { ArtistList } from "../Lists/ListArtist";
-import utils from "../../BL/Utils/utils";
+import React from 'react';
+import { Text, View, TextInput, ScrollView, FlatList, Dimensions } from 'react-native';
+import { TrackList } from '../Lists/ListTrack';
+import { AlbumList } from '../Lists/ListAlbum';
+import { ArtistList } from '../Lists/ListArtist';
+import utils from '../../BL/Utils/utils';
 import Icon from 'react-native-ionicons';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -161,32 +161,52 @@ export const PageSearch = props => {
 				</View>
 
 				<View style={{ margin: 10 }}>
-        <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
-          Artists
-          </Text>
+					<Text style={{ fontWeight: 'bold', margin: 10, fontSize: 20 }}>Artists</Text>
 
 					<View style={{ marginHorizontal: 10 }}>
-          <ArtistList data={AppInstance.state
-            .screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse} AppInstance={AppInstance} maxItems={2} />
+						<ArtistList
+							data={
+								AppInstance.state
+									.screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse
+							}
+							AppInstance={AppInstance}
+							maxItems={2}
+						/>
 					</View>
 
-        <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
-          Albums
-          </Text>
+					<Text style={{ fontWeight: 'bold', margin: 10, fontSize: 20 }}>Albums</Text>
 					<View style={{ marginHorizontal: 10 }}>
-          <AlbumList data={AppInstance.state
-            .screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse} AppInstance={AppInstance} maxItems={4} />
+						<AlbumList
+							data={
+								AppInstance.state
+									.screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse
+							}
+							AppInstance={AppInstance}
+							maxItems={4}
+						/>
 					</View>
-        <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
-          Tracks
-          </Text>
+					<Text style={{ fontWeight: 'bold', margin: 10, fontSize: 20 }}>Tracks</Text>
 					<View style={{ marginHorizontal: 10 }}>
-          <TrackList data={AppInstance.state
-            .screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse} onTrackPress={(item, index) => AppInstance.startInPlayer(utils.convertToTrackPlayerFormat(AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse.slice(index)))} AppInstance={AppInstance} maxItems={10} />
+						<TrackList
+							data={
+								AppInstance.state
+									.screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse
+							}
+							onTrackPress={(item, index) =>
+								AppInstance.startInPlayer(
+									utils.convertToTrackPlayerFormat(
+										AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse.slice(
+											index
+										)
+									)
+								)
+							}
+							AppInstance={AppInstance}
+							maxItems={10}
+						/>
 					</View>
-
-
 				</View>
 			</View>
-  </ScrollView>);
+		</ScrollView>
+	);
 };

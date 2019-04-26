@@ -28,6 +28,7 @@ export class AlbumListItemGrid extends React.Component {
           style={{
             flex: 1,
             alignSelf: "stretch",
+            borderRadius:10,
           }}
           source={{
             uri: this.props.albumInfo?this.props.albumInfo.images[this.props.albumInfo.images.length - 1]:null

@@ -2,9 +2,11 @@ package com.dingo;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.dingo.SplashScreen.SplashScreenReactPackage;
 import com.dingo.ProxiedFetch.ProxiedFetchReactPackage;
 import com.facebook.react.ReactApplication;
+import io.fabric.sdk.android.Fabric;
 import io.invertase.firebase.RNFirebasePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
@@ -18,6 +20,8 @@ import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
 import java.util.List;
+
+import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -38,7 +42,8 @@ public class MainApplication extends Application implements ReactApplication {
             new ProxiedFetchReactPackage(),
             new BackgroundTimerPackage(),
           new TrackPlayer(),
-          new SQLitePluginPackage()  
+          new SQLitePluginPackage(),
+          new RNFirebaseCrashlyticsPackage()
 
       );
     }
@@ -56,6 +61,7 @@ public class MainApplication extends Application implements ReactApplication {
 
   @Override
   public void onCreate() {
+    Fabric.with(this, new Crashlytics());
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
   }

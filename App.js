@@ -84,8 +84,6 @@ export default class App extends Component {
 
   _getRecentTracksAndPutThemInState = () => {
     this.getRecentTracks(recentTracks => {
-      console.log("inside getrecenttracks");
-
       this.setState({
         screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: recentTracks,
         screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse: utils.getUnique(
@@ -108,9 +106,6 @@ export default class App extends Component {
       "playback-track-changed",
       async data => {
         if (globals.shouldUIRespondToEvents) {
-          console.log(
-            "playback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changedplayback-track-changed"
-          );
           if (data.nextTrack) {
             const track = await TrackPlayer.getTrack(data.nextTrack);
 
@@ -128,9 +123,6 @@ export default class App extends Component {
       "playback-state",
       data => {
         if (globals.shouldUIRespondToEvents) {
-          console.log(
-            "playback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-stateplayback-state"
-          );
           this.setState({
             screenStates_screenPlayerStates_pageQueueStates_playerState:
               data.state
@@ -249,7 +241,6 @@ export default class App extends Component {
   };
 
   _getSimilarAlbums = (tag, callback) => {
-    console.log("getting similar albums for: " + tag);
     utils.fetchFromEndpoint(
       `tagTopAlbums?tag=${encodeURIComponent(tag)}`,
       responseJson => {
@@ -306,10 +297,8 @@ export default class App extends Component {
   startSearch = () => {
     const query = this.state
       .screenStates_screenNavigatorStates_pageSearchStates_searchQueryText;
-    console.log("Searching for: " + query);
 
     this._searchArtists(query, responseJson => {
-      console.log("Artists responseJson: " + JSON.stringify(responseJson));
 
       const results = responseJson.result.map(i => ({
         ...i,
@@ -322,7 +311,6 @@ export default class App extends Component {
     });
 
     this._searchAlbums(query, responseJson => {
-      console.log("Albums responseJson: " + JSON.stringify(responseJson));
       const results = responseJson.result.map(i => ({
         ...i,
         key: shortid.generate()
@@ -333,7 +321,6 @@ export default class App extends Component {
     });
 
     this._searchTracks(query, responseJson => {
-      console.log("Tracks responseJson: " + JSON.stringify(responseJson));
       const results = responseJson.result.map(i => ({
         ...i,
         key: shortid.generate()
@@ -344,9 +331,6 @@ export default class App extends Component {
     });
 
     this._searchYouTube(query, responseJson => {
-      console.log(
-        "_searchYouTube responseJson: " + JSON.stringify(responseJson)
-      );
       const results = responseJson.results.map(i => ({
         ...i,
         key: shortid.generate()

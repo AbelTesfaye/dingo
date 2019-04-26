@@ -9,7 +9,8 @@ import {
   StyleSheet,
   Text,
   TouchableNativeFeedback,
-  View
+  View,
+  ActivityIndicator
 } from "react-native";
 import TrackPlayer from "react-native-track-player";
 import ImageButton from "../CustomModules/JS/ImageButton";
@@ -27,8 +28,6 @@ export default class ScreenPlayer extends Component {
   componentDidMount() {
     let tracksToPlay = this.props.tracks;
     const indexToPlay = 0;
-
-    console.log("before setup player");
 
     if (!(tracksToPlay.length < 1)) {
       TrackPlayer.setupPlayer({
@@ -54,12 +53,7 @@ export default class ScreenPlayer extends Component {
           stopWithApp: false
         });
 
-        console.log(
-          "tracksToPlaytracksToPlaytracksToPlay: " +
-            JSON.stringify(tracksToPlay)
-        );
         this._putTracksFromPropToState();
-        console.log("afer _putTracksFromPropToState");
 
         //what to do if there already is a url in the track object
         this._addToTrackPlayerQueue(tracksToPlay, null, () => {});
@@ -249,9 +243,7 @@ export default class ScreenPlayer extends Component {
           headerLayoutHeight={49}
           allowDragging={true}
           AnimationSpeed={100}
-          onDragStop={() => {
-            console.log("dragging stopped");
-          }}
+          onDragStop={() => {}}
           snap={true}
           headerLayout={() => (
             <View elevation={5} style={styles.headerLayoutStyle}>
@@ -327,9 +319,10 @@ export default class ScreenPlayer extends Component {
                     <View
                       style={{
                         backgroundColor: "rgba(255, 255, 255, 0.8)",
-                        flex: 1,
                         width: width,
-                        marginBottom: 30
+                        height: 250,
+                        marginBottom: 30,
+                        padding: 10
                       }}
                     >
                       <ProgressBar style={{ backgroundColor: "transparent" }} />
@@ -346,6 +339,7 @@ export default class ScreenPlayer extends Component {
                             fontWeight: "bold",
                             textAlign: "center"
                           }}
+                          numberOfLines={1}
                         >
                           {this.AppInstance.state
                             .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
@@ -354,7 +348,7 @@ export default class ScreenPlayer extends Component {
                                 .title
                             : null}
                         </Text>
-                        <Text style={{ textAlign: "center" }}>
+                        <Text style={{ textAlign: "center" }} numberOfLines={1}>
                           {this.AppInstance.state
                             .screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
                             ? this.AppInstance.state
@@ -371,20 +365,31 @@ export default class ScreenPlayer extends Component {
                           }}
                           imageStyle={styles.controlIcon}
                         />
-                        <ImageButton
-                          source={
-                            this.AppInstance.state
-                              .screenStates_screenPlayerStates_pageQueueStates_playerState !==
-                            TrackPlayer.STATE_PLAYING
-                              ? require("../../assets/icons/play.png")
-                              : require("../../assets/icons/pause.png")
-                          }
-                          onPress={() => {
-                            this._playOrPauseToggle();
-                          }}
-                          style={styles.playPause}
-                          imageStyle={styles.controlIcon}
-                        />
+                        <View style={styles.playPause}>
+                          {globals.isFetchingURL ||
+                          this.AppInstance.state
+                            .screenStates_screenPlayerStates_pageQueueStates_playerState ===
+                            TrackPlayer.STATE_BUFFERING ? (
+                            <ActivityIndicator
+                              animating={true}
+                              style={styles.controlIcon}
+                            />
+                          ) : (
+                            <ImageButton
+                              source={
+                                this.AppInstance.state
+                                  .screenStates_screenPlayerStates_pageQueueStates_playerState !==
+                                TrackPlayer.STATE_PLAYING
+                                  ? require("../../assets/icons/play.png")
+                                  : require("../../assets/icons/pause.png")
+                              }
+                              onPress={() => {
+                                this._playOrPauseToggle();
+                              }}
+                              imageStyle={styles.controlIcon}
+                            />
+                          )}
+                        </View>
                         <ImageButton
                           source={require("../../assets/icons/next.png")}
                           onPress={() => {

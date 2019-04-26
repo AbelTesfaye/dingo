@@ -15,7 +15,6 @@ var db = openDatabase(
 );
 const previousPlayingTrack = { title: "", artist: "", artwork: "" };
 let trackCurrent = { id: "", title: "", artist: "", artwork: "" };
-
 module.exports = async data => {
   _updateTrackPlayerQueueItem = (tracks, track, newProperties, callback) => {
     const currentItemIndex = utils.getIndexOfTrackUsingId(tracks, track.id);
@@ -44,7 +43,6 @@ module.exports = async data => {
       if (currentItemIndex + 1 < tracks.length)
         insertBeforeId = tracks[currentItemIndex + 1].id;
 
-      console.log("removing track.idtrack.idtrack.idtrack.id" + track.id);
       TrackPlayer.remove(track.id)
         .then(() => {
           TrackPlayer.add(track, insertBeforeId).then(() => {
@@ -63,6 +61,107 @@ module.exports = async data => {
     return tracks.slice(currentIndex - howManyToTheLeft, currentIndex);
   };
 
+  _fetchURLs = (
+    shouldFetchCurrent,
+    amountOfTracksToLeft,
+    amountOfTracksToRight,
+    afterCurrentFetched,
+    insideFinally
+  ) => {
+    TrackPlayer.getQueue()
+      .then(tracks => {
+        TrackPlayer.getCurrentTrack().then(currentTrackId => {
+          const currentItemIndex = utils.getIndexOfTrackUsingId(
+            tracks,
+            currentTrackId
+          );
+
+          const tracksToLeft = this._getTracksToLeft(
+            tracks,
+            currentItemIndex,
+            amountOfTracksToLeft
+          );
+          trackCurrent = tracks[currentItemIndex];
+          const tracksToRight = this._getTracksToRight(
+            tracks,
+            currentItemIndex,
+            amountOfTracksToRight
+          );
+
+          [
+            shouldFetchCurrent && trackCurrent,
+            ...tracksToRight,
+            ...tracksToLeft
+          ].map((item, index) => {
+            if (!item.url || item.url.length <= "http://".length) {
+              if (item.title && item.artist) {
+                utils.fetchFromEndpoint(
+                  `getHighestQualityAudioUsingArtistAndSong?artist=${encodeURIComponent(
+                    item.artist
+                  )}&song=${encodeURIComponent(item.title)}`,
+                  response => {
+                    let urlToPlay = response.url;
+                    fetch(response.url)
+                      .then(res => {
+                        if (res.status === 403) {
+                          ytdl.getInfo(response.videoId, {}, (err, info) => {
+                            if (err) console.log(err);
+                            let audioFormats = ytdl.filterFormats(
+                              info.formats,
+                              "audioonly"
+                            );
+
+                            let highestFormat = audioFormats[0];
+                            audioFormats.map(item => {
+                              if (
+                                highestFormat.audioBitrate < item.audioBitrate
+                              )
+                                highestFormat = item;
+                            });
+                            urlToPlay = highestFormat.url;
+
+                            this._updateTrackPlayerQueueItem(
+                              tracks,
+                              item,
+                              {
+                                url: urlToPlay
+                              },
+                              () => {
+                                if (shouldFetchCurrent && index === 0)
+                                  afterCurrentFetched();
+                              }
+                            );
+                          });
+                        } else {
+                          this._updateTrackPlayerQueueItem(
+                            tracks,
+                            item,
+                            {
+                              url: urlToPlay
+                            },
+                            () => {
+                              if (shouldFetchCurrent && index === 0)
+                                afterCurrentFetched();
+                            }
+                          );
+                        }
+                      })
+                      .catch(error => {
+                        console.error(error);
+                      })
+                      .finally(() => {
+                        insideFinally();
+                      });
+                  }
+                );
+              }
+            }
+          });
+        });
+      })
+      .catch(e => console.error(e));
+  };
+
   writeRecentTrack = (timestamp, trackName, artistName, image) => {
     db.transaction(tx => {
       tx.executeSql(
@@ -77,6 +176,17 @@ module.exports = async data => {
 
   //use this to save listened tracks into files
   console.log("data.type: " + data.type);
+
+  if (data.type == "playback-error" && data.code == "playback-source") {
+    globals.isFetchingURL = true;
+    _fetchURLs(
+      true,
+      0,
+      0,
+      () => TrackPlayer.play(),
+      () => (globals.isFetchingURL = false)
+    );
+  }
 
   if (data.type == "playback-state") {
     // Update the UI with the new state
@@ -116,104 +226,7 @@ module.exports = async data => {
     }
     if (data.state == TrackPlayer.STATE_BUFFERING) {
       console.log("STATE_BUFFERING");
-
-      TrackPlayer.getQueue()
-        .then(tracks => {
-          TrackPlayer.getCurrentTrack().then(currentTrackId => {
-            const currentItemIndex = utils.getIndexOfTrackUsingId(
-              tracks,
-              currentTrackId
-            );
-
-            const tracksToLeft = this._getTracksToLeft(
-              tracks,
-              currentItemIndex,
-              1
-            );
-            trackCurrent = tracks[currentItemIndex];
-            const tracksToRight = this._getTracksToRight(
-              tracks,
-              currentItemIndex,
-              1
-            );
-
-            [trackCurrent, ...tracksToRight, ...tracksToLeft].map(item => {
-              if (!item.url || item.url.length <= "http://".length) {
-                if (item.title && item.artist) {
-                  utils.fetchFromEndpoint(
-                    `getHighestQualityAudioUsingArtistAndSong?artist=${encodeURIComponent(
-                      item.artist
-                    )}&song=${encodeURIComponent(item.title)}`,
-                    response => {
-                      let urlToPlay = response.url;
-                      fetch(response.url)
-                        .then(res => {
-                          console.log(
-                            "resresresresresresresresesresresresresresresresesresresresresresresresesresresresresresresresesresresresresresresres: " +
-                              res.status
-                          );
-                          if (res.status === 403) {
-                            ytdl.getInfo(response.videoId, {}, (err, info) => {
-                              if (err) console.log(err);
-                              let audioFormats = ytdl.filterFormats(
-                                info.formats,
-                                "audioonly"
-                              );
-
-                              let highestFormat = audioFormats[0];
-                              audioFormats.map(item => {
-                                if (
-                                  highestFormat.audioBitrate < item.audioBitrate
-                                )
-                                  highestFormat = item;
-                              });
-                              urlToPlay = highestFormat.url;
-
-                              this._updateTrackPlayerQueueItem(
-                                tracks,
-                                item,
-                                {
-                                  url: urlToPlay
-                                },
-                                () => {
-                                  console.log(
-                                    "using artist and song finsihsed getting url for artis and title:" +
-                                      item.artist +
-                                      item.title
-                                  );
-                                  TrackPlayer.play();
-                                }
-                              );
-                            });
-                          } else {
-                            this._updateTrackPlayerQueueItem(
-                              tracks,
-                              item,
-                              {
-                                url: urlToPlay
-                              },
-                              () => {
-                                console.log(
-                                  "using artist and song finsihsed getting url for artis and title:" +
-                                    item.artist +
-                                    item.title
-                                );
-                                TrackPlayer.play();
-                              }
-                            );
-                          }
-                        })
-                        .catch(error => {
-                          console.error(error);
-                        });
-                    }
-                  );
-                }
-              }
-            });
-          });
-        })
-        .catch(e => console.error(e));
+      _fetchURLs(false, 1, 1, () => {}, () => {});
     }
   } else if (data.type == "remote-play") {
     TrackPlayer.play();

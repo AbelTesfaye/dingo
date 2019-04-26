@@ -568,7 +568,6 @@ export default class Slider extends PureComponent {
   };
 
   _thumbHitTest = (e: Object) => {
-    console.log("thumb hit")
     const nativeEvent = e.nativeEvent;
     const thumbTouchRect = this._getThumbTouchRect();
     return thumbTouchRect.containsPoint(

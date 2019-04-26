@@ -22,17 +22,22 @@ Awesome Player | Recommended + Top charts | Smart Playlist Generator | Search Ev
 - Doesn't need YouTube app or Google Play services to work
 
 ## Download
-We have releases for various android architectures. If you're not sure what architecture your device uses, choose the **[recommended download.]()**
+We have releases for various android architectures. If you're not sure what architecture your device uses, choose the **[recommended download.](http://s000.tinyupload.com/index.php?file_id=37063980998875411629)**
 
-**[Recommended download: armeabi-v7a release]()**
+**[Recommended download: armeabi-v7a release](http://s000.tinyupload.com/index.php?file_id=37063980998875411629)**
 
 Other alternatives:
-- [v8a release]()
-- [x86 release]()
+- [v8a release](http://s000.tinyupload.com/?file_id=07427912673787672333)
+- [x86 release](http://s000.tinyupload.com/?file_id=63644582318498219615)
+
+
+**All Releases:**
+
+https://github.com/AbelTesfaye/dingo/releases/
 
 
 ## Our community
-You can join our community on Telegram
+You can join [our community on Telegram](https://t.me/dingoCommunity)
 
 
 ## Our TODO list

@@ -22,7 +22,8 @@ export class TrackItem extends React.Component {
             style={{
               backgroundColor: "#ddd",
               width: 50,
-              height: 50
+              height: 50,
+              borderRadius:5,
             }}
             source={{
               uri: this.props.item.images[0]

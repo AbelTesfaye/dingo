@@ -23,7 +23,7 @@ export class TrackItem extends React.Component {
               backgroundColor: "#ddd",
               width: 50,
               height: 50,
-              borderRadius:5,
+              borderRadius:8,
             }}
             source={{
               uri: this.props.item.images[0]
@@ -34,6 +34,7 @@ export class TrackItem extends React.Component {
               marginHorizontal: 10,
               justifyContent: "flex-start",
               alignItems: "flex-start",
+              alignSelf: 'center',
               flex: 1
             }}
           >

@@ -4,16 +4,37 @@ import { TrackList } from "../Lists/ListTrack"
 import { AlbumList } from "../Lists/ListAlbum";
 import { ArtistList } from "../Lists/ListArtist";
 import utils from "../../BL/Utils/utils";
+import Icon from "react-native-ionicons";
 export const PageSearch = props => {
   const AppInstance = props.AppInstance;
   return (<ScrollView>
     <View>
-      <TextInput onSubmitEditing={() => AppInstance.startSearch()} style={{
-        height: 40,
-        margin: 10,
-        backgroundColor: "#efefef"
-      }} onChangeText={text => AppInstance.updateSearchQueryText(text)} placeholder="Search" value={AppInstance.state
-        .screenStates_screenNavigatorStates_pageSearchStates_searchQueryText} />
+      <View style={{ 
+        flexDirection: 'row',
+        flex: 1,
+        alignContent: 'center',
+        backgroundColor: "#ffffff" }}>
+
+        <TextInput onSubmitEditing={() => AppInstance.startSearch()} style={{
+          height: 40,
+          marginHorizontal: 15,
+          marginTop: 15,
+          flex: 1,
+          backgroundColor: "#e1e3e4",
+          borderRadius: 20,
+          paddingStart: 15 }} onChangeText={text => AppInstance.updateSearchQueryText(text)} placeholder="Search" value={AppInstance.state
+          .screenStates_screenNavigatorStates_pageSearchStates_searchQueryText} />
+
+        <Icon name="backspace" onPress={() => AppInstance.updateSearchQueryText('')} size={25} style={{
+          color: "#333",
+          position: 'absolute',
+          right: 22,
+          top: 22,
+          height: 40,
+          marginHorizontal: 10
+        }} />  
+      </View>
+      
       <View style={{ margin: 10 }}>
         <Text style={{ fontWeight: "bold", margin: 10, fontSize: 20 }}>
           Artists
@@ -38,7 +59,6 @@ export const PageSearch = props => {
           <TrackList data={AppInstance.state
             .screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse} onTrackPress={(item, index) => AppInstance.startInPlayer(utils.convertToTrackPlayerFormat(AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse.slice(index)))} AppInstance={AppInstance} maxItems={10} />
         </View>
-
 
       </View>
     </View>

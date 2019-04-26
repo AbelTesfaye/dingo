@@ -31,7 +31,7 @@ export class AlbumItem extends React.Component {
             flex: 1,
             alignSelf: "stretch",
             backgroundColor: "#fff",
-            borderRadius:10,
+            borderRadius:20,
           }}
           source={{
             uri: this.props.albumInfo.images[this.props.albumInfo.images.length - 1]
@@ -40,7 +40,8 @@ export class AlbumItem extends React.Component {
         <View
           style={{
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
+            marginTop: 15
           }}
         >
           <Text numberOfLines={1}>

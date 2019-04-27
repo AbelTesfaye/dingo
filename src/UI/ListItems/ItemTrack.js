@@ -31,6 +31,7 @@ export class TrackItem extends React.Component {
 							justifyContent: 'flex-start',
 							alignItems: 'flex-start',
 							flex: 1,
+							alignSelf: 'center',
 						}}
 					>
 						<Text

@@ -153,7 +153,7 @@ module.exports = async data => {
 																		afterCurrentFetched();
 																}
 															),
-														console.log(err)
+														err => console.error(err)
 													);
 												} else {
 													this._updateTrackPlayerQueueItem(

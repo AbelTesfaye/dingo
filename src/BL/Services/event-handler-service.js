@@ -59,6 +59,33 @@ module.exports = async data => {
 	_getTracksToLeft = (tracks, currentIndex, howManyToTheLeft) => {
 		return tracks.slice(currentIndex - howManyToTheLeft, currentIndex);
 	};
+	_filterHighestQualityAudio = formats => {
+		let audioFormats = ytdl.filterFormats(formats, 'audioonly');
+
+		let highestFormat = audioFormats[0];
+		audioFormats.map(item => {
+			if (highestFormat.audioBitrate < item.audioBitrate) highestFormat = item;
+		});
+		const highestQualityAudio = highestFormat.url;
+
+		return highestQualityAudio;
+	};
+	_ytdlGetInfo = (videoId, callback, errCallback) => {
+		ytdl.getInfo(videoId, {}, (err, info) => {
+			if (err) errCallback(err);
+			callback(info);
+		});
+	};
+	_getHighestQualityAudioUsingYtdl = (videoId, callback, errCallback) => {
+		_ytdlGetInfo(
+			videoId,
+			info => {
+				const highestQualityAudio = _filterHighestQualityAudio(info.formats);
+				callback(highestQualityAudio);
+			},
+			err => errCallback(err)
+		);
+	};
 
 	_fetchURLs = (
 		shouldFetchCurrent,
@@ -77,49 +104,63 @@ module.exports = async data => {
 					const tracksToRight = this._getTracksToRight(tracks, currentItemIndex, amountOfTracksToRight);
 
 					[shouldFetchCurrent && trackCurrent, ...tracksToRight, ...tracksToLeft].map((item, index) => {
-						if (!item.url || item.url.length <= 'http://'.length) {
+						if (item.videoId) {
+							this._ytdlGetInfo(
+								item.videoId,
+								info => {
+									console.log(JSON.stringify(info));
+									const highestQualityAudio = this._filterHighestQualityAudio(info.formats);
+
+									this._updateTrackPlayerQueueItem(
+										tracks,
+										item,
+										{
+											url: highestQualityAudio,
+
+											title: info.title,
+											artist: info.author.name,
+											artwork: info.thumbnail_url,
+										},
+										() => {
+											if (shouldFetchCurrent && index === 0) afterCurrentFetched();
+										}
+									);
+								},
+								err => console.error(err)
+							);
+						} else if (!item.url || item.url.length <= 'http://'.length) {
 							if (item.title && item.artist) {
 								utils.fetchFromEndpoint(
 									`getHighestQualityAudioUsingArtistAndSong?artist=${encodeURIComponent(
 										item.artist
 									)}&song=${encodeURIComponent(item.title)}`,
 									response => {
-										let urlToPlay = response.url;
+										let highestQualityAudio = response.url;
 										fetch(response.url)
 											.then(res => {
 												if (res.status === 403) {
-													ytdl.getInfo(response.videoId, {}, (err, info) => {
-														if (err) console.log(err);
-														let audioFormats = ytdl.filterFormats(
-															info.formats,
-															'audioonly'
-														);
-
-														let highestFormat = audioFormats[0];
-														audioFormats.map(item => {
-															if (highestFormat.audioBitrate < item.audioBitrate)
-																highestFormat = item;
-														});
-														urlToPlay = highestFormat.url;
-
-														this._updateTrackPlayerQueueItem(
-															tracks,
-															item,
-															{
-																url: urlToPlay,
-															},
-															() => {
-																if (shouldFetchCurrent && index === 0)
-																	afterCurrentFetched();
-															}
-														);
-													});
+													_getHighestQualityAudioUsingYtdl(
+														response.videoId,
+														highestQualityAudio =>
+															this._updateTrackPlayerQueueItem(
+																tracks,
+																item,
+																{
+																	url: highestQualityAudio,
+																},
+																() => {
+																	if (shouldFetchCurrent && index === 0)
+																		afterCurrentFetched();
+																}
+															),
+														console.log(err)
+													);
 												} else {
 													this._updateTrackPlayerQueueItem(
 														tracks,
 														item,
 														{
-															url: urlToPlay,
+															url: highestQualityAudio,
 														},
 														() => {
 															if (shouldFetchCurrent && index === 0)

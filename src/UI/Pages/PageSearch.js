@@ -7,6 +7,7 @@ import utils from '../../BL/Utils/utils';
 import Icon from 'react-native-ionicons';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { openDatabase } from 'react-native-sqlite-storage';
+import ytdl from 'react-native-ytdl';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,19 +32,25 @@ export const PageSearch = props => {
 				.catch(e => console.error(e));
 	};
 	_handleSearchSubmit = q => {
+		const query =
+			q !== undefined ? q : AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText;
+
+		if (ytdl.validateURL(query)) {
+			const videoId = ytdl.getVideoID(query);
+			AppInstance.startInPlayer([{ videoId }]);
+		} else {
+			AppInstance.startSearch(query);
+		}
+
 		db.transaction(tx => {
 			tx.executeSql(
 				'INSERT INTO search_history (timestamp,search_text) VALUES (?,?)',
-				[
-					new Date().getTime(),
-					q || AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText,
-				],
+				[new Date().getTime(), query],
 				(tx, results) => {
 					console.log('Inserted into search_history successfully');
 				}
 			);
 		});
-		AppInstance.startSearch(q);
 	};
 	_showHistory = () => {
 		searchHistory = [];
@@ -77,42 +84,43 @@ export const PageSearch = props => {
 					}}
 				>
 					<View>
-					<TextInput
-						onSubmitEditing={() => {
-							_handleSearchSubmit();
-						}}
-						style={{
-							height: 40,
-							margin: 10,
-							backgroundColor: '#efefef',
-						}}
-						onFocus={() => {
-							AppInstance.setState({
-								screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused: true,
-							});
-							if (
-								AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText
-									.length === 0
-							)
-								_showHistory();
-						}}
-						onBlur={() => {
-							AppInstance.setState({
-								screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused: false,
-							});
-						}}
-						onChangeText={text => {
-							AppInstance.updateSearchQueryText(text);
-							_updateSearchSuggestions(text, newSuggestions => {
+						<TextInput
+							onSubmitEditing={() => {
+								_handleSearchSubmit();
+							}}
+							style={{
+								height: 40,
+								margin: 10,
+								backgroundColor: '#efefef',
+							}}
+							onFocus={() => {
 								AppInstance.setState({
-									screenStates_screenNavigatorStates_pageSearchStates_searchSuggestions: newSuggestions[1]
-										.slice(0, 5)
-										.map(item => ({ search_text: item })),
+									screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused: true,
 								});
-							});
-							if (text.length === 0) _showHistory();
-						}}
-						placeholder="Search"
+								if (
+									AppInstance.state
+										.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText.length ===
+									0
+								)
+									_showHistory();
+							}}
+							onBlur={() => {
+								AppInstance.setState({
+									screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused: false,
+								});
+							}}
+							onChangeText={text => {
+								AppInstance.updateSearchQueryText(text);
+								_updateSearchSuggestions(text, newSuggestions => {
+									AppInstance.setState({
+										screenStates_screenNavigatorStates_pageSearchStates_searchSuggestions: newSuggestions[1]
+											.slice(0, 5)
+											.map(item => ({ search_text: item })),
+									});
+								});
+								if (text.length === 0) _showHistory();
+							}}
+							placeholder="Search"
 							value={
 								AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText
 							}
@@ -137,7 +145,7 @@ export const PageSearch = props => {
 											marginHorizontal: 10,
 											right: 5,
 										}}
-					/>
+									/>
 								</TouchableNativeFeedback>
 							)}
 						</View>

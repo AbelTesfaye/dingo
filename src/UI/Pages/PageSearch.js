@@ -71,7 +71,12 @@ export const PageSearch = props => {
 	return (
 		<ScrollView>
 			<View style={{ minHeight: 0.75 * height }}>
-				<View style={{ zIndex: 999999 }}>
+				<View
+					style={{
+						zIndex: 999999,
+					}}
+				>
+					<View>
 					<TextInput
 						onSubmitEditing={() => {
 							_handleSearchSubmit();
@@ -108,8 +113,35 @@ export const PageSearch = props => {
 							if (text.length === 0) _showHistory();
 						}}
 						placeholder="Search"
-						value={AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText}
+							value={
+								AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText
+							}
+						/>
+						<View
+							style={{
+								color: '#333',
+								position: 'absolute',
+								right: 0,
+								bottom: 0,
+								top: 0,
+								justifyContent: 'center',
+							}}
+						>
+							{AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText
+								.length > 0 && (
+								<TouchableNativeFeedback onPress={() => AppInstance.updateSearchQueryText('')}>
+									<Icon
+										name="backspace"
+										size={25}
+										style={{
+											marginHorizontal: 10,
+											right: 5,
+										}}
 					/>
+								</TouchableNativeFeedback>
+							)}
+						</View>
+					</View>
 					{AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused ? (
 						<View
 							style={{

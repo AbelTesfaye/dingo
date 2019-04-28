@@ -8,6 +8,7 @@ import { PageLibrary } from '../Pages/PageLibrary';
 import { PageSearch } from '../Pages/PageSearch';
 import Animated from 'react-native-reanimated';
 import { TextInput } from 'react-native-gesture-handler';
+import {database} from "../../BL/Utils/database"
 
 const { width, height } = Dimensions.get('window');
 getObject = (obj, k_v) => {
@@ -98,7 +99,7 @@ const flattenMenu = settingsArr => {
 };
 
 const renderSettings = settingsObj => {
-	return flattenMenu(settingsObj.settings);
+	return settingsObj.settings &&  flattenMenu(settingsObj.settings);
 };
 
 export class ScreenNavigator extends React.Component {
@@ -112,8 +113,14 @@ export class ScreenNavigator extends React.Component {
 				{ key: 'PAGE_LIBRARY', icon: 'ios-albums', color: [255, 132, 0] },
 				{ key: 'PAGE_SETTINGS', icon: 'settings', color: [255, 132, 0] },
 			],
+			settingsContent:{},
 		};
 		this.AppInstance = this.props.AppInstance;
+	}
+	componentDidMount(){
+		database.getSettings().then(s=>this.setState({
+			settingsContent:s
+		}))
 	}
 
 	_renderTabBar = props => (
@@ -194,7 +201,7 @@ export class ScreenNavigator extends React.Component {
 								case 'PAGE_LIBRARY':
 									return <PageLibrary AppInstance={this.AppInstance} />;
 								case 'PAGE_SETTINGS':
-									return <View>{renderSettings(settingsObj)}</View>;
+									return <View>{renderSettings(this.state.settingsContent)}</View>;
 								default:
 									return null;
 							}

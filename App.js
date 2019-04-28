@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { openDatabase } from 'react-native-sqlite-storage';
 import TrackPlayer from 'react-native-track-player';
 import shortid from 'shortid';
 import { ScreenDetail } from './src/UI/Screens/ScreenDetail';

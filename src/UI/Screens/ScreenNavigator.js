@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View, Switch, Text } from 'react-native';
 import Icon from 'react-native-ionicons';
 import { TabBar, TabView } from 'react-native-tab-view';
 import { MiniPlayer } from '../CustomModules/JS/MiniPlayer';
@@ -7,8 +7,99 @@ import { PageHome } from '../Pages/PageHome';
 import { PageLibrary } from '../Pages/PageLibrary';
 import { PageSearch } from '../Pages/PageSearch';
 import Animated from 'react-native-reanimated';
+import { TextInput } from 'react-native-gesture-handler';
 
 const { width, height } = Dimensions.get('window');
+getObject = (obj, k_v) => {
+	var result = null;
+	if (obj instanceof Array) {
+		for (var i = 0; i < obj.length; i++) {
+			result = getObject(obj[i], k_v);
+			if (result) {
+				break;
+			}
+		}
+	} else {
+		for (var prop in obj) {
+			if (prop == 'setting_key' && k_v == obj['setting_key']) {
+				return obj;
+			}
+			if (obj[prop] instanceof Object || obj[prop] instanceof Array) {
+				result = getObject(obj[prop], k_v);
+				if (result) {
+					break;
+				}
+			}
+		}
+	}
+	return result;
+};
+
+const saveSetting = (key, value) => {
+	return (getObject(json, key).currentValue = value);
+};
+const getSetting = key => {
+	return getObject(json, key);
+};
+
+const flattenMenu = settingsArr => {
+	return settingsArr.map(i => (
+		<View
+			style={{
+				padding: 10,
+			}}
+		>
+			{(i.type === 'boolean' && (
+				<View style={{ flexDirection: 'row' }}>
+					<Text>{i.title}</Text>
+					<Switch value={i.currentValue} />
+				</View>
+			)) ||
+				(i.type === 'number' && (
+					<View>
+						<Text>{i.title}</Text>
+						<TextInput
+							placeholder={i.currentValue.toString()}
+							keyboardType="decimal-pad"
+							style={{
+								backgroundColor: 'yellow',
+							}}
+						/>
+					</View>
+				)) ||
+				(i.type === 'text' && (
+					<View>
+						<Text>{i.title}</Text>
+						<TextInput
+							placeholder={i.currentValue}
+							keyboardType="default"
+							style={{
+								backgroundColor: 'orange',
+							}}
+						/>
+					</View>
+				)) ||
+				(i.type === 'submenu' && (
+					<View style={{ backgroundColor: 'green', paddingLeft: 10 }}>
+						<Text>{i.title}</Text>
+						<Text>{i.description}</Text>
+						{flattenMenu(i.contents)}
+					</View>
+				)) ||
+				(i.type === 'menu' && (
+					<View style={{ backgroundColor: 'blue', paddingLeft: 10 }}>
+						<Text>{i.title}</Text>
+						<Text>{i.description}</Text>
+						{flattenMenu(i.contents)}
+					</View>
+				)) || <Text style={{ backgroundColor: 'red' }}> Item type not found: {i.type}</Text>}
+		</View>
+	));
+};
+
+const renderSettings = settingsObj => {
+	return flattenMenu(settingsObj.settings);
+};
 
 export class ScreenNavigator extends React.Component {
 	constructor(props) {
@@ -19,6 +110,7 @@ export class ScreenNavigator extends React.Component {
 				{ key: 'PAGE_HOME', icon: 'home', color: [255, 132, 0] },
 				{ key: 'PAGE_SEARCH', icon: 'search', color: [255, 132, 0] },
 				{ key: 'PAGE_LIBRARY', icon: 'ios-albums', color: [255, 132, 0] },
+				{ key: 'PAGE_SETTINGS', icon: 'settings', color: [255, 132, 0] },
 			],
 		};
 		this.AppInstance = this.props.AppInstance;
@@ -35,7 +127,7 @@ export class ScreenNavigator extends React.Component {
 	);
 	_renderIndicator = props => {
 		const { width, position, navigationState } = props;
-		const inputRange = [0, 0.48, 0.49, 0.51, 0.52, 1, 1.48, 1.49, 1.51, 1.52, 2];
+		const inputRange = [0, 0.48, 0.49, 0.51, 0.52, 1, 1.48, 1.49, 1.51, 1.52, 2, 2.48, 2.49, 2.51, 2.52, 3];
 
 		const scale = Animated.interpolate(position, {
 			inputRange,
@@ -45,8 +137,8 @@ export class ScreenNavigator extends React.Component {
 		const opacity = Animated.interpolate(position, {
 			inputRange,
 			outputRange: inputRange.map(x => {
-				const d = x - Math.trunc(x);
-				return d === 0.49 || d === 0.51 ? 0 : 1;
+				const d = (x - Math.trunc(x)).toFixed(2);
+				return d === (0.49).toFixed(2) || d === (0.51).toFixed(2) ? 0 : 1;
 			}),
 		});
 
@@ -101,6 +193,8 @@ export class ScreenNavigator extends React.Component {
 									return <PageSearch AppInstance={this.AppInstance} />;
 								case 'PAGE_LIBRARY':
 									return <PageLibrary AppInstance={this.AppInstance} />;
+								case 'PAGE_SETTINGS':
+									return <View>{renderSettings(settingsObj)}</View>;
 								default:
 									return null;
 							}

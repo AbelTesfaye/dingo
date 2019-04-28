@@ -1,8 +1,8 @@
 import TrackPlayer from 'react-native-track-player';
 import utils from '../Utils/utils';
-import { openDatabase } from 'react-native-sqlite-storage';
 import BackgroundTimer from 'react-native-background-timer';
 import ytdl from 'react-native-ytdl';
+import { database } from '../Utils/database';
 
 var db = openDatabase(
 	{ name: 'sqlite.db', createFromLocation: '~sqlite.db' },

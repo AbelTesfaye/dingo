@@ -3,6 +3,7 @@ import utils from "../Utils/utils";
 import { openDatabase } from "react-native-sqlite-storage";
 import BackgroundTimer from "react-native-background-timer";
 import ytdl from "react-native-ytdl";
+import { database } from "../Utils/database";
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -163,15 +164,7 @@ module.exports = async data => {
   };
 
   writeRecentTrack = (timestamp, trackName, artistName, image) => {
-    db.transaction(tx => {
-      tx.executeSql(
-        "INSERT INTO recent (timestamp,trackName, artistName, image) VALUES (?,?,?,?)",
-        [timestamp, trackName, artistName, image],
-        (tx, results) => {
-          console.log("Inserted into recent tracks successfully");
-        }
-      );
-    });
+    database.insertRecentTrack(timestamp, trackName, artistName, image).catch(e=>console.error(e))
   };
 
   //use this to save listened tracks into files

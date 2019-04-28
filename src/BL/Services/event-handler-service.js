@@ -4,15 +4,6 @@ import BackgroundTimer from 'react-native-background-timer';
 import ytdl from 'react-native-ytdl';
 import { database } from '../Utils/database';
 
-var db = openDatabase(
-	{ name: 'sqlite.db', createFromLocation: '~sqlite.db' },
-	() => {
-		console.log('db opened');
-	},
-	err => {
-		console.log('SQL Error: ' + err);
-	}
-);
 const previousPlayingTrack = { title: '', artist: '', artwork: '' };
 let trackCurrent = { id: '', title: '', artist: '', artwork: '' };
 module.exports = async data => {

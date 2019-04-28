@@ -8,6 +8,7 @@ import { ScreenNavigator } from "./src/UI/Screens/ScreenNavigator";
 import ScreenPlayer from "./src/UI/Screens/ScreenPlayer";
 import SplashScreen from "./src/UI/CustomModules/Native/SplashScreen";
 import utils from "./src/BL/Utils/utils";
+import { database } from "./src/BL/Utils/database";
 
 var db = openDatabase(
   { name: "sqlite.db", createFromLocation: "~sqlite.db" },
@@ -55,44 +56,22 @@ export default class App extends Component {
     };
   }
 
-  getRecentTracks = callback => {
-    recentTracks = [];
-    db.transaction(tx => {
-      tx.executeSql(
-        "SELECT * FROM recent ORDER BY timestamp DESC limit 100",
-        [],
-        (tx, results) => {
-          console.log("Read from recent tracks successfully");
-
-          var len = results.rows.length;
-          for (let i = 0; i < len; i++) {
-            let row = results.rows.item(i);
-
-            recentTracks.push({
-              id: row.timestamp,
-              name: row.trackName,
-              artistName: row.artistName,
-              images: [row.image || ""]
-            });
-          }
-
-          callback(recentTracks);
-        }
-      );
-    });
-  };
 
   _getRecentTracksAndPutThemInState = () => {
-    this.getRecentTracks(recentTracks => {
+    database
+      .getRecentTracks()
+      .then(recentTracks => {
       this.setState({
         screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: recentTracks,
         screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse: utils.getUnique(
           recentTracks,
-          "name"
-        )
+            'name'
+          ),
       });
+      })
+      .catch(e => console.error(e));
+  
       this.getSimilarAlbumsAndPutThemInState();
-    });
   };
 
   componentDidMount = () => {

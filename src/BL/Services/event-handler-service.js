@@ -177,15 +177,7 @@ module.exports = async data => {
 	};
 
 	writeRecentTrack = (timestamp, trackName, artistName, image) => {
-		db.transaction(tx => {
-			tx.executeSql(
-				'INSERT INTO recent (timestamp,trackName, artistName, image) VALUES (?,?,?,?)',
-				[timestamp, trackName, artistName, image],
-				(tx, results) => {
-					console.log('Inserted into recent tracks successfully');
-				}
-			);
-		});
+		database.insertRecentTrack(timestamp, trackName, artistName, image).catch(e => console.error(e));
 	};
 
 	//use this to save listened tracks into files

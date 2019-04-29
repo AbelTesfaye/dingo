@@ -36,7 +36,7 @@ export class TrackItem extends React.Component {
 					>
 						<Text
 							style={{
-								fontWeight: 'bold',
+								color: 'black',
 							}}
 						>
 							{this.props.item.name}

@@ -43,7 +43,7 @@ export class AlbumItem extends React.Component {
 							marginTop: 15,
 						}}
 					>
-						<Text numberOfLines={1}>
+						<Text style={{ color: 'black' }} numberOfLines={1}>
 							{this.props.albumInfo.name} • {this.props.albumInfo.artistName}
 						</Text>
 					</View>

@@ -35,8 +35,8 @@ export class ArtistItem extends React.Component {
 					>
 						<Text
 							style={{
-								fontWeight: 'bold',
 								fontSize: 15,
+								color: 'black',
 							}}
 						>
 							{this.props.artistInfo.name}

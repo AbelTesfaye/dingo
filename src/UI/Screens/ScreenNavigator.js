@@ -26,13 +26,16 @@ export class ScreenNavigator extends React.Component {
 		this.AppInstance = this.props.AppInstance;
 	}
 	_renderTabBar = props => (
-		<TabBar
-			{...props}
-			renderIcon={this._renderIcon}
-			renderIndicator={this._renderIndicator}
-			style={styles.tabbar}
-			useNativeDriver={true}
-		/>
+		<View>
+			<MiniPlayer style={{}} AppInstance={this.AppInstance} />
+			<TabBar
+				{...props}
+				renderIcon={this._renderIcon}
+				renderIndicator={this._renderIndicator}
+				style={styles.tabbar}
+				useNativeDriver={true}
+			/>
+		</View>
 	);
 	_renderIndicator = props => {
 		const { width, position, navigationState } = props;
@@ -94,7 +97,7 @@ export class ScreenNavigator extends React.Component {
 					<TabView
 						navigationState={this.state}
 						renderTabBar={this._renderTabBar}
-						tabBarPosition={"bottom"}
+						tabBarPosition={'bottom'}
 						renderScene={({ route }) => {
 							switch (route.key) {
 								case 'PAGE_HOME':
@@ -120,8 +123,6 @@ export class ScreenNavigator extends React.Component {
 						useNativeDriver={true}
 					/>
 				</View>
-
-				<MiniPlayer AppInstance={this.AppInstance} />
 			</View>
 		);
 	}

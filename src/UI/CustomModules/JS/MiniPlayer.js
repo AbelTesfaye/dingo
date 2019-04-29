@@ -66,71 +66,71 @@ export class MiniPlayer extends Component {
 
 		const track = this.getCurrentTrack();
 		return Object.keys(track).length !== 0 ? (
-			<TouchableNativeFeedback
-				onPress={() => {
-					AppInstance.setState({
-						activeScreen: 'SCREEN_PLAYER',
-						screenStates_screenNavigatorStates_newQueueItems: [],
-					});
-				}}
-			>
-				<View
-					elevation={5}
-					style={{
-						width: width,
-						height: 55,
-						backgroundColor: 'white',
-						zIndex: 1,
+			<View style={{ ...this.props.style }}>
+				<TouchableNativeFeedback
+					onPress={() => {
+						AppInstance.setState({
+							activeScreen: 'SCREEN_PLAYER',
+							screenStates_screenNavigatorStates_newQueueItems: [],
+						});
 					}}
 				>
-					<MiniPlayerProgressBar
-						progress={this.getProgress()}
-						bufferedProgress={this.getBufferedProgress()}
-					/>
-
 					<View
 						style={{
-							height: 50,
-							backgroundColor: '#fafafa',
-							flexDirection: 'row',
-							alignItems: 'center',
+							width: width,
+							height: 55,
+							backgroundColor: 'white',
 						}}
 					>
-						<Image
-							style={{
-								height: 50,
-								width: 50,
-							}}
-							source={{
-								uri: track.artwork,
-							}}
+						<MiniPlayerProgressBar
+							progress={this.getProgress()}
+							bufferedProgress={this.getBufferedProgress()}
 						/>
 
 						<View
 							style={{
-								marginHorizontal: 10,
-								justifyContent: 'flex-start',
-								alignItems: 'flex-start',
-								flex: 1,
+								height: 50,
+								backgroundColor: '#fafafa',
+								flexDirection: 'row',
+								alignItems: 'center',
 							}}
 						>
-							<Text
-								numberOfLines={1}
-								ellipsizeMode={'tail'}
+							<Image
 								style={{
-									fontWeight: 'bold',
+									height: 50,
+									width: 50,
+								}}
+								source={{
+									uri: track.artwork,
+								}}
+							/>
+
+							<View
+								style={{
+									marginHorizontal: 10,
+									justifyContent: 'flex-start',
+									alignItems: 'flex-start',
+									flex: 1,
 								}}
 							>
-								{track.title}
-							</Text>
+								<Text
+									numberOfLines={1}
+									ellipsizeMode={'tail'}
+									style={{
+										color: 'black',
+									}}
+								>
+									{track.title}
+								</Text>
 
-							<Text numberOfLines={1} ellipsizeMode={'tail'} style={{}}>
-								{track.artist}
-							</Text>
+								<Text numberOfLines={1} ellipsizeMode={'tail'} style={{}}>
+									{track.artist}
+								</Text>
+							</View>
 						</View>
 					</View>
-				</View>
-			</TouchableNativeFeedback>
+				</TouchableNativeFeedback>
+			</View>
 		) : null;
 	}
 }

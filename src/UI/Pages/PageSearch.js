@@ -6,20 +6,10 @@ import { ArtistList } from '../Lists/ListArtist';
 import utils from '../../BL/Utils/utils';
 import Icon from 'react-native-ionicons';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
-import { openDatabase } from 'react-native-sqlite-storage';
+import { database } from '../../BL/Utils/database';
 import ytdl from 'react-native-ytdl';
 
 const { width, height } = Dimensions.get('window');
-
-var db = openDatabase(
-	{ name: 'sqlite.db', createFromLocation: '~sqlite.db' },
-	() => {
-		console.log('db opened');
-	},
-	err => {
-		console.log('SQL Error: ' + err);
-	}
-);
 
 export const PageSearch = props => {
 	_updateSearchSuggestions = (q, callback) => {
@@ -42,37 +32,17 @@ export const PageSearch = props => {
 			AppInstance.startSearch(query);
 		}
 
-		db.transaction(tx => {
-			tx.executeSql(
-				'INSERT INTO search_history (timestamp,search_text) VALUES (?,?)',
-				[new Date().getTime(), query],
-				(tx, results) => {
-					console.log('Inserted into search_history successfully');
-				}
-			);
-		});
+		database.insertSearchHistory(new Date().getTime(), query).catch(e => console.error(e));
 	};
 	_showHistory = () => {
-		searchHistory = [];
-		db.transaction(tx => {
-			tx.executeSql('SELECT * FROM search_history ORDER BY timestamp DESC limit 5', [], (tx, results) => {
-				console.log('Read from search_history successfully');
-
-				var len = results.rows.length;
-				for (let i = 0; i < len; i++) {
-					let row = results.rows.item(i);
-
-					searchHistory.push({
-						timestamp: row.timestamp,
-						search_text: row.search_text,
-					});
-				}
-
+		database
+			.getSearchHistory()
+			.then(searchHistory => {
 				AppInstance.setState({
 					screenStates_screenNavigatorStates_pageSearchStates_searchSuggestions: searchHistory,
 				});
-			});
-		});
+			})
+			.catch(e => console.error(e));
 	};
 	const AppInstance = props.AppInstance;
 	return (

@@ -97,6 +97,41 @@ export class database {
 				console.log(`[db] updated settings: "${settings}"`);
 			});
 	}
+	static insertSearchHistory(timestamp, query) {
+		return this.getDatabase()
+			.then(db =>
+				db.executeSql('INSERT INTO search_history (timestamp,search_text) VALUES (?,?)', [timestamp, query])
+			)
+			.then(([results]) => {
+				console.log(`[db] inserted into search_history: "${query}"`);
+			});
+	}
+
+	static getSearchHistory() {
+		console.log('[db] Fetching search history from the db...');
+		return this.getDatabase()
+			.then(db => db.executeSql('SELECT * FROM search_history ORDER BY timestamp DESC limit 5'))
+			.then(([results]) => {
+				if (results === undefined) {
+					return [];
+				}
+				searchHistory = [];
+
+				console.log('Read from search_history successfully');
+
+				var len = results.rows.length;
+				for (let i = 0; i < len; i++) {
+					let row = results.rows.item(i);
+
+					searchHistory.push({
+						timestamp: row.timestamp,
+						search_text: row.search_text,
+					});
+				}
+console.log(JSON.stringify(searchHistory))
+				return searchHistory;
+			});
+	}
 
 	static getDatabase() {
 		if (this.database !== undefined) {

@@ -94,6 +94,7 @@ export class ScreenNavigator extends React.Component {
 					<TabView
 						navigationState={this.state}
 						renderTabBar={this._renderTabBar}
+						tabBarPosition={"bottom"}
 						renderScene={({ route }) => {
 							switch (route.key) {
 								case 'PAGE_HOME':

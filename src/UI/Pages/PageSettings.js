@@ -70,10 +70,10 @@ export class PageSettings extends React.Component {
 		};
 	}
 	componentDidMount() {
-		settings.getAllSettings().then(s =>
+		settings.getAllSettings().then(s =>{
 			this.setState({
 				settingsContent: s,
-			})
+			})}
 		);
 	}
 	render() {

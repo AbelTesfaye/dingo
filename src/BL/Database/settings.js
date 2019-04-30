@@ -1,31 +1,31 @@
 import { database } from './database';
 
-const getObject = (obj, k_v) => {
-	var result = null;
-	if (obj instanceof Array) {
-		for (var i = 0; i < obj.length; i++) {
-			result = getObject(obj[i], k_v);
-			if (result) {
-				break;
-			}
-		}
-	} else {
-		for (var prop in obj) {
-			if (prop == 'setting_key' && k_v == obj['setting_key']) {
-				return obj;
-			}
-			if (obj[prop] instanceof Object || obj[prop] instanceof Array) {
-				result = getObject(obj[prop], k_v);
+export class settings {
+	static getSettingByKeyValue = (s, key_value) => {
+		var result = null;
+		if (s instanceof Array) {
+			for (var i = 0; i < s.length; i++) {
+				result = this.getSettingByKeyValue(s[i], key_value);
 				if (result) {
 					break;
 				}
 			}
+		} else {
+			for (var prop in s) {
+				if (prop == 'setting_key' && key_value == s['setting_key']) {
+					return s;
+				}
+				if (s[prop] instanceof Object || s[prop] instanceof Array) {
+					result = this.getSettingByKeyValue(s[prop], key_value);
+					if (result) {
+						break;
+					}
+				}
+			}
 		}
-	}
-	return result;
-};
+		return result;
+	};
 
-export class settings {
 	static fetchAllSettings = () => {
 		if (this.settingsObj === undefined)
 			return this.fetchAllSettings().then(s => {
@@ -40,12 +40,12 @@ export class settings {
 	static updateAllSettings = s => database.updateAllSettings(s);
 
 	static saveSetting = (key, value) => {
-		getObject(this.settingsObj, key).currentValue = value;
+		this.getSettingByKeyValue(this.settingsObj, key).currentValue = value;
 		return this.updateAllSettings(this.settingsObj);
 	};
 	static getSetting = key => {
 		return this.fetchAllSettings().then(s => {
-			return getObject(this.settingsObj, key);
+			return this.getSettingByKeyValue(this.settingsObj, key);
 		});
 	};
 }

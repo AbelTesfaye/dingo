@@ -1,39 +1,7 @@
 import React from 'react';
 import { TextInput } from 'react-native-gesture-handler';
 import { View, Switch, Text } from 'react-native';
-import { database } from '../../BL/Utils/database';
-
-const getObject = (obj, k_v) => {
-	var result = null;
-	if (obj instanceof Array) {
-		for (var i = 0; i < obj.length; i++) {
-			result = getObject(obj[i], k_v);
-			if (result) {
-				break;
-			}
-		}
-	} else {
-		for (var prop in obj) {
-			if (prop == 'setting_key' && k_v == obj['setting_key']) {
-				return obj;
-			}
-			if (obj[prop] instanceof Object || obj[prop] instanceof Array) {
-				result = getObject(obj[prop], k_v);
-				if (result) {
-					break;
-				}
-			}
-		}
-	}
-	return result;
-};
-
-const saveSetting = (key, value) => {
-	return (getObject(json, key).currentValue = value);
-};
-const getSetting = key => {
-	return getObject(json, key);
-};
+import { settings } from '../../BL/Database/settings';
 
 const flattenMenu = settingsArr => {
 	return settingsArr.map(i => (
@@ -102,7 +70,7 @@ export class PageSettings extends React.Component {
 		};
 	}
 	componentDidMount() {
-		database.getSettings().then(s =>
+		settings.getAllSettings().then(s =>
 			this.setState({
 				settingsContent: s,
 			})

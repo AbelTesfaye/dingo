@@ -72,7 +72,7 @@ export class database {
 			});
 	}
 
-	static getSettings() {
+	static getAllSettings() {
 		console.log('[db] Fetching settings from the db...');
 		return this.getDatabase()
 			.then(db =>
@@ -89,7 +89,7 @@ export class database {
 				return JSON.parse(row.settings);
 			});
 	}
-	static updateSettings(settingsObj) {
+	static updateAllSettings(settingsObj) {
 		const settings = JSON.stringify(settingsObj);
 		return this.getDatabase()
 			.then(db => db.executeSql('UPDATE settings SET settings = ?', [settings]))
@@ -128,7 +128,7 @@ export class database {
 						search_text: row.search_text,
 					});
 				}
-console.log(JSON.stringify(searchHistory))
+				console.log(JSON.stringify(searchHistory));
 				return searchHistory;
 			});
 	}

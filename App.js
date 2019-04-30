@@ -7,7 +7,7 @@ import { ScreenNavigator } from './src/UI/Screens/ScreenNavigator';
 import ScreenPlayer from './src/UI/Screens/ScreenPlayer';
 import SplashScreen from './src/UI/CustomModules/Native/SplashScreen';
 import utils from './src/BL/Utils/utils';
-import { database } from "./src/BL/Utils/database";
+import { database } from "./src/BL/Database/database";
 
 export default class App extends Component {
   constructor(props) {

@@ -6,7 +6,7 @@ import { ArtistList } from '../Lists/ListArtist';
 import utils from '../../BL/Utils/utils';
 import Icon from 'react-native-ionicons';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
-import { database } from '../../BL/Utils/database';
+import { database } from '../../BL/Database/database';
 import ytdl from 'react-native-ytdl';
 
 const { width, height } = Dimensions.get('window');

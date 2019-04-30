@@ -2,7 +2,7 @@ import TrackPlayer from 'react-native-track-player';
 import utils from '../Utils/utils';
 import BackgroundTimer from 'react-native-background-timer';
 import ytdl from 'react-native-ytdl';
-import { database } from '../Utils/database';
+import { database } from '../Database/database';
 
 const previousPlayingTrack = { title: '', artist: '', artwork: '' };
 let trackCurrent = { id: '', title: '', artist: '', artwork: '' };

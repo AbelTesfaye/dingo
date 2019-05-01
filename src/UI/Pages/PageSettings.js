@@ -23,7 +23,7 @@ const flattenMenu = settingsArr => {
 							placeholder={i.currentValue.toString()}
 							keyboardType="decimal-pad"
 							style={{
-								backgroundColor: 'yellow',
+								backgroundColor: '#eee',
 							}}
 						/>
 					</View>
@@ -35,21 +35,21 @@ const flattenMenu = settingsArr => {
 							placeholder={i.currentValue}
 							keyboardType="default"
 							style={{
-								backgroundColor: 'orange',
+								backgroundColor: '#eee',
 							}}
 						/>
 					</View>
 				)) ||
 				(i.type === 'submenu' && (
-					<View style={{ backgroundColor: 'green', paddingLeft: 10 }}>
-						<Text>{i.title}</Text>
+					<View style={{ borderLeftWidth: 5, borderColor: '#f57f17', paddingLeft: 10 }}>
+						<Text style={{ fontWeight: 'bold' }}>{i.title}</Text>
 						<Text>{i.description}</Text>
 						{flattenMenu(i.contents)}
 					</View>
 				)) ||
 				(i.type === 'menu' && (
-					<View style={{ backgroundColor: 'blue', paddingLeft: 10 }}>
-						<Text>{i.title}</Text>
+					<View style={{ borderLeftWidth: 5, borderColor: '#fbc02d', paddingLeft: 5 }}>
+						<Text style={{ fontWeight: 'bold' }}>{i.title}</Text>
 						<Text>{i.description}</Text>
 						{flattenMenu(i.contents)}
 					</View>

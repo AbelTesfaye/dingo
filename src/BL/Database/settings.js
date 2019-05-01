@@ -1,6 +1,35 @@
 import { database } from './database';
 
 export class settings {
+	static initialize() {
+		if (this.settingsObj === undefined)
+			return this.getAllSettings().then(s => {
+				this.settingsObj = s;
+				return this.settingsObj;
+			});
+		return Promise.resolve(this.settingsObj);
+	}
+
+	static getAllSettings() {
+		return database.getAllSettings();
+	}
+
+	static updateAllSettings(s) {
+		return database.updateAllSettings(s);
+	}
+
+	static set(key, value, returnPromise = false) {
+		const s = this.getSettingByKeyValue(this.settingsObj, key);
+		s.currentValue = value;
+		return returnPromise ? this.updateAllSettings(this.settingsObj) : s;
+	}
+	static get(key, fromFile = false) {
+		return fromFile
+			? this.initialize().then(s => {
+					return this.getSettingByKeyValue(s, key);
+			  })
+			: this.getSettingByKeyValue(this.settingsObj, key);
+	}
 	static getSettingByKeyValue(s, key_value) {
 		var result = null;
 		if (s instanceof Array) {
@@ -24,32 +53,5 @@ export class settings {
 			}
 		}
 		return result;
-	}
-
-	static fetchAllSettings() {
-		if (this.settingsObj === undefined)
-			return this.getAllSettings().then(s => {
-				this.settingsObj = s;
-				return this.settingsObj;
-			});
-		return Promise.resolve(this.settingsObj);
-	}
-
-	static getAllSettings() {
-		return database.getAllSettings();
-	}
-
-	static updateAllSettings(s) {
-		return database.updateAllSettings(s);
-	}
-
-	static saveSetting(key, value) {
-		this.getSettingByKeyValue(this.settingsObj, key).currentValue = value;
-		return this.updateAllSettings(this.settingsObj);
-	}
-	static getSetting(key) {
-		return this.fetchAllSettings().then(s => {
-			return this.getSettingByKeyValue(s, key);
-		});
 	}
 }

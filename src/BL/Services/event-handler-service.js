@@ -83,7 +83,7 @@ module.exports = async data => {
 		amountOfTracksToLeft,
 		amountOfTracksToRight,
 		afterCurrentFetched,
-		insideFinally
+		cbFinally
 	) => {
 		TrackPlayer.getQueue()
 			.then(tracks => {
@@ -94,8 +94,8 @@ module.exports = async data => {
 					trackCurrent = tracks[currentItemIndex];
 					const tracksToRight = this._getTracksToRight(tracks, currentItemIndex, amountOfTracksToRight);
 
-					[shouldFetchCurrent && trackCurrent, ...tracksToRight, ...tracksToLeft].map((item, index) => {
-						if (item.videoId) {
+					[shouldFetchCurrent ? trackCurrent : {}, ...tracksToRight, ...tracksToLeft].map((item, index) => {
+						if (item.videoId && ytdl.validateID(item.videoId)) {
 							this._ytdlGetInfo(
 								item.videoId,
 								info => {
@@ -113,11 +113,17 @@ module.exports = async data => {
 											artwork: info.thumbnail_url,
 										},
 										() => {
-											if (shouldFetchCurrent && index === 0) afterCurrentFetched();
+											if (shouldFetchCurrent && index === 0) {
+												afterCurrentFetched();
+												cbFinally();
+											}
 										}
 									);
 								},
-								err => console.error(err)
+								err => {
+									cbFinally();
+									console.error(err);
+								}
 							);
 						} else if (!item.url || item.url.length <= 'http://'.length) {
 							if (item.title && item.artist) {
@@ -164,7 +170,7 @@ module.exports = async data => {
 												console.error(error);
 											})
 											.finally(() => {
-												insideFinally();
+												cbFinally();
 											});
 									}
 								);
@@ -176,8 +182,8 @@ module.exports = async data => {
 			.catch(e => console.error(e));
 	};
 
-	writeRecentTrack = (timestamp, trackName, artistName, image) => {
-		database.insertRecentTrack(timestamp, trackName, artistName, image).catch(e => console.error(e));
+	writeRecentTrack = (timestamp, trackName, artistName, image, youtube_id) => {
+		database.insertRecentTrack(timestamp, trackName, artistName, image, youtube_id).catch(e => console.error(e));
 	};
 
 	//use this to save listened tracks into files
@@ -204,7 +210,13 @@ module.exports = async data => {
 						previousPlayingTrack.artist !== track.artist ||
 						previousPlayingTrack.artwork !== track.artwork
 					) {
-						this.writeRecentTrack(new Date().getTime(), track.title, track.artist, track.artwork);
+						this.writeRecentTrack(
+							new Date().getTime(),
+							track.title,
+							track.artist,
+							track.artwork,
+							track.videoId
+						);
 					}
 
 					previousPlayingTrack.title = track.title;

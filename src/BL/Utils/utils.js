@@ -55,6 +55,7 @@ convertToTrackPlayerFormat = tracks => {
 	newTracks = [];
 	tracks.map((item, index) => {
 		newTracks.push({
+			...item,
 			id: index.toString(),
 			title: item.name,
 			artist: item.artistName,

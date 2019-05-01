@@ -28,15 +28,13 @@ export class database {
 		});
 	}
 
-	static insertRecentTrack(timestamp, title, artist, image) {
+	static insertRecentTrack(timestamp, title, artist, image, youtube_id) {
 		return this.getDatabase()
 			.then(db =>
-				db.executeSql('INSERT INTO recent (timestamp,trackName, artistName, image) VALUES (?,?,?,?)', [
-					timestamp,
-					title,
-					artist,
-					image,
-				])
+				db.executeSql(
+					'INSERT INTO recent (timestamp,trackName, artistName, image, youtube_id) VALUES (?,?,?,?,?)',
+					[timestamp, title, artist, image, youtube_id]
+				)
 			)
 			.then(([results]) => {
 				console.log(`[db] Added track with title: "${title}"`);
@@ -59,12 +57,12 @@ export class database {
 				var len = results.rows.length;
 				for (let i = 0; i < len; i++) {
 					let row = results.rows.item(i);
-
 					recentTracks.push({
 						id: row.timestamp,
 						name: row.trackName,
 						artistName: row.artistName,
 						images: [row.image || ''],
+						videoId: row.youtube_id,
 					});
 				}
 

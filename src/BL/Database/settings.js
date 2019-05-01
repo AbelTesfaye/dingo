@@ -27,7 +27,7 @@ export class settings {
 	static get(key, fromFile = false) {
 		return fromFile
 			? this.initialize().then(s => {
-					return this.getSettingByKeyValue(s, key);
+					return this.getSettingByKeyValue(s, key).currentValue;
 			  })
 			: this.getSettingByKeyValue(this.settingsObj, key).currentValue;
 	}

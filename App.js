@@ -8,11 +8,13 @@ import ScreenPlayer from './src/UI/Screens/ScreenPlayer';
 import SplashScreen from './src/UI/CustomModules/Native/SplashScreen';
 import utils from './src/BL/Utils/utils';
 import { database } from "./src/BL/Database/database";
+import {settings} from "./src/BL/Database/settings"
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isSettingsInitialized:false,
       activeScreen: null,
       screenAndPageStack: [],
 
@@ -94,6 +96,12 @@ export default class App extends Component {
         this.getTrackPlayerQueueToState();
       }
     });
+
+    settings.initialize().then((s)=>{
+      this.setState({isSettingsInitialized:true})
+      console.log("settings is initialized")
+
+    }).catch((e)=>{console.error(e)})
   };
 
   componentWillUnmount() {
@@ -326,7 +334,7 @@ export default class App extends Component {
   render() {
     const AppInstance = this;
     return (
-      <View style={{ flex: 1 }}>
+      this.state.isSettingsInitialized && <View style={{ flex: 1 }}>
         {this.state.activeScreen == 'SCREEN_NAVIGATOR' || this.state.activeScreen == null ? (
           <ScreenNavigator AppInstance={AppInstance} />
         ) : this.state.activeScreen == 'SCREEN_PLAYER' ? (

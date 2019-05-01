@@ -3,19 +3,20 @@ import { database } from './database';
 export class settings {
 	static initialize() {
 		if (this.settingsObj === undefined)
-			return this.getAllSettings().then(s => {
+			return this.getAll(true).then(s => {
 				this.settingsObj = s;
 				return this.settingsObj;
 			});
 		return Promise.resolve(this.settingsObj);
 	}
 
-	static getAllSettings() {
-		return database.getAllSettings();
+	static getAll(fromFile = false) {
+		return fromFile ? database.getAllSettings() : this.settingsObj;
 	}
 
-	static updateAllSettings(s) {
-		return database.updateAllSettings(s);
+	static updateAll(s, returnPromise = false) {
+		this.settingsObj = s;
+		return returnPromise ? database.updateAllSettings(s) : this.settingsObj;
 	}
 
 	static set(key, value, returnPromise = false) {

@@ -29,7 +29,7 @@ export class settings {
 			? this.initialize().then(s => {
 					return this.getSettingByKeyValue(s, key);
 			  })
-			: this.getSettingByKeyValue(this.settingsObj, key);
+			: this.getSettingByKeyValue(this.settingsObj, key).currentValue;
 	}
 	static getSettingByKeyValue(s, key_value) {
 		var result = null;

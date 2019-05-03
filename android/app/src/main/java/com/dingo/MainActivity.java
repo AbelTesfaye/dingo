@@ -1,7 +1,6 @@
 package com.dingo;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.dingo.SplashScreen.SplashScreen;
 import com.facebook.react.ReactActivity;
@@ -16,12 +15,27 @@ import java.net.Proxy;
 import java.net.URL;
 import java.util.Scanner;
 
-public class MainActivity extends ReactActivity {
+import com.dingo.database.DbHelper;
+import org.json.JSONObject;
 
+public class MainActivity extends ReactActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SplashScreen.show(this, R.style.SplashScreen_Fullscreen, R.id.launch_img);  // here
+        
+        boolean showSplash = true;
+        try {
+            DbHelper dbHelper = new DbHelper(this);
+            JSONObject splashObject = dbHelper.getShowSplashSetting();
+            showSplash = splashObject.getBoolean("currentValue");
+            dbHelper.close();
+        } catch(Exception e) { e.printStackTrace(); }
+
+        
+        if (showSplash) {
+            SplashScreen.show(this, R.style.SplashScreen_Fullscreen, R.id.launch_img);
+        }         
+
         super.onCreate(savedInstanceState);
     }
 

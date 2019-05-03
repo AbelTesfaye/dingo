@@ -22,7 +22,8 @@ export class settings {
 	static set(key, value, returnPromise = false) {
 		const s = this.getSettingByKeyValue(this.settingsObj, key);
 		s.currentValue = value;
-		return returnPromise ? this.updateAllSettings(this.settingsObj) : s;
+		const p = this.updateAll(this.settingsObj , returnPromise);
+		return returnPromise ? p : s;
 	}
 	static get(key, fromFile = false) {
 		return fromFile

@@ -16,12 +16,31 @@ import java.net.Proxy;
 import java.net.URL;
 import java.util.Scanner;
 
+import com.dingo.database.DbHelper;
+import org.json.JSONObject;
+
 public class MainActivity extends ReactActivity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SplashScreen.show(this, R.style.SplashScreen_Fullscreen, R.id.launch_img);  // here
+        
+        try {
+            DbHelper dbHelper = new DbHelper(this);
+            JSONObject splashObject = dbHelper.getShowSplashSetting();
+            boolean showSplash = splashObject.getBoolean("currentValue");
+
+            Log.e("DINGO_JAVA" , "show_splash = " + showSplash);
+            if (showSplash) {
+                SplashScreen.show(this, R.style.SplashScreen_Fullscreen, R.id.launch_img);
+            } 
+        
+            dbHelper.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+            SplashScreen.show(this, R.style.SplashScreen_Fullscreen, R.id.launch_img);  // show the splash screen because default value is true
+        }
+
         super.onCreate(savedInstanceState);
     }
 

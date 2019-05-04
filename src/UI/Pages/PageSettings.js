@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput } from 'react-native-gesture-handler';
-import { View, Switch, Text } from 'react-native';
+import { View, Switch, Text, ToastAndroid } from 'react-native';
 import { settings } from '../../BL/Database/settings';
 
 export class PageSettings extends React.Component {
@@ -10,6 +10,29 @@ export class PageSettings extends React.Component {
 			settingsContent: {},
 		};
 	}
+	writeSettings = newSettingsContent => {
+		settings
+			.updateAll(newSettingsContent, true)
+			.then(s => {
+				ToastAndroid.show('Settings Saved!', ToastAndroid.SHORT);
+			})
+			.catch(e => console.error(e));
+	};
+	_handleOnTextChange = (i, text) => {
+		const newSettingsContent = { ...this.state.settingsContent };
+		settings.getSettingByKeyValue(newSettingsContent, i.setting_key).currentValue = text;
+
+		this.setState({ settingsContent: newSettingsContent });
+	};
+	_handleOnValueChange = i => {
+		const newSettingsContent = { ...this.state.settingsContent };
+		const c = settings.getSettingByKeyValue(newSettingsContent, i.setting_key);
+		c.currentValue = !c.currentValue;
+
+		this.setState({ settingsContent: newSettingsContent });
+
+		this.writeSettings(newSettingsContent);
+	};
 	flattenMenu = settingsArr => {
 		return settingsArr.map(i => (
 			<View
@@ -22,13 +45,7 @@ export class PageSettings extends React.Component {
 						<Text>{i.title}</Text>
 						<Switch
 							onValueChange={() => {
-								const newsettingsContent = { ...this.state.settingsContent };
-								const c = settings.getSettingByKeyValue(newsettingsContent, i.setting_key);
-								c.currentValue = !c.currentValue;
-								
-								this.setState({ settingsContent: newsettingsContent });
-
-								settings.updateAll(newsettingsContent);
+								this._handleOnValueChange(i);
 							}}
 							value={i.currentValue}
 						/>
@@ -40,17 +57,10 @@ export class PageSettings extends React.Component {
 							<TextInput
 								value={i.currentValue.toString()}
 								onChangeText={text => {
-									const newsettingsContent = { ...this.state.settingsContent };
-									settings.getSettingByKeyValue(
-										newsettingsContent,
-										i.setting_key
-									).currentValue = text;
-
-									this.setState({ settingsContent: newsettingsContent });
+									this._handleOnTextChange(i, text);
 								}}
 								onSubmitEditing={() => {
-									console.log('saving to file');
-									settings.updateAll(this.state.settingsContent);
+									this.writeSettings(this.state.settingsContent);
 								}}
 								placeholder={i.defaultValue.toString()}
 								keyboardType="decimal-pad"
@@ -66,17 +76,10 @@ export class PageSettings extends React.Component {
 							<TextInput
 								value={i.currentValue}
 								onChangeText={text => {
-									const newsettingsContent = { ...this.state.settingsContent };
-									settings.getSettingByKeyValue(
-										newsettingsContent,
-										i.setting_key
-									).currentValue = text;
-
-									this.setState({ settingsContent: newsettingsContent });
+									this._handleOnTextChange(i, text);
 								}}
 								onSubmitEditing={() => {
-									console.log('saving to file');
-									settings.updateAll(this.state.settingsContent);
+									this.writeSettings(this.state.settingsContent);
 								}}
 								placeholder={i.defaultValue}
 								keyboardType="default"

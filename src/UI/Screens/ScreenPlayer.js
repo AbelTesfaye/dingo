@@ -16,6 +16,8 @@ import TrackPlayer from 'react-native-track-player';
 import ImageButton from '../CustomModules/JS/ImageButton';
 import ProgressBar from '../CustomModules/JS/ProgressBar';
 import SlidingPanel from '../CustomModules/JS/SlidingPanel';
+import {settings} from "../../BL/Database/settings"
+
 const { width, height } = Dimensions.get('window');
 
 export default class ScreenPlayer extends Component {
@@ -200,7 +202,7 @@ export default class ScreenPlayer extends Component {
 													width: 50,
 													height: 50,
 												}}
-												source={{ uri: item.artwork }}
+												source={{ uri: settings.get('load_all_images') && item.artwork }}
 											/>
 											<View
 												style={{
@@ -261,12 +263,14 @@ export default class ScreenPlayer extends Component {
 									resizeMethod="resize"
 									blurRadius={3}
 									source={{
-										uri: this.AppInstance.state
-											.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-											? this.AppInstance.state
-													.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-													.artwork
-											: null,
+										uri:
+											settings.get('load_all_images') &&
+											(this.AppInstance.state
+												.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
+												? this.AppInstance.state
+														.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
+														.artwork
+												: null),
 									}}
 									style={styles.backgroundImage}
 								>
@@ -288,12 +292,14 @@ export default class ScreenPlayer extends Component {
 												margin: 10,
 											}}
 											source={{
-												uri: this.AppInstance.state
-													.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-													? this.AppInstance.state
-															.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-															.artwork
-													: null,
+												uri:
+													settings.get('load_all_images') &&
+													(this.AppInstance.state
+														.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
+														? this.AppInstance.state
+																.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
+																.artwork
+														: null),
 											}}
 										/>
 

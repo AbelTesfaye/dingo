@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View, Image, TouchableNativeFeedback } from 'react-native';
+import {settings} from "../../BL/Database/settings"
 export class TrackItem extends React.Component {
 	constructor(props) {
 		super(props);
@@ -22,7 +23,7 @@ export class TrackItem extends React.Component {
 							borderRadius: 5,
 						}}
 						source={{
-							uri: this.props.item.images[0],
+							uri: settings.get('load_all_images') && this.props.item.images[0],
 						}}
 					/>
 					<View

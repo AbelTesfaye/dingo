@@ -1,5 +1,7 @@
 import React from 'react';
 import { Text, View, Image, TouchableNativeFeedback } from 'react-native';
+import {settings} from "../../BL/Database/settings"
+
 export class AlbumItem extends React.Component {
 	constructor(props) {
 		super(props);
@@ -29,11 +31,12 @@ export class AlbumItem extends React.Component {
 						style={{
 							flex: 1,
 							alignSelf: 'stretch',
-							backgroundColor: '#fff',
 							borderRadius: 20,
 						}}
 						source={{
-							uri: this.props.albumInfo.images[this.props.albumInfo.images.length - 1],
+							uri:
+								settings.get('load_all_images') &&
+								this.props.albumInfo.images[this.props.albumInfo.images.length - 1],
 						}}
 					/>
 					<View

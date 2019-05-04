@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, Image, Text, TouchableNativeFeedback, View } from 'react-native';
 import utils from './../../BL/Utils/utils';
-
+import {settings} from "../../BL/Database/settings"
 export class AlbumInfoPage extends React.Component {
 	constructor(props) {
 		super(props);
@@ -42,9 +42,11 @@ export class AlbumInfoPage extends React.Component {
 							backgroundColor: '#ddd',
 						}}
 						source={{
-							uri: this.state.albumInfo
-								? this.state.albumInfo.images[this.state.albumInfo.images.length - 1]
-								: null,
+							uri:
+								settings.get('load_all_images') &&
+								(this.state.albumInfo
+									? this.state.albumInfo.images[this.state.albumInfo.images.length - 1]
+									: null),
 						}}
 					/>
 					<Text

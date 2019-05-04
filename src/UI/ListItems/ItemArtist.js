@@ -1,5 +1,7 @@
 import React from 'react';
 import { Text, View, Image, TouchableNativeFeedback } from 'react-native';
+import {settings} from "../../BL/Database/settings"
+
 export class ArtistItem extends React.Component {
 	constructor(props) {
 		super(props);
@@ -23,7 +25,7 @@ export class ArtistItem extends React.Component {
 							height: 50,
 						}}
 						source={{
-							uri: this.props.artistInfo.images[0],
+							uri: settings.get('load_all_images') && this.props.artistInfo.images[0],
 						}}
 					/>
 					<View

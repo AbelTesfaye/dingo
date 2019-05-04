@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, Image, TouchableNativeFeedback, Dimensions } from 'react-native';
 import { MiniPlayerProgressBar } from './MiniPlayerProgressBar';
 import TrackPlayer from 'react-native-track-player';
+import {settings} from "../../../BL/Database/settings"
 
 const { width, height } = Dimensions.get('window');
 
@@ -101,7 +102,7 @@ export class MiniPlayer extends Component {
 									width: 50,
 								}}
 								source={{
-									uri: track.artwork,
+									uri: settings.get('load_all_images') && track.artwork,
 								}}
 							/>
 

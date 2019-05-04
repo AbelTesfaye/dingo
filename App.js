@@ -66,6 +66,24 @@ export default class App extends Component {
 	componentDidMount = () => {
 		SplashScreen.hide();
 
+		this._onStateChanged = TrackPlayer.addEventListener('playback-state', data => {
+			if (globals.shouldUIRespondToEvents) {
+				this.setState({
+					screenStates_screenPlayerStates_pageQueueStates_playerState: data.state,
+				});
+
+				this.getTrackPlayerQueueToState();
+			}
+		});
+
+		settings
+			.initialize()
+			.then(s => {
+				this.setState({ isSettingsInitialized: true });
+        console.log('settings is initialized');
+        
+
+
 		this.getChartTopTracksAndPutThemInState();
 
 		this._getRecentTracksAndPutThemInState();
@@ -84,21 +102,6 @@ export default class App extends Component {
 			}
 		});
 
-		this._onStateChanged = TrackPlayer.addEventListener('playback-state', data => {
-			if (globals.shouldUIRespondToEvents) {
-				this.setState({
-					screenStates_screenPlayerStates_pageQueueStates_playerState: data.state,
-				});
-
-				this.getTrackPlayerQueueToState();
-			}
-		});
-
-		settings
-			.initialize()
-			.then(s => {
-				this.setState({ isSettingsInitialized: true });
-				console.log('settings is initialized');
 			})
 			.catch(e => {
 				console.error(e);

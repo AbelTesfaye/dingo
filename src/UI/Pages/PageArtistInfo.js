@@ -3,6 +3,7 @@ import { Image, Text, View } from 'react-native';
 import { AlbumList } from '../Lists/ListAlbum';
 import { TrackList } from '../Lists/ListTrack';
 import utils from '../../BL/Utils/utils';
+import {settings} from "../../BL/Database/settings"
 
 export class ArtistInfoPage extends React.Component {
 	constructor(props) {
@@ -42,9 +43,11 @@ export class ArtistInfoPage extends React.Component {
 					resizeMethod="resize"
 					blurRadius={3}
 					source={{
-						uri: this.state.artistInfoResponse
-							? this.state.artistInfoResponse.images[this.state.artistInfoResponse.images.length - 1]
-							: null,
+						uri:
+							settings.get('load_all_images') &&
+							(this.state.artistInfoResponse
+								? this.state.artistInfoResponse.images[this.state.artistInfoResponse.images.length - 1]
+								: null),
 					}}
 					style={{
 						flex: 1,
@@ -65,11 +68,13 @@ export class ArtistInfoPage extends React.Component {
 								backgroundColor: '#ddd',
 							}}
 							source={{
-								uri: this.state.artistInfoResponse
-									? this.state.artistInfoResponse.images[
-											this.state.artistInfoResponse.images.length - 1
-									  ]
-									: null,
+								uri:
+									settings.get('load_all_images') &&
+									(this.state.artistInfoResponse
+										? this.state.artistInfoResponse.images[
+												this.state.artistInfoResponse.images.length - 1
+										  ]
+										: null),
 							}}
 						/>
 						<Text

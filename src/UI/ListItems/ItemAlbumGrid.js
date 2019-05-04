@@ -1,5 +1,7 @@
 import React from 'react';
 import { Text, View, Image, TouchableNativeFeedback } from 'react-native';
+import { settings } from '../../BL/Database/settings';
+
 export class AlbumListItemGrid extends React.Component {
 	constructor(props) {
 		super(props);
@@ -31,9 +33,11 @@ export class AlbumListItemGrid extends React.Component {
 							borderRadius: 10,
 						}}
 						source={{
-							uri: this.props.albumInfo
-								? this.props.albumInfo.images[this.props.albumInfo.images.length - 1]
-								: null,
+							uri:
+								settings.get('load_all_images') &&
+								(this.props.albumInfo
+									? this.props.albumInfo.images[this.props.albumInfo.images.length - 1]
+									: null),
 						}}
 					/>
 					<View

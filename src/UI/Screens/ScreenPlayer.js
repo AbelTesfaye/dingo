@@ -16,7 +16,9 @@ import TrackPlayer from 'react-native-track-player';
 import ImageButton from '../CustomModules/JS/ImageButton';
 import ProgressBar from '../CustomModules/JS/ProgressBar';
 import SlidingPanel from '../CustomModules/JS/SlidingPanel';
-import {settings} from "../../BL/Database/settings"
+import { settings } from '../../BL/Database/settings';
+import Icon from 'react-native-ionicons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const { width, height } = Dimensions.get('window');
 
@@ -345,45 +347,50 @@ export default class ScreenPlayer extends Component {
 												</Text>
 											</View>
 											<View style={styles.controls}>
-												<ImageButton
-													source={require('../../assets/icons/previous.png')}
+												<TouchableOpacity
 													onPress={() => {
 														this._skipToPrevious();
 													}}
-													imageStyle={styles.controlIcon}
-												/>
+												>
+													<View>
+														<Icon name="skip-backward" style={styles.controlIcon} />
+													</View>
+												</TouchableOpacity>
+
 												<View style={styles.playPause}>
 													{globals.isFetchingURL ||
 													this.AppInstance.state
 														.screenStates_screenPlayerStates_pageQueueStates_playerState ===
 														TrackPlayer.STATE_BUFFERING ? (
-														<ActivityIndicator
-															animating={true}
-															style={styles.controlIcon}
-														/>
+														<ActivityIndicator animating={true} />
 													) : (
-														<ImageButton
-															source={
-																this.AppInstance.state
-																	.screenStates_screenPlayerStates_pageQueueStates_playerState !==
-																TrackPlayer.STATE_PLAYING
-																	? require('../../assets/icons/play.png')
-																	: require('../../assets/icons/pause.png')
-															}
+														<TouchableOpacity
 															onPress={() => {
 																this._playOrPauseToggle();
 															}}
-															imageStyle={styles.controlIcon}
-														/>
+														>
+															<View>
+																<Icon
+																	name={
+																		this.AppInstance.state
+																			.screenStates_screenPlayerStates_pageQueueStates_playerState !==
+																		TrackPlayer.STATE_PLAYING
+																			? 'play'
+																			: 'pause'
+																	}
+																	style={{ ...styles.controlIcon }}
+																/>
+															</View>
+														</TouchableOpacity>
 													)}
 												</View>
-												<ImageButton
-													source={require('../../assets/icons/next.png')}
+												<TouchableOpacity
 													onPress={() => {
 														this._skipToNext();
 													}}
-													imageStyle={styles.controlIcon}
-												/>
+												>
+													<Icon name="skip-forward" style={styles.controlIcon} />
+												</TouchableOpacity>
 											</View>
 										</View>
 									</View>
@@ -483,10 +490,12 @@ const styles = StyleSheet.create({
 		padding: 25,
 	},
 	controlIcon: {
-		width: 40,
-		height: 40,
+		color: 'black',
+		fontSize: 32, // icon size
 	},
 	playPause: {
-		padding: 10,
+		height: 40,
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 });

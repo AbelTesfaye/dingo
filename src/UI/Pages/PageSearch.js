@@ -1,30 +1,18 @@
 import React from 'react';
-import { Text, View, TextInput, ScrollView, FlatList, Dimensions } from 'react-native';
+import { Text, View, ScrollView, Dimensions } from 'react-native';
 import { TrackList } from '../Lists/ListTrack';
 import { AlbumList } from '../Lists/ListAlbum';
 import { ArtistList } from '../Lists/ListArtist';
 import utils from '../../BL/Utils/utils';
-import Icon from 'react-native-ionicons';
-import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { database } from '../../BL/Database/database';
 import ytdl from 'react-native-ytdl';
+import { SearchBar } from '../CustomModules/JS/SearchBar';
 
 const { width, height } = Dimensions.get('window');
 
 export const PageSearch = props => {
-	_updateSearchSuggestions = (q, callback) => {
-		if (q.length > 0)
-			fetch(`http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=${q}`)
-				.then(res => res.json())
-				.then(resJSON => {
-					callback(resJSON);
-				})
-				.catch(e => console.error(e));
-	};
 	_handleSearchSubmit = q => {
-		const query =
-			q !== undefined ? q : AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText;
-
+		const query = q;
 		if (ytdl.validateURL(query)) {
 			const videoId = ytdl.getVideoID(query);
 			AppInstance.startInPlayer([{ videoId }]);
@@ -34,142 +22,11 @@ export const PageSearch = props => {
 
 		database.insertSearchHistory(new Date().getTime(), query).catch(e => console.error(e));
 	};
-	_showHistory = () => {
-		database
-			.getSearchHistory()
-			.then(searchHistory => {
-				AppInstance.setState({
-					screenStates_screenNavigatorStates_pageSearchStates_searchSuggestions: searchHistory,
-				});
-			})
-			.catch(e => console.error(e));
-	};
 	const AppInstance = props.AppInstance;
 	return (
 		<ScrollView>
 			<View style={{ minHeight: 0.75 * height }}>
-				<View
-					style={{
-						zIndex: 999999,
-					}}
-				>
-					<View>
-						<TextInput
-							onSubmitEditing={() => {
-								_handleSearchSubmit();
-							}}
-							style={{
-								height: 40,
-								margin: 10,
-								backgroundColor: '#efefef',
-							}}
-							onFocus={() => {
-								AppInstance.setState({
-									screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused: true,
-								});
-								if (
-									AppInstance.state
-										.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText.length ===
-									0
-								)
-									_showHistory();
-							}}
-							onBlur={() => {
-								AppInstance.setState({
-									screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused: false,
-								});
-							}}
-							onChangeText={text => {
-								AppInstance.updateSearchQueryText(text);
-								_updateSearchSuggestions(text, newSuggestions => {
-									AppInstance.setState({
-										screenStates_screenNavigatorStates_pageSearchStates_searchSuggestions: newSuggestions[1]
-											.slice(0, 5)
-											.map(item => ({ search_text: item })),
-									});
-								});
-								if (text.length === 0) _showHistory();
-							}}
-							placeholder="Search"
-							value={
-								AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText
-							}
-						/>
-						<View
-							style={{
-								color: '#333',
-								position: 'absolute',
-								right: 0,
-								bottom: 0,
-								top: 0,
-								justifyContent: 'center',
-							}}
-						>
-							{AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText
-								.length > 0 && (
-								<TouchableNativeFeedback onPress={() => AppInstance.updateSearchQueryText('')}>
-									<Icon
-										name="backspace"
-										size={25}
-										style={{
-											marginHorizontal: 10,
-											right: 5,
-										}}
-									/>
-								</TouchableNativeFeedback>
-							)}
-						</View>
-					</View>
-					{AppInstance.state.screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused ? (
-						<View
-							style={{
-								backgroundColor: 'white',
-								position: 'absolute',
-								top: 50,
-								left: 10,
-								right: 10,
-								borderBottomWidth: 1,
-								borderBottomColor: '#eee',
-								flex: 1,
-							}}
-						>
-							<FlatList
-								keyExtractor={(item, index) => index.toString()}
-								style={{}}
-								data={
-									AppInstance.state
-										.screenStates_screenNavigatorStates_pageSearchStates_searchSuggestions
-								}
-								renderItem={({ item }) => {
-									return (
-										<TouchableNativeFeedback
-											onPress={() => {
-												AppInstance.updateSearchQueryText(item.search_text);
-												_handleSearchSubmit(item.search_text);
-												AppInstance.setState({
-													screenStates_screenNavigatorStates_pageSearchStates_searchIsFocused: false,
-												});
-											}}
-										>
-											<View style={{ padding: 10, flexDirection: 'row', flex: 1 }}>
-												<View style={{ flex: 1, justifyContent: 'flex-start' }}>
-													<Text style={{ fontWeight: 'bold' }}>{item.search_text}</Text>
-												</View>
-
-												<Icon
-													name={'arrow-round-back'}
-													size={24}
-													style={{ transform: [{ rotate: '45deg' }] }}
-												/>
-											</View>
-										</TouchableNativeFeedback>
-									);
-								}}
-							/>
-						</View>
-					) : null}
-				</View>
-
+				<SearchBar onSubmitEditing={q => _handleSearchSubmit(q)} />
 				<View style={{ margin: 10 }}>
 					<Text style={{ fontWeight: 'bold', margin: 10, fontSize: 20 }}>Artists</Text>
 

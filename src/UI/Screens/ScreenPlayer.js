@@ -243,16 +243,20 @@ export default class ScreenPlayer extends Component {
 									alignItems: 'flex-start',
 								}}
 							>
-								<View style={{ flexDirection: 'row', margin: 10 }}>
-									<Image
+								<View
+									style={{
+										flexDirection: 'row',
+										margin: 10,
+									}}
+								>
+									<Icon
+										name="arrow-dropdown"
 										style={{
 											...styles.controlIcon,
 											margin: 5,
-											height: 20,
-											width: 20,
 										}}
-										source={require('../../assets/icons/down-arrow.png')}
 									/>
+
 									<Text style={{ textAlignVertical: 'center', margin: 5 }}>PLAYLIST</Text>
 								</View>
 							</View>

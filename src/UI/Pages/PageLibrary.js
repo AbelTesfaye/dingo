@@ -1,101 +1,126 @@
 import React from 'react';
-import { Text, View, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, RefreshControl } from 'react-native';
 import { TrackList } from '../Lists/ListTrack';
 import utils from '../../BL/Utils/utils';
-export const PageLibrary = props => {
-	const AppInstance = props.AppInstance;
-	return (
-		<ScrollView>
-			<View style={{ flex: 1 }}>
-				{AppInstance.state.screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading ? (
-					<ActivityIndicator
-						animating={true}
-						style={{
-							top: 0,
-							left: 0,
-							right: 0,
-							bottom: 0,
-							margin: 10,
-							justifyContent: 'center',
-							alignItems: 'center',
-							zIndex: 1,
-						}}
-						size="large"
+export class PageLibrary extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			refreshing: false,
+			loadingPlaylist: false,
+		};
+
+		this.AppInstance = props.AppInstance;
+	}
+
+	_onRefresh = () => {
+		this.setState({ refreshing: true });
+		this.AppInstance.getRecentTracksAndPutThemInState().then(() => {
+			this.setState({ refreshing: false });
+		});
+	};
+	render() {
+		return (
+			<ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={this.state.refreshing || this.state.loadingPlaylist}
+						onRefresh={this._onRefresh}
+						colors={['orange']}
 					/>
-				) : null}
-				<View
-					style={{
-						flex: 1,
-						backgroundColor: 'white',
-						margin: 10,
-					}}
-				>
-					<View style={{}}>
+				}
+			>
+				{
+					<View style={{ flex: 1 }}>
 						<View
 							style={{
-								margin: 3,
+								flex: 1,
+								backgroundColor: 'white',
+								margin: 10,
 							}}
 						>
-							<Text
-								style={{
-									fontWeight: 'bold',
-									fontSize: 15,
-								}}
-							>
-								Playlist Generator
-							</Text>
-							<Text
-								style={{
-									fontSize: 13,
-								}}
-							>
-								Pick a song to generate playlist
-							</Text>
-						</View>
-						<View
-							style={{
-								backgroundColor: 'blue',
-							}}
-						>
-							<TrackList
-								maxItems={100}
-								AppInstance={AppInstance}
-								onTrackPress={(item, index) => {
-									AppInstance.setState({
-										screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading: true,
-									});
-									utils.fetchFromEndpoint(
-										`getPlaylistUsingTrack?name=${encodeURIComponent(
-											item.name
-										)}&artistName=${encodeURIComponent(item.artistName)}`,
-										responseJson => {
-											AppInstance.setState({
-												screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading: false,
-											});
-											const tracks = responseJson.track;
-											if (tracks.length < 1) {
-												alert(
-													`Playlist could not be generated for: ${item.artistName} - ${
+							<View style={{}}>
+								<View
+									style={{
+										margin: 3,
+									}}
+								>
+									<Text
+										style={{
+											fontWeight: 'bold',
+											fontSize: 15,
+										}}
+									>
+										Playlist Generator
+									</Text>
+									<Text
+										style={{
+											fontSize: 13,
+										}}
+									>
+										Pick a song to generate playlist
+									</Text>
+								</View>
+								<View
+									style={{
+										backgroundColor: 'blue',
+									}}
+								>
+									{this.state.refreshing || (
+										<TrackList
+											maxItems={100}
+											AppInstance={this.AppInstance}
+											onTrackPress={(item, index) => {
+												this.setState({
+													loadingPlaylist: true,
+												});
+												utils.fetchFromEndpoint(
+													`getPlaylistUsingTrack?name=${encodeURIComponent(
 														item.name
-													}`
+													)}&artistName=${encodeURIComponent(item.artistName)}`,
+													responseJson => {
+														this.setState({
+															loadingPlaylist: false,
+														});
+														const tracks = responseJson.track;
+														if (tracks.length < 1) {
+															alert(
+																`Playlist could not be generated for: ${
+																	item.artistName
+																} - ${item.name}`
+															);
+														} else {
+															const newPlaylist = utils
+																.convertToTrackPlayerFormat([item])
+																.concat(
+																	utils.convertToTrackPlayerFormatFromGeneratedPlaylist(
+																		tracks
+																	)
+																);
+															this.AppInstance.startInPlayer(
+																newPlaylist.map((item, index) => {
+																	return {
+																		...item,
+																		id: index.toString(),
+																	};
+																})
+															);
+														}
+													}
 												);
-											} else {
-												AppInstance.startInPlayer(
-													utils.convertToTrackPlayerFormatFromGeneratedPlaylist(tracks)
-												);
+											}}
+											data={
+												this.AppInstance.state
+													.screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse
 											}
-										}
-									);
-								}}
-								data={
-									AppInstance.state
-										.screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse
-								}
-							/>
+										/>
+									)}
+								</View>
+							</View>
 						</View>
 					</View>
-				</View>
-			</View>
-		</ScrollView>
-	);
-};
+				}
+			</ScrollView>
+		);
+	}
+}

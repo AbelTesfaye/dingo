@@ -1,136 +1,162 @@
 import React from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, RefreshControl } from 'react-native';
 import { TrackList } from '../Lists/ListTrack';
 import { AlbumList } from '../Lists/ListAlbum';
 import utils from '../../BL/Utils/utils';
-export const PageHome = props => {
-	const AppInstance = props.AppInstance;
-	return (
-		<ScrollView>
-			<View style={{ flex: 1 }}>
+export class PageHome extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			refreshing: false,
+		};
+
+		this.AppInstance = props.AppInstance;
+	}
+
+	_onRefresh = () => {
+		this.setState({ refreshing: true });
+		this.AppInstance.getRecentTracksAndPutThemInState().then(() => {
+			this.setState({ refreshing: false });
+		});
+	};
+	render() {
+		return (
+			<ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={this.state.refreshing}
+						onRefresh={this._onRefresh}
+						colors={['orange']}
+					/>
+				}
+			>
 				<View
 					style={{
 						flex: 1,
-						backgroundColor: 'white',
-						margin: 10,
 					}}
 				>
-					<View style={{}}>
-						<Text
-							style={{
-								fontWeight: 'bold',
-								margin: 10,
-								fontSize: 15,
-							}}
-						>
-							From Last Time
-						</Text>
-						<View
-							style={{
-								backgroundColor: 'blue',
-							}}
-						>
-							<TrackList
-								maxItems={5}
-								AppInstance={AppInstance}
-								onTrackPress={(item, index) =>
-									AppInstance.startInPlayer(
-										utils.convertToTrackPlayerFormat(
-											AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse.slice(
-												index
+					<View
+						style={{
+							flex: 1,
+							backgroundColor: 'white',
+							margin: 10,
+						}}
+					>
+						<View style={{}}>
+							<Text
+								style={{
+									fontWeight: 'bold',
+									margin: 10,
+									fontSize: 15,
+								}}
+							>
+								From Last Time
+							</Text>
+							<View>
+								{this.state.refreshing || (
+									<TrackList
+										maxItems={5}
+										AppInstance={this.AppInstance}
+										onTrackPress={(item, index) =>
+											this.AppInstance.startInPlayer(
+												utils.convertToTrackPlayerFormat(
+													this.AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse.slice(
+														index
+													)
+												)
+											)
+										}
+										data={
+											this.AppInstance.state
+												.screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse
+										}
+									/>
+								)}
+							</View>
+						</View>
+
+						<View style={{}}>
+							<Text
+								style={{
+									fontWeight: 'bold',
+									margin: 10,
+									fontSize: 15,
+								}}
+							>
+								Similar Albums
+							</Text>
+							<View
+								style={{
+									backgroundColor: 'blue',
+								}}
+							>
+								<AlbumList
+									data={
+										this.AppInstance.state
+											.screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse
+									}
+									AppInstance={this.AppInstance}
+									maxItems={5}
+								/>
+							</View>
+						</View>
+
+						<View style={{}}>
+							<Text
+								style={{
+									fontWeight: 'bold',
+									margin: 10,
+									fontSize: 15,
+								}}
+							>
+								Top Tracks Chart
+							</Text>
+							<View
+								style={{
+									backgroundColor: 'blue',
+								}}
+							>
+								<TrackList
+									maxItems={10}
+									AppInstance={this.AppInstance}
+									onTrackPress={(item, index) =>
+										this.AppInstance.startInPlayer(
+											utils.convertToTrackPlayerFormat(
+												this.AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse.slice(
+													index
+												)
 											)
 										)
-									)
-								}
-								data={
-									AppInstance.state
-										.screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse
-								}
-							/>
-						</View>
-					</View>
-
-					<View style={{}}>
-						<Text
-							style={{
-								fontWeight: 'bold',
-								margin: 10,
-								fontSize: 15,
-							}}
-						>
-							Similar Albums
-						</Text>
-						<View
-							style={{
-								backgroundColor: 'blue',
-							}}
-						>
-							<AlbumList
-								data={
-									AppInstance.state
-										.screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse
-								}
-								AppInstance={AppInstance}
-								maxItems={5}
-							/>
-						</View>
-					</View>
-
-					<View style={{}}>
-						<Text
-							style={{
-								fontWeight: 'bold',
-								margin: 10,
-								fontSize: 15,
-							}}
-						>
-							Top Tracks Chart
-						</Text>
-						<View
-							style={{
-								backgroundColor: 'blue',
-							}}
-						>
-							<TrackList
-								maxItems={10}
-								AppInstance={AppInstance}
-								onTrackPress={(item, index) =>
-									AppInstance.startInPlayer(
-										utils.convertToTrackPlayerFormat(
-											AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse.slice(
-												index
-											)
-										)
-									)
-								}
-								data={
-									AppInstance.state
-										.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse
-								}
-							/>
+									}
+									data={
+										this.AppInstance.state
+											.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse
+									}
+								/>
+							</View>
 						</View>
 					</View>
 				</View>
-			</View>
 
-			<Text
-				style={{
-					textAlign: 'center',
-					color: '#ddd',
-					margin: 5,
-				}}
-			>
-				Hit me up here for any comments, suggestions, (thank you)s or just about anything:
-			</Text>
-			<Text
-				style={{
-					textAlign: 'center',
-					color: '#ddd',
-					margin: 5,
-				}}
-			>
-				abeltesfaye45@gmail.com
-			</Text>
-		</ScrollView>
-	);
-};
+				<Text
+					style={{
+						textAlign: 'center',
+						color: '#ddd',
+						margin: 5,
+					}}
+				>
+					Hit me up here for any comments, suggestions, (thank you)s or just about anything:
+				</Text>
+				<Text
+					style={{
+						textAlign: 'center',
+						color: '#ddd',
+						margin: 5,
+					}}
+				>
+					abeltesfaye45@gmail.com
+				</Text>
+			</ScrollView>
+		);
+	}
+}

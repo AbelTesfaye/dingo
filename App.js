@@ -29,7 +29,6 @@ export default class App extends Component {
 			screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: null,
 			screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse: null,
 
-			screenStates_screenNavigatorStates_pageLibraryStates_generatedPlaylistIsLoading: false,
 			screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse: false,
 
 			screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: [],
@@ -46,21 +45,22 @@ export default class App extends Component {
 		};
 	}
 
-	_getRecentTracksAndPutThemInState = () => {
-		database
+	getRecentTracksAndPutThemInState = () => {
+		return database
 			.getRecentTracks()
 			.then(recentTracks => {
-				this.setState({
-					screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: recentTracks,
-					screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse: utils.getUnique(
-						recentTracks,
-						'name'
-					),
-				});
+				this.setState(
+					{
+						screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: recentTracks,
+						screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse: utils.getUnique(
+							recentTracks,
+							'name'
+						),
+					},
+					() => this.getSimilarAlbumsAndPutThemInState()
+				);
 			})
 			.catch(e => console.error(e));
-
-		this.getSimilarAlbumsAndPutThemInState();
 	};
 
 	componentDidMount = () => {
@@ -80,28 +80,25 @@ export default class App extends Component {
 			.initialize()
 			.then(s => {
 				this.setState({ isSettingsInitialized: true });
-        console.log('settings is initialized');
-        
+				console.log('settings is initialized');
 
+				this.getChartTopTracksAndPutThemInState();
 
-		this.getChartTopTracksAndPutThemInState();
+				this.getRecentTracksAndPutThemInState();
 
-		this._getRecentTracksAndPutThemInState();
+				this._onTrackChanged = TrackPlayer.addEventListener('playback-track-changed', async data => {
+					if (globals.shouldUIRespondToEvents) {
+						if (data.nextTrack) {
+							const track = await TrackPlayer.getTrack(data.nextTrack);
 
-		this._onTrackChanged = TrackPlayer.addEventListener('playback-track-changed', async data => {
-			if (globals.shouldUIRespondToEvents) {
-				if (data.nextTrack) {
-					const track = await TrackPlayer.getTrack(data.nextTrack);
-
-					this.setState({
-						screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: track,
-					});
-				}
-				this.getTrackPlayerQueueToState();
-				this.updateCurrentPlayingTrackState();
-			}
-		});
-
+							this.setState({
+								screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack: track,
+							});
+						}
+						this.getTrackPlayerQueueToState();
+						this.updateCurrentPlayingTrackState();
+					}
+				});
 			})
 			.catch(e => {
 				console.error(e);
@@ -196,8 +193,7 @@ export default class App extends Component {
 	};
 	getSimilarAlbumsAndPutThemInState = () => {
 		recentItems = this.state.screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse;
-
-		if (recentItems) {
+		if (recentItems && recentItems.length > 0) {
 			randomTrack = recentItems[Math.floor(Math.random() * recentItems.length)];
 			bigTag = randomTrack.artistName.split(' ');
 			tag = bigTag[Math.floor(Math.random() * bigTag.length)];

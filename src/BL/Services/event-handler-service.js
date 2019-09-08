@@ -132,46 +132,29 @@ module.exports = async data => {
 										item.artist
 									)}&song=${encodeURIComponent(item.title)}`,
 									response => {
-										let highestQualityAudio = response.url;
-										fetch(response.url)
-											.then(res => {
-												if (res.status === 403) {
-													_getHighestQualityAudioUsingYtdl(
-														response.videoId,
-														highestQualityAudio =>
-															this._updateTrackPlayerQueueItem(
-																tracks,
-																item,
-																{
-																	url: highestQualityAudio,
-																},
-																() => {
-																	if (shouldFetchCurrent && index === 0)
-																		afterCurrentFetched();
-																}
-															),
-														err => console.error(err)
-													);
-												} else {
-													this._updateTrackPlayerQueueItem(
-														tracks,
-														item,
-														{
-															url: highestQualityAudio,
-														},
-														() => {
-															if (shouldFetchCurrent && index === 0)
-																afterCurrentFetched();
-														}
-													);
-												}
-											})
-											.catch(error => {
-												console.error(error);
-											})
-											.finally(() => {
+									
+										_getHighestQualityAudioUsingYtdl(
+											response.videoId,
+											highestQualityAudio =>{
+
+												this._updateTrackPlayerQueueItem(
+													tracks,
+													item,
+													{
+														url: highestQualityAudio,
+													},
+													() => {
+														if (shouldFetchCurrent && index === 0)
+															afterCurrentFetched();
+													}
+												)
 												cbFinally();
-											});
+											},
+											err => {
+												console.error(err);
+												cbFinally();
+											}
+										);
 									}
 								);
 							}

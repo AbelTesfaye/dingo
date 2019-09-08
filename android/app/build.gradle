@@ -74,7 +74,8 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js"
+    entryFile: "index.js",
+    enableHermes: false
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -87,17 +88,20 @@ apply from: "../../node_modules/react-native/react.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture = true
+def enableSeparateBuildPerCPUArchitecture = false
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = false
 
+ def jscFlavor = 'org.webkit:android-jsc:+'
+
+def enableProguardInReleaseBuilds = false
+def enableHermes = project.ext.react.get("enableHermes", false);
 android {
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -121,11 +125,11 @@ android {
         }
     }
     splits {
-        abi {
-            reset()
-            enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86"//, "arm64-v8a" // 64 bit builds keep failing
+       abi {
+        reset()
+        enable enableSeparateBuildPerCPUArchitecture
+        universalApk false // If true, also generate a universal APK
+        include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
     buildTypes {
@@ -151,6 +155,15 @@ android {
         }
     }
     buildToolsVersion '28.0.3'
+
+    packagingOptions {
+        pickFirst '**/armeabi-v7a/libc++_shared.so'
+        pickFirst '**/x86/libc++_shared.so'
+        pickFirst '**/arm64-v8a/libc++_shared.so'
+        pickFirst '**/x86_64/libc++_shared.so'
+        pickFirst '**/x86/libjsc.so'
+        pickFirst '**/armeabi-v7a/libjsc.so'
+    }
 }
 
 dependencies {
@@ -174,6 +187,15 @@ dependencies {
 
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
     transitive = true
+
+
+    if (enableHermes) {
+    def hermesPath = "../../node_modules/hermesvm/android/";
+    debugImplementation files(hermesPath + "hermes-debug.aar")
+    releaseImplementation files(hermesPath + "hermes-release.aar")
+    } else {
+    implementation jscFlavor
+    }
   }
 
 }
@@ -185,3 +207,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 apply plugin: 'com.google.gms.google-services'
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

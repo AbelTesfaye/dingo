@@ -43,15 +43,15 @@
 		47D3D6C1F6D942F3B535FCF7 /* slidingPanelTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = DA831F02714D411EB3A45AFF /* slidingPanelTests.xctest */; };
 		8C028FCEF911428386B6D513 /* slidingPanel-tvOS.app in Resources */ = {isa = PBXBuildFile; fileRef = 25F52FB3B0BD403C8F70B7B1 /* slidingPanel-tvOS.app */; };
 		D3C903F52AFD465BAC9A215C /* slidingPanel-tvOSTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = 71BA73B5E6594AAD880CE6A9 /* slidingPanel-tvOSTests.xctest */; };
-		FD736E7BB652473596C74776 /* libRNTrackPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF3355C5ABB450482E146A3 /* libRNTrackPlayer.a */; };
 		B45E85A2A27B4ACA80365B98 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8D22878B64B46DB9AD600CC /* Ionicons.ttf */; };
-		F8604746FA274A9499E0D259 /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C4ABA2285143DEBD0A974F /* libRNBackgroundTimer.a */; };
 		9E3AB28736024D89885623D2 /* libSQLite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41E620ACB1814410A30A4F5B /* libSQLite.a */; };
 		D6A923AB0589414DBFB59755 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 569C98615DAA41479A89A2C0 /* libSplashScreen.a */; };
-		0017625238A0412B9DD75BDC /* libRNReanimated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BD1CEE88DFA7499DAECD4F51 /* libRNReanimated.a */; };
-		B7BD7A3682E34CB6BB9C7E7D /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D7692EFBC65B4AD1ABE332B6 /* libRNGestureHandler.a */; };
-		D5F08EE05A8E485180720F14 /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2794EC90AF4447E18661F0B3 /* libRNGestureHandler-tvOS.a */; };
 		D2133D2EA41044CE8002C0FA /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC2E4C4B819485A8823033B /* libRNFirebase.a */; };
+		7A2506EECAC144FE90BCDAF2 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AEEC3349FCAF493BAB3F5F99 /* libRNGestureHandler.a */; };
+		CD6352F2B4DB4EDE95C92539 /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8BDAC0FC8C24FE483D409FE /* libRNGestureHandler-tvOS.a */; };
+		8D4F12FDD97F4D5AAF412993 /* libRNTrackPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CABCAD09194C43029B462738 /* libRNTrackPlayer.a */; };
+		A4374EFD29C1462CAEDA7B69 /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 840A2BE0E0FC4DD792910BC7 /* libRNBackgroundTimer.a */; };
+		FA0322482D7A49FC915EC06A /* libRNReanimated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BC48A2BEA2D4F07A8E33BC0 /* libRNReanimated.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -364,22 +364,22 @@
 		DA831F02714D411EB3A45AFF /* slidingPanelTests.xctest */ = {isa = PBXFileReference; name = "slidingPanelTests.xctest"; path = "slidingPanelTests.xctest"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.cfbundle; explicitFileType = undefined; includeInIndex = 0; };
 		25F52FB3B0BD403C8F70B7B1 /* slidingPanel-tvOS.app */ = {isa = PBXFileReference; name = "slidingPanel-tvOS.app"; path = "slidingPanel-tvOS.app"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.application; explicitFileType = undefined; includeInIndex = 0; };
 		71BA73B5E6594AAD880CE6A9 /* slidingPanel-tvOSTests.xctest */ = {isa = PBXFileReference; name = "slidingPanel-tvOSTests.xctest"; path = "slidingPanel-tvOSTests.xctest"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.cfbundle; explicitFileType = undefined; includeInIndex = 0; };
-		1C2D8FE020394FF380F02473 /* RNTrackPlayer.xcodeproj */ = {isa = PBXFileReference; name = "RNTrackPlayer.xcodeproj"; path = "../node_modules/react-native-track-player/ios/RNTrackPlayer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		BBF3355C5ABB450482E146A3 /* libRNTrackPlayer.a */ = {isa = PBXFileReference; name = "libRNTrackPlayer.a"; path = "libRNTrackPlayer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		B8D22878B64B46DB9AD600CC /* Ionicons.ttf */ = {isa = PBXFileReference; name = "Ionicons.ttf"; path = "../node_modules/react-native-ionicons/fonts/Ionicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		BBBC2E557E1F48D9B74D74E7 /* RNBackgroundTimer.xcodeproj */ = {isa = PBXFileReference; name = "RNBackgroundTimer.xcodeproj"; path = "../node_modules/react-native-background-timer/ios/RNBackgroundTimer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		71C4ABA2285143DEBD0A974F /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; name = "libRNBackgroundTimer.a"; path = "libRNBackgroundTimer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		C877039B356B49CC842BBCEB /* SQLite.xcodeproj */ = {isa = PBXFileReference; name = "SQLite.xcodeproj"; path = "../node_modules/react-native-sqlite-storage/src/ios/SQLite.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		41E620ACB1814410A30A4F5B /* libSQLite.a */ = {isa = PBXFileReference; name = "libSQLite.a"; path = "libSQLite.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		6FB25C171C584AB089411F57 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; name = "SplashScreen.xcodeproj"; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		569C98615DAA41479A89A2C0 /* libSplashScreen.a */ = {isa = PBXFileReference; name = "libSplashScreen.a"; path = "libSplashScreen.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		CD53495CAC0B4E9DAB02867E /* RNReanimated.xcodeproj */ = {isa = PBXFileReference; name = "RNReanimated.xcodeproj"; path = "../node_modules/react-native-reanimated/ios/RNReanimated.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		BD1CEE88DFA7499DAECD4F51 /* libRNReanimated.a */ = {isa = PBXFileReference; name = "libRNReanimated.a"; path = "libRNReanimated.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		4042CF1EAA3440108C86AE6F /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; name = "RNGestureHandler.xcodeproj"; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		D7692EFBC65B4AD1ABE332B6 /* libRNGestureHandler.a */ = {isa = PBXFileReference; name = "libRNGestureHandler.a"; path = "libRNGestureHandler.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		2794EC90AF4447E18661F0B3 /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; name = "libRNGestureHandler-tvOS.a"; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		C40BBC736FE44D22850769E8 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; name = "RNFirebase.xcodeproj"; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		9FC2E4C4B819485A8823033B /* libRNFirebase.a */ = {isa = PBXFileReference; name = "libRNFirebase.a"; path = "libRNFirebase.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		3AC14277F2D44E7E8811D4C8 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; name = "RNGestureHandler.xcodeproj"; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		AEEC3349FCAF493BAB3F5F99 /* libRNGestureHandler.a */ = {isa = PBXFileReference; name = "libRNGestureHandler.a"; path = "libRNGestureHandler.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		D8BDAC0FC8C24FE483D409FE /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; name = "libRNGestureHandler-tvOS.a"; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		4AD6F62BBDE14137B99F80A2 /* RNTrackPlayer.xcodeproj */ = {isa = PBXFileReference; name = "RNTrackPlayer.xcodeproj"; path = "../node_modules/react-native-track-player/ios/RNTrackPlayer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		CABCAD09194C43029B462738 /* libRNTrackPlayer.a */ = {isa = PBXFileReference; name = "libRNTrackPlayer.a"; path = "libRNTrackPlayer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		5AD1EEFA2AAA41549CFE9947 /* RNBackgroundTimer.xcodeproj */ = {isa = PBXFileReference; name = "RNBackgroundTimer.xcodeproj"; path = "../node_modules/react-native-background-timer/ios/RNBackgroundTimer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		840A2BE0E0FC4DD792910BC7 /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; name = "libRNBackgroundTimer.a"; path = "libRNBackgroundTimer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		4B19E43F8E5F4774856AB0E7 /* RNReanimated.xcodeproj */ = {isa = PBXFileReference; name = "RNReanimated.xcodeproj"; path = "../node_modules/react-native-reanimated/ios/RNReanimated.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		4BC48A2BEA2D4F07A8E33BC0 /* libRNReanimated.a */ = {isa = PBXFileReference; name = "libRNReanimated.a"; path = "libRNReanimated.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -410,13 +410,13 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				6D224DF67FA14776BEF4F9AD /* slidingPanel.app in Resources */,
 				47D3D6C1F6D942F3B535FCF7 /* slidingPanelTests.xctest in Resources */,
-				FD736E7BB652473596C74776 /* libRNTrackPlayer.a in Frameworks */,
-				F8604746FA274A9499E0D259 /* libRNBackgroundTimer.a in Frameworks */,
 				9E3AB28736024D89885623D2 /* libSQLite.a in Frameworks */,
 				D6A923AB0589414DBFB59755 /* libSplashScreen.a in Frameworks */,
-				0017625238A0412B9DD75BDC /* libRNReanimated.a in Frameworks */,
-				B7BD7A3682E34CB6BB9C7E7D /* libRNGestureHandler.a in Frameworks */,
 				D2133D2EA41044CE8002C0FA /* libRNFirebase.a in Frameworks */,
+				7A2506EECAC144FE90BCDAF2 /* libRNGestureHandler.a in Frameworks */,
+				8D4F12FDD97F4D5AAF412993 /* libRNTrackPlayer.a in Frameworks */,
+				A4374EFD29C1462CAEDA7B69 /* libRNBackgroundTimer.a in Frameworks */,
+				FA0322482D7A49FC915EC06A /* libRNReanimated.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,6 +436,7 @@
 				8C028FCEF911428386B6D513 /* slidingPanel-tvOS.app in Resources */,
 				D3C903F52AFD465BAC9A215C /* slidingPanel-tvOSTests.xctest in Resources */,
 				D5F08EE05A8E485180720F14 /* libRNGestureHandler-tvOS.a in Frameworks */,
+				CD6352F2B4DB4EDE95C92539 /* libRNGestureHandler-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -610,13 +611,13 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				F7EE62BF694F4A81ABA304A3 /* slidingPanel.xcodeproj */,
-				1C2D8FE020394FF380F02473 /* RNTrackPlayer.xcodeproj */,
-				BBBC2E557E1F48D9B74D74E7 /* RNBackgroundTimer.xcodeproj */,
 				C877039B356B49CC842BBCEB /* SQLite.xcodeproj */,
 				6FB25C171C584AB089411F57 /* SplashScreen.xcodeproj */,
-				CD53495CAC0B4E9DAB02867E /* RNReanimated.xcodeproj */,
-				4042CF1EAA3440108C86AE6F /* RNGestureHandler.xcodeproj */,
 				C40BBC736FE44D22850769E8 /* RNFirebase.xcodeproj */,
+				3AC14277F2D44E7E8811D4C8 /* RNGestureHandler.xcodeproj */,
+				4AD6F62BBDE14137B99F80A2 /* RNTrackPlayer.xcodeproj */,
+				5AD1EEFA2AAA41549CFE9947 /* RNBackgroundTimer.xcodeproj */,
+				4B19E43F8E5F4774856AB0E7 /* RNReanimated.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1260,20 +1261,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sliding-up-down-panels/ios/slidingPanel/**",
-					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
-					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
-					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
+					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 				);
 			};
 			name = Debug;
@@ -1300,20 +1298,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sliding-up-down-panels/ios/slidingPanel/**",
-					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
-					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
-					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
+					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 				);
 			};
 			name = Release;
@@ -1337,13 +1332,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sliding-up-down-panels/ios/slidingPanel/**",
-					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
-					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
-					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
+					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 				);
 			};
 			name = Debug;
@@ -1366,13 +1361,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sliding-up-down-panels/ios/slidingPanel/**",
-					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
-					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
-					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
+					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 				);
 			};
 			name = Release;
@@ -1407,20 +1402,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sliding-up-down-panels/ios/slidingPanel/**",
-					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
-					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
-					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
+					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 				);
 			};
 			name = Debug;
@@ -1455,20 +1447,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sliding-up-down-panels/ios/slidingPanel/**",
-					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
-					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
-					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
+					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 				);
 			};
 			name = Release;
@@ -1502,20 +1491,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sliding-up-down-panels/ios/slidingPanel/**",
-					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
-					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
-					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
+					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 				);
 			};
 			name = Debug;
@@ -1549,20 +1535,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sliding-up-down-panels/ios/slidingPanel/**",
-					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
-					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
-					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
+					"$(SRCROOT)/../node_modules/react-native-background-timer/ios",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 				);
 			};
 			name = Release;

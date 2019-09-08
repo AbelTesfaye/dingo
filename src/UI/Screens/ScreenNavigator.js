@@ -24,7 +24,6 @@ export class ScreenNavigator extends React.Component {
 			],
 		};
 		this.AppInstance = this.props.AppInstance;
-		this.disableAnimations = true;
 	}
 
 	_renderTabBar = props => {
@@ -38,21 +37,15 @@ export class ScreenNavigator extends React.Component {
 				<View style={{ ...styles.tabbar }}>
 					{props.navigationState.routes.map((route, index) => {
 						return (
-							<TouchableWithoutFeedback
-								key={route.key}
-								onPress={() => {
-									this.disableAnimations = true;
-									props.jumpTo(route.key);
-									this.forceUpdate();
-								}}
-							>
-								<View style={{ flex: 1 }}>
-									{this._renderItem({ ...props, disableAnimations: this.disableAnimations })({
+
+								<View
+									key={route.key}
+									style={{ flex: 1 }}>
+									{this._renderItem(props)({
 										route,
 										index,
 									})}
 								</View>
-							</TouchableWithoutFeedback>
 						);
 					})}
 				</View>
@@ -77,7 +70,6 @@ export class ScreenNavigator extends React.Component {
 				return d === (0.49).toFixed(2) || d === (0.51).toFixed(2) || Math.round(x) !== index ? 0 : 1;
 			}),
 		});
-		disableAnimations = props.disableAnimations;
 		return (
 			<View style={{ ...styles.tab, alignItems: 'center', justifyContent: 'center' }}>
 				<Animated.View style={[styles.item]}>
@@ -87,18 +79,10 @@ export class ScreenNavigator extends React.Component {
 								styles.indicator,
 								{
 									position: 'absolute',
-									opacity: disableAnimations
-										? props.navigationState.index === index
-											? 1
-											: 0
-										: opacity,
+									opacity:opacity,
 									transform: [
 										{
-											scale: disableAnimations
-												? index === props.navigationState.index
-													? 2
-													: 0
-												: scale,
+											scale:scale
 										},
 									],
 									backgroundColor: route.color,
@@ -131,13 +115,6 @@ export class ScreenNavigator extends React.Component {
 						navigationState={this.state}
 						renderTabBar={p => this._renderTabBar({ ...p, width: width })}
 						tabBarPosition={'bottom'}
-						onSwipeStart={() => {
-							this.disableAnimations = false;
-							this.forceUpdate();
-						}}
-						onSwipeEnd={() => {
-							this.disableAnimations = true;
-						}}
 						renderScene={({ route }) => {
 							switch (route.key) {
 								case 'PAGE_HOME':

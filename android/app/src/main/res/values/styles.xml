@@ -15,4 +15,10 @@
     <style name="SplashScreen_Fullscreen" parent="SplashScreen_SplashTheme">
         <item name="android:windowFullscreen">true</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>

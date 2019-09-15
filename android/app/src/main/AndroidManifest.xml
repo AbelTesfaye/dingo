@@ -12,6 +12,68 @@
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+
+    <service
+        android:name=".PIPVideoPlayer.PIPVideoPlayerService"
+        android:exported="false" />
+
+    <activity
+        android:name=".PIPVideoPlayer.DingoMiniPlayer"
+        android:label="dingo Mini Player"
+        android:showOnLockScreen="true"
+        android:showWhenLocked="true"
+        android:turnScreenOn="true"
+        android:theme="@style/AppTheme.NoActionBar">
+
+        <intent-filter>
+            <action android:name="android.intent.action.SEND" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <data android:mimeType="text/plain" />
+        </intent-filter>
+
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data android:scheme="https"
+                android:host="m.youtube.com"
+                android:pathPrefix="/watch" />
+
+        </intent-filter>
+
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data android:scheme="https"
+                android:host="www.youtube.com"
+                android:pathPrefix="/watch" />
+        </intent-filter>
+
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data android:scheme="https"
+                android:host="youtube.com"
+                android:pathPrefix="/watch" />
+        </intent-filter>
+
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data android:scheme="https"
+                android:host="youtu.be"
+                android:pathPrefix="/" />
+        </intent-filter>
+
+    </activity>
   </application>
 
 </manifest>

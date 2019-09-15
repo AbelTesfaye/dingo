@@ -181,6 +181,13 @@ dependencies {
 
     implementation project(':react-native-sqlite-storage')
 
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.4'
+    implementation 'androidx.annotation:annotation:1.0.0'
+    implementation 'androidx.core:core:1.0.0'
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+    implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
+
+
      // Firebase dependencies
     implementation "com.google.android.gms:play-services-base:16.0.1"
     implementation "com.google.firebase:firebase-core:16.0.6"

@@ -5,6 +5,7 @@ import android.app.Application;
 import com.crashlytics.android.Crashlytics;
 import com.dingo.SplashScreen.SplashScreenReactPackage;
 import com.dingo.ProxiedFetch.ProxiedFetchReactPackage;
+import com.dingo.PIPVideoPlayer.PIPVideoPlayerPackage;
 import com.facebook.react.ReactApplication;
 import io.fabric.sdk.android.Fabric;
 import io.invertase.firebase.RNFirebasePackage;
@@ -40,6 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
             new ReanimatedPackage(),
             new SplashScreenReactPackage(),
             new ProxiedFetchReactPackage(),
+            new PIPVideoPlayerPackage(),
             new BackgroundTimerPackage(),
           new TrackPlayer(),
           new SQLitePluginPackage(),

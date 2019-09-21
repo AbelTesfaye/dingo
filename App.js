@@ -152,8 +152,8 @@ export default class App extends Component {
 	};
 
 	_searchArtists = (query, callback) => {
-		utils.fetchFromEndpoint(`searchArtist?q=${encodeURIComponent(query)}`, responseJson => {
-			callback(responseJson);
+		utils.fetchFromLastFmWithoutParsing(`search/artists?q=${encodeURIComponent(query)}`, response => {
+			callback(response);
 		});
 	};
 	_searchAlbums = (query, callback) => {
@@ -162,8 +162,8 @@ export default class App extends Component {
 		});
 	};
 	_searchTracks = (query, callback) => {
-		utils.fetchFromEndpoint(`searchTrack?q=${encodeURIComponent(query)}`, responseJson => {
-			callback(responseJson);
+		utils.fetchFromLastFmWithoutParsing(`search/tracks?q=${encodeURIComponent(query)}`, response => {
+			callback(response);
 		});
 	};
 	_searchYouTube = (query, callback) => {
@@ -173,13 +173,13 @@ export default class App extends Component {
 	};
 
 	_getChartTopTracks = callback => {
-		utils.fetchFromEndpoint(`getChartTopTracks`, responseJson => {
-			callback(responseJson);
+		utils.fetchFromLastFmWithoutParsing(`charts`, response => {
+			callback(response);
 		});
 	};
 	getChartTopTracksAndPutThemInState = () => {
-		this._getChartTopTracks(responseJson => {
-			const results = responseJson.result;
+		this._getChartTopTracks(response => {
+			const results = utils.getTopTracks(response);
 			this.setState({
 				screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse: results,
 			});
@@ -235,11 +235,8 @@ export default class App extends Component {
 	startSearch = q => {
 		const query = q || this.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText;
 
-		this._searchArtists(query, responseJson => {
-			const results = responseJson.result.map(i => ({
-				...i,
-				key: shortid.generate(),
-			}));
+		this._searchArtists(query, response => {
+			const results = utils.getArtists(response)
 
 			this.setState({
 				screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse: results,
@@ -256,11 +253,8 @@ export default class App extends Component {
 			});
 		});
 
-		this._searchTracks(query, responseJson => {
-			const results = responseJson.result.map(i => ({
-				...i,
-				key: shortid.generate(),
-			}));
+		this._searchTracks(query, response => {
+			const results = utils.getTracks(response)
 			this.setState({
 				screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: results,
 			});

@@ -858,7 +858,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
         mScreenTouchY = event.getRawY();
         final int action = event.getAction();
         boolean isWaitForMoveToEdge = false;
-        int maxDiff = getWidth() * 1 / 3;
+        int maxDiff = getWidth() * 1 / 2;
         boolean slideLeft=false;
         boolean slideRight=false;
         boolean slideOut=false;

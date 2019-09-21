@@ -2,8 +2,10 @@ package com.dingo.PIPVideoPlayer;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.IBinder;
@@ -24,6 +26,7 @@ import com.dingo.floatingview.FloatingViewManager;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 
 
 /**
@@ -58,6 +61,37 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
 
     String vId = ""; //YouTube VideoId
 
+    static YouTubePlayerView youTubePlayerView;
+
+    private final BroadcastReceiver myReceiver = new myReceiver();
+
+    public static void performYoutubePlayerAction(String action){
+        if(youTubePlayerView == null){
+            Log.e("PIPVideoPlayerService", "youTubePlayerView is null");
+            return;
+        }
+        youTubePlayerView.getYouTubePlayerWhenReady(youTubePlayer -> { 
+            if(action.equals("PAUSE")){
+                youTubePlayer.pause();
+            }
+            else if(action.equals("PLAY")){
+                youTubePlayer.play();
+            }
+            
+        });
+    }
+
+    public static void load(String url){
+        if(youTubePlayerView == null){
+            Log.e("PIPVideoPlayerService", "youTubePlayerView is null");
+            return;
+        }
+        youTubePlayerView.getYouTubePlayerWhenReady(youTubePlayer -> { 
+                youTubePlayer.loadVideo(url,0);
+        });
+    }
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 既にManagerが存在していたら何もしない
@@ -65,12 +99,17 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
             return START_STICKY;
         }
 
+
+        final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(myReceiver, filter);
+
         final DisplayMetrics metrics = new DisplayMetrics();
         final WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(metrics);
         final LayoutInflater inflater = LayoutInflater.from(this);
         final FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.floating_view, null, false);
-        final YouTubePlayerView youTubePlayerView = frameLayout.findViewById(R.id.youtube_player_view);
+        youTubePlayerView = frameLayout.findViewById(R.id.youtube_player_view);
 
         Uri receivedUri = intent.getData();
 
@@ -89,12 +128,22 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
             Toast.makeText(this, "Video id is null. Exiting...", Toast.LENGTH_LONG).show();
             onFinishFloatingView();
         }
+
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 Log.e("XXXX","player of yt ready!");
                 youTubePlayer.loadVideo(vId, 0);
             }
+            @Override
+            public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState state) {
+                super.onStateChange(youTubePlayer, state);
+
+                PIPVideoPlayerModule.publishState(state);
+
+                Log.e("XXXX","current state: "+state);
+            }
+            
         });
         mFloatingViewManager = new FloatingViewManager(this, this);
         mFloatingViewManager.setSafeInsetRect((Rect) intent.getParcelableExtra(EXTRA_CUTOUT_SAFE_AREA));
@@ -117,10 +166,25 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
      */
     @Override
     public void onDestroy() {
+        if(youTubePlayerView != null)
+            youTubePlayerView.release();
+
+        unregisterReceiver(myReceiver);
+
         destroy();
         super.onDestroy();
     }
 
+    public class myReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                performYoutubePlayerAction("PAUSE");
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                //Do something when it's back on
+            }
+        }
+    }
     /**
      * {@inheritDoc}
      */
@@ -134,6 +198,7 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
      */
     @Override
     public void onFinishFloatingView() {
+        youTubePlayerView.release();
         stopSelf();
         Log.d(TAG, "finish_deleted");
     }

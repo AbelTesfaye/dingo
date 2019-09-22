@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, ScrollView, RefreshControl } from 'react-native';
+import { Text, View, ScrollView, RefreshControl, TouchableNativeFeedback, Linking } from 'react-native';
 import { TrackList } from '../Lists/ListTrack';
 import { AlbumList } from '../Lists/ListAlbum';
 import utils from '../../BL/Utils/utils';
@@ -19,6 +19,11 @@ export class PageHome extends React.Component {
 			this.setState({ refreshing: false });
 		});
 	};
+
+	handleLinkClick = () => this._openUrl("https://t.me/dingoCommunity")
+
+	_openUrl = (url) => Linking.openURL(url);
+
 	render() {
 		return (
 			<ScrollView
@@ -138,24 +143,28 @@ export class PageHome extends React.Component {
 					</View>
 				</View>
 
-				<Text
-					style={{
-						textAlign: 'center',
-						color: '#ddd',
-						margin: 5,
-					}}
-				>
-					Hit me up here for any comments, suggestions, (thank you)s or just about anything:
-				</Text>
-				<Text
-					style={{
-						textAlign: 'center',
-						color: '#ddd',
-						margin: 5,
-					}}
-				>
-					abeltesfaye45@gmail.com
-				</Text>
+				<TouchableNativeFeedback onPress={this.handleLinkClick}>
+					<View>
+						<Text
+							style={{
+								textAlign: 'center',
+								color: '#ddd',
+								margin: 5,
+							}}
+						>
+							For any comments, suggestions or (thank you)s click here to find us on our Telegram group:
+						</Text>
+						<Text
+							style={{
+								textAlign: 'center',
+								color: '#ddd',
+								margin: 5,
+							}}
+						>
+							https://t.me/dingoCommunity
+						</Text>
+					</View>
+				</TouchableNativeFeedback>
 			</ScrollView>
 		);
 	}

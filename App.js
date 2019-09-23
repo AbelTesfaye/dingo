@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
-import shortid from 'shortid';
 import { ScreenDetail } from './src/UI/Screens/ScreenDetail';
 import { ScreenNavigator } from './src/UI/Screens/ScreenNavigator';
 import ScreenPlayer from './src/UI/Screens/ScreenPlayer';
@@ -22,11 +21,6 @@ export default class App extends Component {
 
 			screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse: null,
 			screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: null,
-
-			screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse: null,
-			screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse: null,
-			screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: null,
-			screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse: null,
 
 			screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse: false,
 
@@ -148,27 +142,6 @@ export default class App extends Component {
 		});
 	};
 
-	_searchArtists = (query, callback) => {
-		utils.fetchFromLastFmWithoutParsing(`search/artists?q=${encodeURIComponent(query)}`, response => {
-			callback(response);
-		});
-	};
-	_searchAlbums = (query, callback) => {
-		utils.fetchFromEndpoint(`searchAlbum?q=${encodeURIComponent(query)}`, responseJson => {
-			callback(responseJson);
-		});
-	};
-	_searchTracks = (query, callback) => {
-		utils.fetchFromLastFmWithoutParsing(`search/tracks?q=${encodeURIComponent(query)}`, response => {
-			callback(response);
-		});
-	};
-	_searchYouTube = (query, callback) => {
-		utils.fetchFromEndpoint(`searchYouTube?q=${encodeURIComponent(query)}`, responseJson => {
-			callback(responseJson);
-		});
-	};
-
 	_getSimilarAlbums = (tag, callback) => {
 		utils.fetchFromEndpoint(`tagTopAlbums?tag=${encodeURIComponent(tag)}`, responseJson => {
 			callback(responseJson);
@@ -213,44 +186,6 @@ export default class App extends Component {
 		this.setState({
 			screenStates_screenNavigatorStates_newQueueItems: tracks,
 			activeScreen: 'SCREEN_PLAYER',
-		});
-	};
-	startSearch = q => {
-		const query = q || this.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText;
-
-		this._searchArtists(query, response => {
-			const results = utils.getArtists(response)
-
-			this.setState({
-				screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse: results,
-			});
-		});
-
-		this._searchAlbums(query, responseJson => {
-			const results = responseJson.result.map(i => ({
-				...i,
-				key: shortid.generate(),
-			}));
-			this.setState({
-				screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse: results,
-			});
-		});
-
-		this._searchTracks(query, response => {
-			const results = utils.getTracks(response)
-			this.setState({
-				screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: results,
-			});
-		});
-
-		this._searchYouTube(query, responseJson => {
-			const results = responseJson.results.map(i => ({
-				...i,
-				key: shortid.generate(),
-			}));
-			this.setState({
-				screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse: results,
-			});
 		});
 	};
 

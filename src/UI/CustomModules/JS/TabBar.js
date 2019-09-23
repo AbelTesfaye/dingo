@@ -11,7 +11,7 @@ export class TabBar extends React.Component {
     }
     constructor(props) {
         super(props)
-
+        this.AppInstance = this.props.AppInstance
     }
     _renderTabBar = props => {
         return (

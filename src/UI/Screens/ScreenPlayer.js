@@ -41,15 +41,10 @@ export default class ScreenPlayer extends Component {
 		let tracksToPlay = this.props.tracks;
 		const indexToPlay = 0;
 
-		if (!(tracksToPlay.length < 1)) {
+		if (tracksToPlay.length > 0) { // if not started from miniplayer
 
 			this._putTracksFromPropToState(()=>this.playItemInTrackQueue(indexToPlay));
 
-		} else {
-			//if started from miniplayer
-
-			this.AppInstance.getTrackPlayerQueueToState();
-			this.AppInstance.updateCurrentPlayingTrackState();
 		}
 
 		const eventEmitter = new NativeEventEmitter(PIPVideoPlayer);

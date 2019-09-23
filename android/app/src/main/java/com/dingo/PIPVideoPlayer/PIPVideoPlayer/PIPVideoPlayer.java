@@ -19,7 +19,7 @@ public class PIPVideoPlayer {
                         .setTitle("Need Permissions")
                         .setMessage("dingo needs \"Draw over other apps\" permission to play videos")
                         .setCancelable(false)
-                        .setPositiveButton("Settings", (dialog, which) -> ContextCompat.startActivity(
+                        .setPositiveButton("Give Permission", (dialog, which) -> ContextCompat.startActivity(
                                                                                             context,
                                                                                             new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()))
                                                                                             ,null))

@@ -7,9 +7,9 @@ export class PageHome extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			refreshing: false,
 			topTracksChartResponse: null,
-
+			isGetChartTopTracksFinished: true,
+			isGetRecentTracksAndPutThemInStateFinished: true,
 		};
 
 		this.AppInstance = props.AppInstance;
@@ -19,16 +19,21 @@ export class PageHome extends React.Component {
 	}
 
 	_onRefresh = () => {
-		this.setState({ refreshing: true });
+		this.getChartTopTracksAndPutThemInState()
+
+		this.setState({ isGetRecentTracksAndPutThemInStateFinished: false });
 		this.AppInstance.getRecentTracksAndPutThemInState().then(() => {
-			this.setState({ refreshing: false });
+			this.setState({ isGetRecentTracksAndPutThemInStateFinished: true });
 		});
 	};
 
 	_getChartTopTracks = callback => {
-		utils.fetchFromLastFmWithoutParsing(`charts`, response => {
-			callback(response);
-		});
+		this.setState({isGetChartTopTracksFinished: false})
+		utils.fetchFromLastFmWithoutParsing(
+			`charts`, response => callback(response),
+			(err) => utils.showNetworkLoadingAlert("Couldn't get Top Tracks", this.getChartTopTracksAndPutThemInState),
+			()=>this.setState({isGetChartTopTracksFinished: true})
+		);
 	};
 	getChartTopTracksAndPutThemInState = () => {
 		this._getChartTopTracks(response => {
@@ -48,7 +53,8 @@ export class PageHome extends React.Component {
 			<ScrollView
 				refreshControl={
 					<RefreshControl
-						refreshing={this.state.refreshing}
+						refreshing={!this.state.isGetRecentTracksAndPutThemInStateFinished ||
+									!this.state.isGetChartTopTracksFinished}
 						onRefresh={this._onRefresh}
 						colors={['orange']}
 					/>

@@ -1,3 +1,4 @@
+import {Alert} from "react-native";
 const cheerio = require('cheerio');
 
 function formatTwoDigits(n) {
@@ -19,7 +20,7 @@ export const formatTime = seconds => {
 	}
 };
 
-fetchFromEndpoint = (endpoint, callback) => {
+fetchFromEndpoint = (endpoint, callback, errCb, finallyCb) => {
 	const url = 'https://dingo-backend.now.sh/';
 
 	console.log('fetching from url:' + `${url}${endpoint}`);
@@ -29,10 +30,16 @@ fetchFromEndpoint = (endpoint, callback) => {
 			callback(responseJson);
 		})
 		.catch(error => {
-			console.error(error);
+			if(errCb)
+				errCb(error);
+			else
+				console.error(error)
+		}).finally(()=>{
+			if(finallyCb)
+				finallyCb()
 		});
 };
-fetchFromEndpointWithoutParsing = (endpoint, callback) => {
+fetchFromEndpointWithoutParsing = (endpoint, callback, errCb, finallyCb) => {
 	const url = 'https://dingo-backend.now.sh/';
 
 	fetch(`${url}${endpoint}`)
@@ -41,11 +48,17 @@ fetchFromEndpointWithoutParsing = (endpoint, callback) => {
 			callback(response);
 		})
 		.catch(error => {
-			console.error(error);
+			if(errCb)
+				errCb(error);
+			else
+				console.error(error)
+		}).finally(()=>{
+			if(finallyCb)
+				finallyCb()
 		});
 };
 
-fetchFromLastFmWithoutParsing = (endpoint, callback) => {
+fetchFromLastFmWithoutParsing = (endpoint, callback, errCb, finallyCb) => {
 	const url = 'https://www.last.fm/';
 
 	console.log('fetching from url:' + `${url}${endpoint}`);
@@ -55,7 +68,13 @@ fetchFromLastFmWithoutParsing = (endpoint, callback) => {
 			callback(responseText);
 		})
 		.catch(error => {
-			console.error(error);
+			if(errCb)
+				errCb(error);
+			else
+				console.error(error)
+		}).finally(()=>{
+			if(finallyCb)
+				finallyCb()
 		});
 };
 
@@ -195,6 +214,18 @@ const getTracks = (html) => {
 
 }
 
+const showNetworkLoadingAlert = (message, retryCb) => {
+
+	Alert.alert(
+		"Network Error",
+		message,
+		[
+		  {text: 'Retry', onPress: () => retryCb()},
+		],
+		{cancelable: true}
+	  );
+}
+
 const utils = {
 	fetchFromEndpoint,
 	fetchFromEndpointWithoutParsing,
@@ -209,5 +240,6 @@ const utils = {
 	getTopTracks,
 	getArtists,
 	getTracks,
+	showNetworkLoadingAlert,
 };
 export default utils;

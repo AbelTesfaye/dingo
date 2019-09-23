@@ -20,7 +20,6 @@ export default class App extends Component {
 
 			screenStates_screenNavigatorStates_newQueueItems: [],
 
-			screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse: null,
 			screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse: null,
 			screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: null,
 
@@ -81,8 +80,6 @@ export default class App extends Component {
 			.then(s => {
 				this.setState({ isSettingsInitialized: true });
 				console.log('settings is initialized');
-
-				this.getChartTopTracksAndPutThemInState();
 
 				this.getRecentTracksAndPutThemInState();
 
@@ -169,20 +166,6 @@ export default class App extends Component {
 	_searchYouTube = (query, callback) => {
 		utils.fetchFromEndpoint(`searchYouTube?q=${encodeURIComponent(query)}`, responseJson => {
 			callback(responseJson);
-		});
-	};
-
-	_getChartTopTracks = callback => {
-		utils.fetchFromLastFmWithoutParsing(`charts`, response => {
-			callback(response);
-		});
-	};
-	getChartTopTracksAndPutThemInState = () => {
-		this._getChartTopTracks(response => {
-			const results = utils.getTopTracks(response);
-			this.setState({
-				screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse: results,
-			});
 		});
 	};
 

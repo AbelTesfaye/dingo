@@ -8,15 +8,34 @@ export class PageHome extends React.Component {
 		super(props);
 		this.state = {
 			refreshing: false,
+			topTracksChartResponse: null,
+
 		};
 
 		this.AppInstance = props.AppInstance;
+	}
+	componentDidMount(){
+		this.getChartTopTracksAndPutThemInState();
 	}
 
 	_onRefresh = () => {
 		this.setState({ refreshing: true });
 		this.AppInstance.getRecentTracksAndPutThemInState().then(() => {
 			this.setState({ refreshing: false });
+		});
+	};
+
+	_getChartTopTracks = callback => {
+		utils.fetchFromLastFmWithoutParsing(`charts`, response => {
+			callback(response);
+		});
+	};
+	getChartTopTracksAndPutThemInState = () => {
+		this._getChartTopTracks(response => {
+			const results = utils.getTopTracks(response);
+			this.setState({
+				topTracksChartResponse: results,
+			});
 		});
 	};
 
@@ -127,15 +146,15 @@ export class PageHome extends React.Component {
 									onTrackPress={(item, index) =>
 										this.AppInstance.startInPlayer(
 											utils.convertToTrackPlayerFormat(
-												this.AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse.slice(
+												this.state.topTracksChartResponse.slice(
 													index
 												)
 											)
 										)
 									}
 									data={
-										this.AppInstance.state
-											.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse
+										this.state
+											.topTracksChartResponse
 									}
 								/>
 							</View>

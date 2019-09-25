@@ -51,7 +51,7 @@ export default class ScreenPlayer extends Component {
 		}
 
 		const PIPVideoPlayerEventEmitter = new NativeEventEmitter(PIPVideoPlayer);
-
+		PIPVideoPlayerEventEmitter.removeAllListeners('PIPVideoPlayer')
 		PIPVideoPlayerEventEmitter.addListener('PIPVideoPlayer', (event) => {
 			console.log(event)
 			if(event.state)
@@ -60,7 +60,7 @@ export default class ScreenPlayer extends Component {
 		})
 
 		const AndroidYouTubePlayerEventEmitter = new NativeEventEmitter(AndroidYouTubePlayer);
-
+		AndroidYouTubePlayerEventEmitter.removeAllListeners('AndroidYouTubePlayer')
 		AndroidYouTubePlayerEventEmitter.addListener('AndroidYouTubePlayer', (event) => {
 			console.log("AndroidYouTubePlayer",event)
 			if(event.state)

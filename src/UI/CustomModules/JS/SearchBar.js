@@ -60,9 +60,13 @@ export class SearchBar extends React.Component {
 							if (this.state.searchQueryText.length === 0) this._showHistory();
 						}}
 						onBlur={() => {
-							this.setState({
-								isFocused: false,
-							});
+							if (!this.isInsertingSuggestion) {
+								this.setState({
+									isFocused: false,
+								});
+							}
+
+							this.isInsertingSuggestion = false
 						}}
 						onChangeText={text => {
 							this.updateSearchQueryText(text);
@@ -121,50 +125,85 @@ export class SearchBar extends React.Component {
 							data={this.state.searchSuggestions}
 							renderItem={({ item }) => {
 								return (
-									<TouchableNativeFeedback
-										onPress={() => {
-											this.updateSearchQueryText(item.search_text);
-											this.props.onSubmitEditing(item.search_text);
-											this.setState({
-												isFocused: false,
-											});
+									<View
+										style={{
+											flexDirection: 'row',
+											flex: 1
 										}}
 									>
 										<View
 											style={{
-												padding: 10,
-												flexDirection: 'row',
 												flex: 1,
+												alignItems: 'stretch'
+											}}
+										>
+											<TouchableNativeFeedback
+												style={{
+													flex: 1,
+												}}
+												onPress={() => {
+													this.updateSearchQueryText(item.search_text);
+													this.props.onSubmitEditing(item.search_text);
+													this.setState({
+														isFocused: false,
+													});
+												}}
+											>
+
+												<View
+													style={{
+														padding: 10,
+														flex: 1,
+													}}
+												>
+
+													<Text
+														style={{
+															fontWeight: 'bold',
+														}}
+													>
+														{item.search_text}
+													</Text>
+												</View>
+											</TouchableNativeFeedback>
+										</View>
+
+										<TouchableNativeFeedback
+											onPress={() => {
+												this.isInsertingSuggestion = true
+												this.setState({
+													searchQueryText: item.search_text,
+													isFocused: true,
+												});
+												this._updateSearchSuggestions(item.search_text, newSuggestions => {
+													this.setState({
+														searchSuggestions: newSuggestions[1].slice(0, 5).map(item => ({
+															search_text: item,
+														})),
+													});
+												});
 											}}
 										>
 											<View
 												style={{
+													padding: 10,
 													flex: 1,
-													justifyContent: 'flex-start',
 												}}
 											>
-												<Text
+												<Icon
+													name={'arrow-round-back'}
+													size={24}
 													style={{
-														fontWeight: 'bold',
+														transform: [
+															{
+																rotate: '45deg',
+															},
+														],
 													}}
-												>
-													{item.search_text}
-												</Text>
+												/>
 											</View>
-
-											<Icon
-												name={'arrow-round-back'}
-												size={24}
-												style={{
-													transform: [
-														{
-															rotate: '45deg',
-														},
-													],
-												}}
-											/>
-										</View>
-									</TouchableNativeFeedback>
+										</TouchableNativeFeedback>
+									</View>
 								);
 							}}
 						/>

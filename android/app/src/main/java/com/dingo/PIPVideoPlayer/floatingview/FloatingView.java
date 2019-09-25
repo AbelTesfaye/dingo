@@ -417,7 +417,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
 
     private ScaleGestureDetector scaleGestureDetector = null;
 
-
+    boolean mHasBeenScaled = false;
 
     private WindowManager.LayoutParams windowLayoutParams;
 
@@ -930,21 +930,22 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
 
 
 
+            if(!mHasBeenScaled){
 
-            float alpha = 1.0f;
-            if (mParams.x < 0) {
-                alpha = 1.0f + mParams.x / (float) maxDiff * 0.5f;
-            } else if (mParams.x > mPositionLimitRect.right) {
-                alpha = 1.0f - (mParams.x - mPositionLimitRect.right) / (float) maxDiff * 0.5f;
+                float alpha = 1.0f;
+                if (mParams.x < 0) {
+                    alpha = 1.0f + mParams.x / (float) maxDiff * 0.5f;
+                } else if (mParams.x > mPositionLimitRect.right) {
+                    alpha = 1.0f - (mParams.x - mPositionLimitRect.right) / (float) maxDiff * 0.5f;
+                }
+                if (this.getAlpha() != alpha) {
+                    this.setAlpha(alpha);
+                }
+                updateViewLayout();
+                mScreenTouchDownX = mLocalTouchX;
+                mScreenTouchDownY = mLocalTouchY;
+
             }
-            if (this.getAlpha() != alpha) {
-                this.setAlpha(alpha);
-            }
-            updateViewLayout();
-            mScreenTouchDownX = mLocalTouchX;
-            mScreenTouchDownY = mLocalTouchY;
-
-
 
 
 
@@ -961,7 +962,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
 
             slideLeft = mParams.x < (mPositionLimitRect.left - maxDiff);
             slideRight = mParams.x > (mPositionLimitRect.right + maxDiff);
-            slideOut = (slideLeft || slideRight) && this.getAlpha() < 0.7 ;
+            slideOut = !mHasBeenScaled && (slideLeft || slideRight) && this.getAlpha() < 0.7 ;
 
 
             ArrayList<Animator> animators = null;
@@ -1036,6 +1037,8 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
                 // Make a move after checking whether it is finished or not
                 isWaitForMoveToEdge = true;
             }
+
+            mHasBeenScaled = false;
         }
 
         // タッチリスナを通知
@@ -1102,6 +1105,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
 
         int newHeight = (int)(newWidth * (getHeight()/(float)getWidth()));
         getLayoutParams().width = newWidth;
+        mHasBeenScaled = true;
         //getLayoutParams().height = newHeight; // aspect ration will change, keep this as wrap_content
 
         int touchX = (int) (mScreenTouchX - mLocalTouchX - mTouchXOffset);
@@ -2006,6 +2010,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
 
         private void scale(float scale)
         {
+            mHasBeenScaled = true;
 
             cancelAnimation();
 

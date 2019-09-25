@@ -22,6 +22,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import utils from '../../BL/Utils/utils';
 import PIPVideoPlayer from '../CustomModules/Native/PIPVideoPlayer'
 import { database } from '../../BL/Database/database';
+import {FloatingAction} from 'react-native-floating-action'
+import AndroidYouTubePlayer from '../CustomModules/Native/AndroidYouTubePlayer'
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,8 +32,9 @@ export default class ScreenPlayer extends Component {
 		super(props);
 		this.state = {
 			albumTint:this.getRandomColor(),
-			playerState: "BUFFERING",
-			sliderHeaderClosed: false
+			sliderHeaderClosed: false,
+			webViewVideoId: "",
+			isPIPVideoPlayerActive: false
 		}
 		this.AppInstance = this.props.AppInstance;
 
@@ -56,6 +59,12 @@ export default class ScreenPlayer extends Component {
 
 		})
 
+		eventEmitter.addListener('AndroidYouTubePlayer', (event) => {
+			console.log("AndroidYouTubePlayer",event)
+			if(event.state)
+				this.handlePlayerState(event.state)
+		 })
+
 		this.changeAlbumTint()
 	}
 
@@ -69,6 +78,8 @@ export default class ScreenPlayer extends Component {
 			case "PAUSED": break;
 			case "BUFFERING": break;
 			case "VIDEO_CUED": break;
+
+			case "DESTROYED":this.setState({ isPIPVideoPlayerActive: false });break;
 		}
 		this.setState({playerState:state})
 
@@ -78,20 +89,28 @@ export default class ScreenPlayer extends Component {
 		database.insertRecentTrack(timestamp, trackName, artistName, image, youtube_id).catch(e => console.error(e));
 	};
 
+
+	play = (videoId) => {
+		if(this.state.isPIPVideoPlayerActive)
+			PIPVideoPlayer.open(videoId)
+		else
+			this.setState({webViewVideoId:videoId})
+	}
+
 	playItemInTrackQueue = (index) => {
 		const trackQueue = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue
 		
 		const track = trackQueue[index]
 		if(!trackQueue[index].videoId){
 			this.getVideoIdForTrack(track,(id)=>{
-				PIPVideoPlayer.open(id)
+				this.play(id)
 	
 				const trackQueue = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue
 				trackQueue[index].videoId = id
 				this.AppInstance.setState({screenStates_screenPlayerStates_pageQueueStates_tracksInQueue:trackQueue})
 			})
 		}else{
-			PIPVideoPlayer.open(track.videoId)
+			this.play(track.videoId)
 		}	
 
 		this.writeRecentTrack(
@@ -137,26 +156,19 @@ export default class ScreenPlayer extends Component {
 		return true;
 	}
 
-	_play = () => {
-		PIPVideoPlayer.play()
-	};
-	_pause = () => {
-		PIPVideoPlayer.pause()
-	};
+	scrollToIndex = (index) => {
+		if(this.flatListRef)
+			this.flatListRef.scrollToIndex({animated: true,index:(index > 0 ? index - 1 : 0)});
+	}
 
-	_playOrPauseToggle = () => {
-		if(this.state.playerState !== "PLAYING")
-			this._play()
-		else
-			this._pause()
-
-	};
 	_skipToNext = () => {
 		const trackQueue = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue
 		const currentIndex = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex
 
 		const newIndex = currentIndex + 1
 		if(newIndex < trackQueue.length){
+			this.scrollToIndex(newIndex)
+
 			this.playItemInTrackQueue(newIndex)
 			this.AppInstance.setState({
 				screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: newIndex,
@@ -169,6 +181,8 @@ export default class ScreenPlayer extends Component {
 
 		const newIndex = currentIndex - 1
 		if(newIndex > -1){
+			this.scrollToIndex(newIndex)
+
 			this.playItemInTrackQueue(newIndex)
 			this.AppInstance.setState({
 				screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: newIndex,
@@ -229,15 +243,24 @@ export default class ScreenPlayer extends Component {
 	render() {
 		return (
 			<View style={{ ...styles.container, width: width }}>
+				<AndroidYouTubePlayer
+					style={{
+						width: width,
+						height: width * (9 / 16)
+					}}
+					videoId={this.state.webViewVideoId}
+					showYouTubeButton={false}
+					showFullScreenButton={false}
+				/>
 				<View style={{ ...styles.bodyViewStyle, flex: 1 }}>
 					<View style={{ marginHorizontal: 10, flex: 1 }}>
 						<FlatList
 							keyExtractor={(item, index) => index.toString()}
+							ref={(ref) => { this.flatListRef = ref; }}
 							style={{
 								backgroundColor: 'white',
 								flex: 1,
 								width: width,
-								marginBottom: 50,
 							}}
 							data={this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue}
 							renderItem={({ item, index }) => {
@@ -304,178 +327,21 @@ export default class ScreenPlayer extends Component {
 					</View>
 				</View>
 
-				<SlidingPanel
-					allowAnimation={true}
-					headerLayoutHeight={49}
-					allowDragging={true}
-					AnimationSpeed={100}
-					onDragStop={(a,b,sliderHeaderClosed) => {this.setState({sliderHeaderClosed: sliderHeaderClosed})}}
-					snap={true}
-					headerLayout={() => (
-						<View elevation={5} style={styles.headerLayoutStyle}>
-							<View
-								style={{
-									flex: 1,
-									alignSelf: 'stretch',
-									flexDirection: 'column',
-									justifyContent: 'center',
-									alignItems: 'flex-start',
-								}}
-							>
-								<View
-									style={{
-										flexDirection: 'row',
-										margin: 10,
-									}}
-								>
-									<Icon
-										name={this.state.sliderHeaderClosed?"arrow-dropup":"arrow-dropdown"}
-										style={{
-											...styles.controlIcon,
-											margin: 5,
-										}}
-									/>
+				<FloatingAction 
+					color="red"
+					onPressMain={
+						() => {
+							this.setState({ isPIPVideoPlayerActive: true })
+							PIPVideoPlayer.open(this.state.webViewVideoId)
+						}
+					}
+					showBackground={false}
+					visible={!this.state.isPIPVideoPlayerActive}
+					floatingIcon={<Icon size={24} color="white" name={"contract"} />}
 
-									<Text style={{ textAlignVertical: 'center', margin: 5 }}>
-									{
-										this.state.sliderHeaderClosed?"PLAYER":"PLAYLIST"
-									}
-									</Text>
-								</View>
-							</View>
-						</View>
-					)}
-					slidingPanelLayout={() => (
-						<View style={styles.slidingPanelLayoutStyle}>
-							<View style={styles.container}>
-								<ImageBackground
-									resizeMethod="resize"
-									blurRadius={3}
-									source={{
-										uri:
-											settings.get('load_all_images') &&
-											(this.AppInstance.state
-												.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-												? this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-														.artwork
-												: null),
-									}}
-									style={styles.backgroundImage}
-								>
-									<View
-										style={{
-											flex: 1,
-											justifyContent: 'center',
-											alignItems: 'center',
-											alignContent: 'space-between',
-										}}
-									>
-										<Image
-											resizeMethod="resize"
-											style={{
-												backgroundColor: '#fff',
-												flex: 1,
-												aspectRatio: 1,
-												resizeMode: 'cover',
-												margin: 16,
-												opacity: 0.8
-											}}
-											source={ require("../../assets/icons/dingo_alpha.png") }
-											tintColor={ this.state.albumTint }
-										/>
-										<View
-											style={{
-												backgroundColor: 'rgba(255, 255, 255, 0.8)',
-												width: width,
-												height: 250,
-												marginBottom: 30,
-												padding: 10,
-											}}
-										>
-											{/* <ProgressBar style={{ backgroundColor: 'transparent' }} /> */}
-
-											<View
-												style={{
-													alignSelf: 'stretch',
-													justifyContent: 'center',
-												}}
-											>
-												<Text
-													style={{
-														fontSize: 18,
-														fontWeight: 'bold',
-														textAlign: 'center',
-													}}
-													numberOfLines={1}
-												>
-													{this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue[this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex]
-														? this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue[this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex].title
-														: null}
-												</Text>
-												<Text style={{ textAlign: 'center' }} numberOfLines={1}>
-													{this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue[this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex]
-														? this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue[this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex].artist
-														: null}
-												</Text>
-											</View>
-											<View style={styles.controls}>
-												<TouchableOpacity
-													onPress={() => {
-														this._skipToPrevious();
-													}}
-												>
-													<View>
-														<Icon name="skip-backward" style={styles.controlIcon} />
-													</View>
-												</TouchableOpacity>
-
-												<View style={styles.playPause}>
-													{
-														this.state.playerState === "BUFFERING" ? (
-														<ActivityIndicator animating={true} />
-													) : (
-														<TouchableOpacity
-															onPress={() => {
-																this._playOrPauseToggle();
-															}}
-														>
-															<View>
-																<Icon
-																	name={
-																		this.state.playerState !== "PLAYING"
-																			? 'play'
-																			: 'pause'
-																	}
-																	style={{ ...styles.controlIcon }}
-																/>
-															</View>
-														</TouchableOpacity>
-													)}
-												</View>
-												<TouchableOpacity
-													onPress={() => {
-														this._skipToNext();
-													}}
-												>
-													<Icon name="skip-forward" style={styles.controlIcon} />
-												</TouchableOpacity>
-											</View>
-										</View>
-									</View>
-								</ImageBackground>
-							</View>
-						</View>
-					)}
 				/>
+
+
 			</View>
 		);
 	}

@@ -139,7 +139,7 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
             public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState state) {
                 super.onStateChange(youTubePlayer, state);
 
-                PIPVideoPlayerModule.publishState(state);
+                PIPVideoPlayerModule.publishState(state.toString());
 
                 Log.e("XXXX","current state: "+state);
             }
@@ -170,6 +170,7 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
             youTubePlayerView.release();
 
         unregisterReceiver(myReceiver);
+        PIPVideoPlayerModule.publishState("DESTROYED");
 
         destroy();
         super.onDestroy();

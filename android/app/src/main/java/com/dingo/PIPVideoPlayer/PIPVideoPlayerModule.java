@@ -10,7 +10,6 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 
 
 public class PIPVideoPlayerModule extends ReactContextBaseJavaModule{
@@ -40,10 +39,10 @@ public class PIPVideoPlayerModule extends ReactContextBaseJavaModule{
         PIPVideoPlayer.pause();
     }
 
-    public static void publishState(PlayerConstants.PlayerState state){
+    public static void publishState(String state){
 
         WritableMap params = Arguments.createMap();
-        params.putString("state", state.toString());
+        params.putString("state", state);
 
         sendEvent(reactContext, "PIPVideoPlayer", params);
     }

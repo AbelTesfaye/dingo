@@ -12,6 +12,7 @@
     app:autoPlay="true"
     app:showFullScreenButton="false"
     app:showYouTubeButton="false"
+    app:enableAutomaticInitialization="false"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android" />
 

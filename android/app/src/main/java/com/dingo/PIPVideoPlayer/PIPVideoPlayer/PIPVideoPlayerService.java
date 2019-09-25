@@ -129,7 +129,7 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
             onFinishFloatingView();
         }
 
-        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+        youTubePlayerView.initialize(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 Log.e("XXXX","player of yt ready!");

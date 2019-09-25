@@ -27,6 +27,8 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
     YouTubePlayerView mYouTubePlayerView;
     ReactApplicationContext mCallerContext;
     private final BroadcastReceiver myReceiver = new myReceiver();
+    String mInitialVideoId = "";
+    boolean mIsPlayerReady = false;
 
     public ReactAndroidYouTubePlayerViewManager(ReactApplicationContext reactContext) {
         mCallerContext = reactContext;
@@ -45,9 +47,13 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         mCallerContext.registerReceiver(myReceiver, filter);
 
-        mYouTubePlayerView.setEnableAutomaticInitialization(false);
+        mYouTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(@Nonnull YouTubePlayer youTubePlayer) {
+                mIsPlayerReady = true;
 
-        mYouTubePlayerView.initialize(new AbstractYouTubePlayerListener() {
+                youTubePlayer.loadVideo(mInitialVideoId, 0);
+            }
             @Override
             public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState state) {
                 super.onStateChange(youTubePlayer, state);
@@ -71,6 +77,8 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
         if(mYouTubePlayerView != null)
             mYouTubePlayerView.release();
 
+        mIsPlayerReady = false;
+        
         mCallerContext.unregisterReceiver(myReceiver);
     }
 
@@ -104,7 +112,11 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
 
     @ReactProp(name = "videoId")
     public void setVideoId(YouTubePlayerView view, @Nullable String videoId) {
-        view.getYouTubePlayerWhenReady(youTubePlayer -> youTubePlayer.loadVideo(videoId, 0));
+        if (mIsPlayerReady)
+            view.getYouTubePlayerWhenReady(youTubePlayer -> youTubePlayer.loadVideo(videoId, 0));
+        else        
+        mInitialVideoId = videoId;
+
     }
 
     @ReactProp(name = "showYouTubeButton", defaultBoolean = false)

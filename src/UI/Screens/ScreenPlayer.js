@@ -205,11 +205,11 @@ export default class ScreenPlayer extends Component {
 	};
 	_onPlaylistItemPress = (item, index) => {
 		const indexInState = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex;
-		if (index !== indexInState) {
-			this.AppInstance.setState({
-				screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: index,
-			}, this.playItemInTrackQueue(index));
-		}
+		
+		this.AppInstance.setState({
+			screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: index,
+		}, this.playItemInTrackQueue(index));
+		
 	};
 
 	getVideoIdForTrack = (item,callback)=>{

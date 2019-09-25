@@ -20,7 +20,7 @@ public class DingoMiniPlayer extends Activity {
             data = Uri.parse(intent.getStringExtra(Intent.EXTRA_TEXT));
 
 
-        PIPVideoPlayer.open(getApplicationContext(),data);
+        PIPVideoPlayer.open(DingoMiniPlayer.this,data);
         finish();
     }
 }

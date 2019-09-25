@@ -40,7 +40,7 @@ export class ScreenNavigator extends React.Component {
 				>
 					<TabView
 						navigationState={this.state}
-						renderTabBar={p => <TabBar {...p} width={width} />}
+						renderTabBar={p => <TabBar {...p} width={width} AppInstance={this.AppInstance}  />}
 						tabBarPosition={'bottom'}
 						renderScene={({ route }) => {
 							switch (route.key) {

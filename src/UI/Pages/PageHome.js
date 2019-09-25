@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, ScrollView, RefreshControl } from 'react-native';
+import { Text, View, ScrollView, RefreshControl, TouchableNativeFeedback, Linking } from 'react-native';
 import { TrackList } from '../Lists/ListTrack';
 import { AlbumList } from '../Lists/ListAlbum';
 import utils from '../../BL/Utils/utils';
@@ -7,24 +7,54 @@ export class PageHome extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			refreshing: false,
+			topTracksChartResponse: null,
+			isGetChartTopTracksFinished: true,
+			isGetRecentTracksAndPutThemInStateFinished: true,
 		};
 
 		this.AppInstance = props.AppInstance;
 	}
+	componentDidMount(){
+		this.getChartTopTracksAndPutThemInState();
+	}
 
 	_onRefresh = () => {
-		this.setState({ refreshing: true });
+		this.getChartTopTracksAndPutThemInState()
+
+		this.setState({ isGetRecentTracksAndPutThemInStateFinished: false });
 		this.AppInstance.getRecentTracksAndPutThemInState().then(() => {
-			this.setState({ refreshing: false });
+			this.setState({ isGetRecentTracksAndPutThemInStateFinished: true });
 		});
 	};
+
+	_getChartTopTracks = callback => {
+		this.setState({isGetChartTopTracksFinished: false})
+		utils.fetchFromLastFmWithoutParsing(
+			`charts`, response => callback(response),
+			(err) => utils.showNetworkLoadingAlert("Couldn't get Top Tracks", this.getChartTopTracksAndPutThemInState),
+			()=>this.setState({isGetChartTopTracksFinished: true})
+		);
+	};
+	getChartTopTracksAndPutThemInState = () => {
+		this._getChartTopTracks(response => {
+			const results = utils.getTopTracks(response);
+			this.setState({
+				topTracksChartResponse: results,
+			});
+		});
+	};
+
+	handleLinkClick = () => this._openUrl("https://t.me/dingoCommunity")
+
+	_openUrl = (url) => Linking.openURL(url);
+
 	render() {
 		return (
 			<ScrollView
 				refreshControl={
 					<RefreshControl
-						refreshing={this.state.refreshing}
+						refreshing={!this.state.isGetRecentTracksAndPutThemInStateFinished ||
+									!this.state.isGetChartTopTracksFinished}
 						onRefresh={this._onRefresh}
 						colors={['orange']}
 					/>
@@ -122,15 +152,15 @@ export class PageHome extends React.Component {
 									onTrackPress={(item, index) =>
 										this.AppInstance.startInPlayer(
 											utils.convertToTrackPlayerFormat(
-												this.AppInstance.state.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse.slice(
+												this.state.topTracksChartResponse.slice(
 													index
 												)
 											)
 										)
 									}
 									data={
-										this.AppInstance.state
-											.screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse
+										this.state
+											.topTracksChartResponse
 									}
 								/>
 							</View>
@@ -138,24 +168,28 @@ export class PageHome extends React.Component {
 					</View>
 				</View>
 
-				<Text
-					style={{
-						textAlign: 'center',
-						color: '#ddd',
-						margin: 5,
-					}}
-				>
-					Hit me up here for any comments, suggestions, (thank you)s or just about anything:
-				</Text>
-				<Text
-					style={{
-						textAlign: 'center',
-						color: '#ddd',
-						margin: 5,
-					}}
-				>
-					abeltesfaye45@gmail.com
-				</Text>
+				<TouchableNativeFeedback onPress={this.handleLinkClick}>
+					<View>
+						<Text
+							style={{
+								textAlign: 'center',
+								color: '#ddd',
+								margin: 5,
+							}}
+						>
+							For any comments, suggestions or (thank you)s click here to find us on our Telegram group:
+						</Text>
+						<Text
+							style={{
+								textAlign: 'center',
+								color: '#ddd',
+								margin: 5,
+							}}
+						>
+							https://t.me/dingoCommunity
+						</Text>
+					</View>
+				</TouchableNativeFeedback>
 			</ScrollView>
 		);
 	}

@@ -14,6 +14,8 @@ export class MiniPlayer extends Component {
 			bufferedPosition: 0,
 			duration: 0,
 		};
+
+		this.AppInstance = this.props.AppInstance;
 	}
 
 	componentDidMount() {
@@ -57,16 +59,16 @@ export class MiniPlayer extends Component {
 	}
 
 	getCurrentTrack() {
-		if (!this.state.track) return {};
-
-		return this.state.track;
+		const currentTrack = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue[this.AppInstance.state
+														.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex]
+		return currentTrack;
 	}
 
 	render() {
-		const AppInstance = this.props.AppInstance;
+		const AppInstance = this.AppInstance;
 
 		const track = this.getCurrentTrack();
-		return Object.keys(track).length !== 0 ? (
+		return track ? (
 			<View style={{ ...this.props.style }}>
 				<TouchableNativeFeedback
 					onPress={() => {
@@ -83,11 +85,6 @@ export class MiniPlayer extends Component {
 							backgroundColor: 'white',
 						}}
 					>
-						<MiniPlayerProgressBar
-							progress={this.getProgress()}
-							bufferedProgress={this.getBufferedProgress()}
-						/>
-
 						<View
 							style={{
 								height: 50,

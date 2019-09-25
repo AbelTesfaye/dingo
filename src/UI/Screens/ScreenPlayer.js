@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+	NativeEventEmitter,
 	BackHandler,
 	Dimensions,
 	FlatList,
@@ -12,19 +13,29 @@ import {
 	View,
 	ActivityIndicator,
 } from 'react-native';
-import TrackPlayer from 'react-native-track-player';
 import ImageButton from '../CustomModules/JS/ImageButton';
 import ProgressBar from '../CustomModules/JS/ProgressBar';
 import SlidingPanel from '../CustomModules/JS/SlidingPanel';
 import { settings } from '../../BL/Database/settings';
 import Icon from 'react-native-ionicons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import utils from '../../BL/Utils/utils';
+import PIPVideoPlayer from '../CustomModules/Native/PIPVideoPlayer'
+import { database } from '../../BL/Database/database';
+import {FloatingAction} from 'react-native-floating-action'
+import AndroidYouTubePlayer from '../CustomModules/Native/AndroidYouTubePlayer'
 
 const { width, height } = Dimensions.get('window');
 
 export default class ScreenPlayer extends Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			albumTint:this.getRandomColor(),
+			sliderHeaderClosed: false,
+			webViewVideoId: "",
+			isPIPVideoPlayerActive: false
+		}
 		this.AppInstance = this.props.AppInstance;
 
 		this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -33,42 +44,103 @@ export default class ScreenPlayer extends Component {
 		let tracksToPlay = this.props.tracks;
 		const indexToPlay = 0;
 
-		if (!(tracksToPlay.length < 1)) {
-			TrackPlayer.setupPlayer({
-				maxCacheFiles: 20,
-				maxCacheSize: 1024 * 50, //50 megabytes
-			}).then(() => {
-				TrackPlayer.updateOptions({
-					capabilities: [
-						TrackPlayer.CAPABILITY_PLAY,
-						TrackPlayer.CAPABILITY_PAUSE,
-						TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
-						TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
-					],
-					compactCapabilities: [
-						TrackPlayer.CAPABILITY_PLAY,
-						TrackPlayer.CAPABILITY_PAUSE,
-						TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
-						TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
-					],
+		if (tracksToPlay.length > 0) { // if not started from miniplayer
 
-					// Notification Color (Must be an ARGB Hexadecimal number)
-					color: 0xfa3843,
-					stopWithApp: false,
-				});
+			this._putTracksFromPropToState(()=>this.playItemInTrackQueue(indexToPlay));
 
-				this._putTracksFromPropToState();
-
-				//what to do if there already is a url in the track object
-				this._addToTrackPlayerQueue(tracksToPlay, null, () => {});
-				this._play();
-			});
-		} else {
-			//if started from miniplayer
-
-			this.AppInstance.getTrackPlayerQueueToState();
-			this.AppInstance.updateCurrentPlayingTrackState();
 		}
+
+		const PIPVideoPlayerEventEmitter = new NativeEventEmitter(PIPVideoPlayer);
+		PIPVideoPlayerEventEmitter.removeAllListeners('PIPVideoPlayer')
+		PIPVideoPlayerEventEmitter.addListener('PIPVideoPlayer', (event) => {
+			console.log(event)
+			if(event.state)
+				this.handlePlayerState(event.state)
+
+		})
+
+		const AndroidYouTubePlayerEventEmitter = new NativeEventEmitter(AndroidYouTubePlayer);
+		AndroidYouTubePlayerEventEmitter.removeAllListeners('AndroidYouTubePlayer')
+		AndroidYouTubePlayerEventEmitter.addListener('AndroidYouTubePlayer', (event) => {
+			console.log("AndroidYouTubePlayer",event)
+			if(event.state)
+				this.handlePlayerState(event.state)
+		 })
+
+		this.changeAlbumTint()
+	}
+
+
+	handlePlayerState = (state)=>{
+		switch(state){
+			case "UNKNOWN": break;
+			case "UNSTARTED": break;
+			case "ENDED": this._skipToNext(); break;
+			case "PLAYING": break;
+			case "PAUSED": break;
+			case "BUFFERING": break;
+			case "VIDEO_CUED": break;
+
+			case "DESTROYED":this.setState({ isPIPVideoPlayerActive: false });break;
+		}
+		this.setState({playerState:state})
+
+	}
+
+	writeRecentTrack = (timestamp, trackName, artistName, image, youtube_id) => {
+		database.insertRecentTrack(timestamp, trackName, artistName, image, youtube_id).catch(e => console.error(e));
+	};
+
+
+	play = (videoId) => {
+		if(this.state.isPIPVideoPlayerActive)
+			PIPVideoPlayer.open(videoId)
+		else
+			this.setState({webViewVideoId:videoId})
+	}
+
+	playItemInTrackQueue = (index) => {
+		const trackQueue = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue
+		
+		const track = trackQueue[index]
+		if(!trackQueue[index].videoId){
+			this.getVideoIdForTrack(track,(id)=>{
+				this.play(id)
+	
+				const trackQueue = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue
+				trackQueue[index].videoId = id
+				this.AppInstance.setState({screenStates_screenPlayerStates_pageQueueStates_tracksInQueue:trackQueue})
+			})
+		}else{
+			this.play(track.videoId)
+		}	
+
+		this.writeRecentTrack(
+			new Date().getTime(),
+			track.title,
+			track.artist,
+			track.artwork,
+			track.videoId
+		);
+
+		const trackToRight = trackQueue[index + 1]
+		if(trackToRight && !trackToRight.videoId)
+			this.getAndUpdateVideoId(trackToRight, index + 1)
+
+		const trackToLeft = trackQueue[index - 1]
+		if(trackToLeft && !trackToLeft.videoId)
+			this.getAndUpdateVideoId(trackToLeft, index - 1)
+
+		this.changeAlbumTint()
+
+	}
+
+	getAndUpdateVideoId = (track,index) => {
+		this.getVideoIdForTrack(track,(id)=>{
+			const trackQueue = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue
+			trackQueue[index].videoId = id
+			this.AppInstance.setState({screenStates_screenPlayerStates_pageQueueStates_tracksInQueue:trackQueue})
+		})
 	}
 
 	componentWillMount() {
@@ -86,78 +158,111 @@ export default class ScreenPlayer extends Component {
 		return true;
 	}
 
-	_play = () => {
-		TrackPlayer.play();
-	};
-	_pause = () => {
-		TrackPlayer.pause();
-	};
+	scrollToIndex = (index) => {
+		if(this.flatListRef)
+			this.flatListRef.scrollToIndex({animated: true,index:(index > 0 ? index - 1 : 0)});
+	}
 
-	_playOrPauseToggle = () => {
-		this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_playerState !== TrackPlayer.STATE_PLAYING
-			? this._play()
-			: this._pause();
-	};
 	_skipToNext = () => {
-		TrackPlayer.skipToNext()
-			.then(() => {})
-			.catch(e => {
-				console.error(e);
-			});
-	};
+		const trackQueue = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue
+		const currentIndex = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex
 
-	_skipToPrevious = () => {
-		TrackPlayer.skipToPrevious()
-			.then(() => {})
-			.catch(e => {
-				console.error(e);
-			});
-	};
-	_stopPlaybackAndResetQueue = () => {
-		TrackPlayer.reset();
-	};
+		const newIndex = currentIndex + 1
+		if(newIndex < trackQueue.length){
+			this.scrollToIndex(newIndex)
 
-	_addToTrackPlayerQueue = (tracks, insertBefore, callback) => {
-		TrackPlayer.add(tracks, insertBefore)
-			.then(() => {
-				callback();
-			})
-			.catch(e => {
-				console.error(e);
-			});
-	};
-	_updateTracksInState = tracks => {
-		this.AppInstance.setState({
-			screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: tracks,
-		});
-	};
-
-	_putTracksFromPropToState = () => {
-		this._updateTracksInState(this.props.tracks);
-	};
-	_onPlaylistItemPress = (item, index) => {
-		if (index !== this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex) {
+			this.playItemInTrackQueue(newIndex)
 			this.AppInstance.setState({
-				screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: index,
-			});
-			TrackPlayer.skip(item.id)
-				.then(this._play())
-				.catch(e => console.error(e));
+				screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: newIndex,
+			})
 		}
 	};
 
+	_skipToPrevious = () => {
+		const currentIndex = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex
+
+		const newIndex = currentIndex - 1
+		if(newIndex > -1){
+			this.scrollToIndex(newIndex)
+
+			this.playItemInTrackQueue(newIndex)
+			this.AppInstance.setState({
+				screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: newIndex,
+			})
+		}
+	};
+	_stopPlaybackAndResetQueue = () => {
+		console.log("reset","clicked")
+
+	};
+
+	_updateTracksInState = (tracks,callback) => {
+		this.AppInstance.setState({
+			screenStates_screenPlayerStates_pageQueueStates_tracksInQueue: tracks,
+		},callback);
+	};
+
+	_putTracksFromPropToState = (callback) => {
+		this._updateTracksInState(this.props.tracks,callback);
+	};
+	_onPlaylistItemPress = (item, index) => {
+		const indexInState = this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex;
+		
+		this.AppInstance.setState({
+			screenStates_screenPlayerStates_pageQueueStates_playingQueueIndex: index,
+		}, this.playItemInTrackQueue(index));
+		
+	};
+
+	getVideoIdForTrack = (item,callback)=>{
+		if (!item.url || item.url.length <= 'http://'.length) {
+			if (item.title && item.artist) {
+				utils.fetchFromEndpoint(
+					`getHighestQualityAudioUsingArtistAndSong?artist=${encodeURIComponent(
+						item.artist
+					)}&song=${encodeURIComponent(item.title)}`,
+					response => {
+						callback(response.videoId)
+					}
+				);
+			}
+		}
+
+	}
+
+	getRandomColor = () => {
+		var letters = '0123456789ABCDEF';
+		var color = '#';
+		for (var i = 0; i < 6; i++) {
+		  color += letters[Math.floor(Math.random() * 16)];
+		}
+		return color;
+	}
+
+	changeAlbumTint = () => {
+		this.setState({albumTint: this.getRandomColor()})
+	}
 	render() {
 		return (
 			<View style={{ ...styles.container, width: width }}>
+				<AndroidYouTubePlayer
+					style={{
+						width: width,
+						height: width * (9 / 16)
+					}}
+					videoId={this.state.webViewVideoId}
+					showYouTubeButton={false}
+					showFullScreenButton={false}
+				/>
 				<View style={{ ...styles.bodyViewStyle, flex: 1 }}>
 					<View style={{ marginHorizontal: 10, flex: 1 }}>
 						<FlatList
 							keyExtractor={(item, index) => index.toString()}
+							ref={(ref) => { this.flatListRef = ref; }}
 							style={{
 								backgroundColor: 'white',
 								flex: 1,
 								width: width,
-								marginBottom: 50,
 							}}
 							data={this.AppInstance.state.screenStates_screenPlayerStates_pageQueueStates_tracksInQueue}
 							renderItem={({ item, index }) => {
@@ -189,8 +294,7 @@ export default class ScreenPlayer extends Component {
 														fontSize: 20,
 														fontWeight: 'bold',
 														color:
-															typeof item.url !== 'undefined' &&
-															item.url.length >= 'http://'.length
+															item.videoId
 																? 'red'
 																: 'grey',
 													}}
@@ -225,184 +329,21 @@ export default class ScreenPlayer extends Component {
 					</View>
 				</View>
 
-				<SlidingPanel
-					allowAnimation={true}
-					headerLayoutHeight={49}
-					allowDragging={true}
-					AnimationSpeed={100}
-					onDragStop={() => {}}
-					snap={true}
-					headerLayout={() => (
-						<View elevation={5} style={styles.headerLayoutStyle}>
-							<View
-								style={{
-									flex: 1,
-									alignSelf: 'stretch',
-									flexDirection: 'column',
-									justifyContent: 'center',
-									alignItems: 'flex-start',
-								}}
-							>
-								<View
-									style={{
-										flexDirection: 'row',
-										margin: 10,
-									}}
-								>
-									<Icon
-										name="arrow-dropdown"
-										style={{
-											...styles.controlIcon,
-											margin: 5,
-										}}
-									/>
+				<FloatingAction 
+					color="red"
+					onPressMain={
+						() => {
+							this.setState({ isPIPVideoPlayerActive: true })
+							PIPVideoPlayer.open(this.state.webViewVideoId)
+						}
+					}
+					showBackground={false}
+					visible={!this.state.isPIPVideoPlayerActive}
+					floatingIcon={<Icon size={24} color="white" name={"contract"} />}
 
-									<Text style={{ textAlignVertical: 'center', margin: 5 }}>PLAYLIST</Text>
-								</View>
-							</View>
-						</View>
-					)}
-					slidingPanelLayout={() => (
-						<View style={styles.slidingPanelLayoutStyle}>
-							<View style={styles.container}>
-								<ImageBackground
-									resizeMethod="resize"
-									blurRadius={3}
-									source={{
-										uri:
-											settings.get('load_all_images') &&
-											(this.AppInstance.state
-												.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-												? this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-														.artwork
-												: null),
-									}}
-									style={styles.backgroundImage}
-								>
-									<View
-										style={{
-											flex: 1,
-											justifyContent: 'center',
-											alignItems: 'center',
-											alignContent: 'space-between',
-										}}
-									>
-										<Image
-											resizeMethod="resize"
-											style={{
-												backgroundColor: '#ddd',
-												flex: 1,
-												aspectRatio: 1,
-												resizeMode: 'cover',
-												margin: 10,
-											}}
-											source={{
-												uri:
-													settings.get('load_all_images') &&
-													(this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-														? this.AppInstance.state
-																.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-																.artwork
-														: null),
-											}}
-										/>
-
-										<View
-											style={{
-												backgroundColor: 'rgba(255, 255, 255, 0.8)',
-												width: width,
-												height: 250,
-												marginBottom: 30,
-												padding: 10,
-											}}
-										>
-											<ProgressBar style={{ backgroundColor: 'transparent' }} />
-
-											<View
-												style={{
-													alignSelf: 'stretch',
-													justifyContent: 'center',
-												}}
-											>
-												<Text
-													style={{
-														fontSize: 18,
-														fontWeight: 'bold',
-														textAlign: 'center',
-													}}
-													numberOfLines={1}
-												>
-													{this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-														? this.AppInstance.state
-																.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-																.title
-														: null}
-												</Text>
-												<Text style={{ textAlign: 'center' }} numberOfLines={1}>
-													{this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-														? this.AppInstance.state
-																.screenStates_screenPlayerStates_pageQueueStates_currentPlayingTrack
-																.artist
-														: null}
-												</Text>
-											</View>
-											<View style={styles.controls}>
-												<TouchableOpacity
-													onPress={() => {
-														this._skipToPrevious();
-													}}
-												>
-													<View>
-														<Icon name="skip-backward" style={styles.controlIcon} />
-													</View>
-												</TouchableOpacity>
-
-												<View style={styles.playPause}>
-													{globals.isFetchingURL ||
-													this.AppInstance.state
-														.screenStates_screenPlayerStates_pageQueueStates_playerState ===
-														TrackPlayer.STATE_BUFFERING ? (
-														<ActivityIndicator animating={true} />
-													) : (
-														<TouchableOpacity
-															onPress={() => {
-																this._playOrPauseToggle();
-															}}
-														>
-															<View>
-																<Icon
-																	name={
-																		this.AppInstance.state
-																			.screenStates_screenPlayerStates_pageQueueStates_playerState !==
-																		TrackPlayer.STATE_PLAYING
-																			? 'play'
-																			: 'pause'
-																	}
-																	style={{ ...styles.controlIcon }}
-																/>
-															</View>
-														</TouchableOpacity>
-													)}
-												</View>
-												<TouchableOpacity
-													onPress={() => {
-														this._skipToNext();
-													}}
-												>
-													<Icon name="skip-forward" style={styles.controlIcon} />
-												</TouchableOpacity>
-											</View>
-										</View>
-									</View>
-								</ImageBackground>
-							</View>
-						</View>
-					)}
 				/>
+
+
 			</View>
 		);
 	}

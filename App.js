@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
-import shortid from 'shortid';
 import { ScreenDetail } from './src/UI/Screens/ScreenDetail';
 import { ScreenNavigator } from './src/UI/Screens/ScreenNavigator';
 import ScreenPlayer from './src/UI/Screens/ScreenPlayer';
@@ -20,14 +19,8 @@ export default class App extends Component {
 
 			screenStates_screenNavigatorStates_newQueueItems: [],
 
-			screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse: null,
 			screenStates_screenNavigatorStates_pageHomeStates_similarAlbumsResponse: null,
 			screenStates_screenNavigatorStates_pageHomeStates_recentTracksResponse: null,
-
-			screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse: null,
-			screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse: null,
-			screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: null,
-			screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse: null,
 
 			screenStates_screenNavigatorStates_pageLibraryStates_recentTracksUniqueResponse: false,
 
@@ -81,8 +74,6 @@ export default class App extends Component {
 			.then(s => {
 				this.setState({ isSettingsInitialized: true });
 				console.log('settings is initialized');
-
-				this.getChartTopTracksAndPutThemInState();
 
 				this.getRecentTracksAndPutThemInState();
 
@@ -151,41 +142,6 @@ export default class App extends Component {
 		});
 	};
 
-	_searchArtists = (query, callback) => {
-		utils.fetchFromEndpoint(`searchArtist?q=${encodeURIComponent(query)}`, responseJson => {
-			callback(responseJson);
-		});
-	};
-	_searchAlbums = (query, callback) => {
-		utils.fetchFromEndpoint(`searchAlbum?q=${encodeURIComponent(query)}`, responseJson => {
-			callback(responseJson);
-		});
-	};
-	_searchTracks = (query, callback) => {
-		utils.fetchFromEndpoint(`searchTrack?q=${encodeURIComponent(query)}`, responseJson => {
-			callback(responseJson);
-		});
-	};
-	_searchYouTube = (query, callback) => {
-		utils.fetchFromEndpoint(`searchYouTube?q=${encodeURIComponent(query)}`, responseJson => {
-			callback(responseJson);
-		});
-	};
-
-	_getChartTopTracks = callback => {
-		utils.fetchFromEndpoint(`getChartTopTracks`, responseJson => {
-			callback(responseJson);
-		});
-	};
-	getChartTopTracksAndPutThemInState = () => {
-		this._getChartTopTracks(responseJson => {
-			const results = responseJson.result;
-			this.setState({
-				screenStates_screenNavigatorStates_pageHomeStates_topTracksChartResponse: results,
-			});
-		});
-	};
-
 	_getSimilarAlbums = (tag, callback) => {
 		utils.fetchFromEndpoint(`tagTopAlbums?tag=${encodeURIComponent(tag)}`, responseJson => {
 			callback(responseJson);
@@ -230,50 +186,6 @@ export default class App extends Component {
 		this.setState({
 			screenStates_screenNavigatorStates_newQueueItems: tracks,
 			activeScreen: 'SCREEN_PLAYER',
-		});
-	};
-	startSearch = q => {
-		const query = q || this.state.screenStates_screenNavigatorStates_pageSearchStates_searchQueryText;
-
-		this._searchArtists(query, responseJson => {
-			const results = responseJson.result.map(i => ({
-				...i,
-				key: shortid.generate(),
-			}));
-
-			this.setState({
-				screenStates_screenNavigatorStates_pageSearchStates_searchQueryArtistsResponse: results,
-			});
-		});
-
-		this._searchAlbums(query, responseJson => {
-			const results = responseJson.result.map(i => ({
-				...i,
-				key: shortid.generate(),
-			}));
-			this.setState({
-				screenStates_screenNavigatorStates_pageSearchStates_searchQueryAlbumsResponse: results,
-			});
-		});
-
-		this._searchTracks(query, responseJson => {
-			const results = responseJson.result.map(i => ({
-				...i,
-				key: shortid.generate(),
-			}));
-			this.setState({
-				screenStates_screenNavigatorStates_pageSearchStates_searchQueryTracksResponse: results,
-			});
-		});
-
-		this._searchYouTube(query, responseJson => {
-			const results = responseJson.results.map(i => ({
-				...i,
-				key: shortid.generate(),
-			}));
-			this.setState({
-				screenStates_screenNavigatorStates_pageSearchStates_searchQueryYouTubeResponse: results,
-			});
 		});
 	};
 

@@ -1,3 +1,6 @@
+import {Alert} from "react-native";
+const cheerio = require('cheerio');
+
 function formatTwoDigits(n) {
 	return n < 10 ? '0' + n : n;
 }
@@ -17,7 +20,7 @@ export const formatTime = seconds => {
 	}
 };
 
-fetchFromEndpoint = (endpoint, callback) => {
+fetchFromEndpoint = (endpoint, callback, errCb, finallyCb) => {
 	const url = 'https://dingo-backend.now.sh/';
 
 	console.log('fetching from url:' + `${url}${endpoint}`);
@@ -27,10 +30,16 @@ fetchFromEndpoint = (endpoint, callback) => {
 			callback(responseJson);
 		})
 		.catch(error => {
-			console.error(error);
+			if(errCb)
+				errCb(error);
+			else
+				console.error(error)
+		}).finally(()=>{
+			if(finallyCb)
+				finallyCb()
 		});
 };
-fetchFromEndpointWithoutParsing = (endpoint, callback) => {
+fetchFromEndpointWithoutParsing = (endpoint, callback, errCb, finallyCb) => {
 	const url = 'https://dingo-backend.now.sh/';
 
 	fetch(`${url}${endpoint}`)
@@ -39,7 +48,33 @@ fetchFromEndpointWithoutParsing = (endpoint, callback) => {
 			callback(response);
 		})
 		.catch(error => {
-			console.error(error);
+			if(errCb)
+				errCb(error);
+			else
+				console.error(error)
+		}).finally(()=>{
+			if(finallyCb)
+				finallyCb()
+		});
+};
+
+fetchFromLastFmWithoutParsing = (endpoint, callback, errCb, finallyCb) => {
+	const url = 'https://www.last.fm/';
+
+	console.log('fetching from url:' + `${url}${endpoint}`);
+	fetch(`${url}${endpoint}`)
+	.then(response => response.text())
+	.then(responseText => {
+			callback(responseText);
+		})
+		.catch(error => {
+			if(errCb)
+				errCb(error);
+			else
+				console.error(error)
+		}).finally(()=>{
+			if(finallyCb)
+				finallyCb()
 		});
 };
 
@@ -116,6 +151,81 @@ padText = (n, width, z) => {
 	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 };
 
+
+
+const getTopTracks = (html) => {
+    const $ = cheerio.load(html);
+
+    const topTracksList = []
+    $('table.globalchart').first()
+      .find('tr.globalchart-item').each(function(i, elem) {
+        // this === el
+        const title = $(this).find(".globalchart-name").text().trim()
+        const artist = $(this).find(".globalchart-track-artist-name").text().trim()
+        const thumbnail= $(this).find(".globalchart-image").find("img").first().attr("src")
+        const videoId= $(this).find("a").attr("data-youtube-id")
+    
+        const currentTrackObj = {name:title,artistName:artist,
+                                images:[thumbnail], videoId}
+        
+        topTracksList.push(currentTrackObj);
+      });
+
+      return topTracksList;
+    
+}
+
+
+const getArtists = (html) => {
+    const $ = cheerio.load(html);
+    const artistsResultList = []
+    
+     $("ul.artist-results").find("li").each(function(i,elem){
+        // this === el
+        const thumbnail = $(this).find(".artist-result-image").find('img').attr('src')
+        const artist = $(this).find("h4.artist-result-heading").text().trim()
+        const listenerCount = $(this).find("p.artist-result-listeners").
+                                clone().children().remove().end().text().trim() // avoids the "listeners" part of the text
+    
+        const artistResult = {images:[thumbnail],name:[artist],listenerCount}
+        artistsResultList.push(artistResult)
+    });
+    
+    return artistsResultList;
+}
+
+const getTracks = (html) => {
+    const $ = cheerio.load(html);
+    const trackResultList = []
+
+    $('tbody').first().find("tr").each(function(i,elem){
+        // this === elem
+        const videoId = $(this).find('td.chartlist-play').find('a').attr('data-youtube-id')
+        const thumbnail = $(this).find('td.chartlist-image').find('img').attr('src')
+        const title = $(this).find('td.chartlist-name').text().trim()
+        const artist = $(this).find('td.chartlist-artist').text().trim()
+        const duration = $(this).find('td.chartlist-duration').text().trim()
+
+        const trackResult = {videoId,images:[thumbnail],name:title,artistName:artist,duration}
+        trackResultList.push(trackResult)
+    });
+
+    return trackResultList;
+
+}
+
+const showNetworkLoadingAlert = (message, retryCb) => {
+
+	Alert.alert(
+		"Network Error",
+		message,
+		[
+		  {text: 'Retry', onPress: () => retryCb()},
+		],
+		{cancelable: true}
+	  );
+}
+
 const utils = {
 	fetchFromEndpoint,
 	fetchFromEndpointWithoutParsing,
@@ -126,5 +236,10 @@ const utils = {
 	getIndexOfTrackUsingId,
 	getUnique,
 	padText,
+	fetchFromLastFmWithoutParsing,
+	getTopTracks,
+	getArtists,
+	getTracks,
+	showNetworkLoadingAlert,
 };
 export default utils;

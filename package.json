@@ -7,11 +7,14 @@
 		"test": "jest"
 	},
 	"dependencies": {
+		"cheerio": "^1.0.0-rc.3",
+		"htmlparser2-without-node-native": "^3.9.2",
 		"nano-time": "^1.0.0",
 		"react": "16.6.3",
 		"react-native": "^0.60.5",
 		"react-native-background-timer": "^2.1.1",
 		"react-native-firebase": "^5.2.3",
+		"react-native-floating-action": "^1.19.1",
 		"react-native-gesture-handler": "^1.1.0",
 		"react-native-ionicons": "^4.6.1",
 		"react-native-reanimated": "^1.2.0",
@@ -19,7 +22,8 @@
 		"react-native-tab-view": "^2.10.0",
 		"react-native-track-player": "^1.1.2",
 		"react-native-ytdl": "^1.0.6",
-		"shortid": "^2.2.14"
+		"shortid": "^2.2.14",
+		"util": "^0.12.1"
 	},
 	"devDependencies": {
 		"babel-core": "7.0.0-bridge.0",

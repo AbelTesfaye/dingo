@@ -45,7 +45,9 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         mCallerContext.registerReceiver(myReceiver, filter);
 
-        mYouTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+        mYouTubePlayerView.setEnableAutomaticInitialization(false);
+
+        mYouTubePlayerView.initialize(new AbstractYouTubePlayerListener() {
             @Override
             public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState state) {
                 super.onStateChange(youTubePlayer, state);

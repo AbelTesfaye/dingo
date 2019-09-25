@@ -418,6 +418,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
     private ScaleGestureDetector scaleGestureDetector = null;
 
     boolean mHasBeenScaled = false;
+    boolean mHasBeenMoved = false;
 
     private WindowManager.LayoutParams windowLayoutParams;
 
@@ -928,7 +929,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
 
 
 
-
+            mHasBeenMoved = true;
 
             if(!mHasBeenScaled){
 
@@ -954,9 +955,15 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
         else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
 
             final int size = getChildCount();
-            for (int i = 0; i < size; i++) {
-                getChildAt(i).dispatchTouchEvent(event);
+
+            if(!mHasBeenMoved){
+                for (int i = 0; i < size; i++) {
+                    getChildAt(i).dispatchTouchEvent(event);
+                }
             }
+            mHasBeenMoved = false;
+
+
 
 
 
@@ -1029,7 +1036,7 @@ class FloatingView extends FrameLayout implements ViewTreeObserver.OnPreDrawList
             }
 
             // When ACTION_UP is done (when not pressed or moved)
-            if (action == MotionEvent.ACTION_UP && !tmpIsLongPressed && !mIsMoveAccept) {
+            if (!mHasBeenMoved && action == MotionEvent.ACTION_UP && !tmpIsLongPressed && !mIsMoveAccept) {
                 for (int i = 0; i < size; i++) {
                     getChildAt(i).performClick();
                 }

@@ -31,8 +31,6 @@ export default class ScreenPlayer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			albumTint:this.getRandomColor(),
-			sliderHeaderClosed: false,
 			webViewVideoId: "",
 			isPIPVideoPlayerActive: false
 		}
@@ -67,7 +65,6 @@ export default class ScreenPlayer extends Component {
 				this.handlePlayerState(event.state)
 		 })
 
-		this.changeAlbumTint()
 	}
 
 
@@ -130,8 +127,6 @@ export default class ScreenPlayer extends Component {
 		const trackToLeft = trackQueue[index - 1]
 		if(trackToLeft && !trackToLeft.videoId)
 			this.getAndUpdateVideoId(trackToLeft, index - 1)
-
-		this.changeAlbumTint()
 
 	}
 
@@ -230,18 +225,6 @@ export default class ScreenPlayer extends Component {
 
 	}
 
-	getRandomColor = () => {
-		var letters = '0123456789ABCDEF';
-		var color = '#';
-		for (var i = 0; i < 6; i++) {
-		  color += letters[Math.floor(Math.random() * 16)];
-		}
-		return color;
-	}
-
-	changeAlbumTint = () => {
-		this.setState({albumTint: this.getRandomColor()})
-	}
 	render() {
 		return (
 			<View style={{ ...styles.container, width: width }}>

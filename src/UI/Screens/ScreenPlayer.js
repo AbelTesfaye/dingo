@@ -50,16 +50,18 @@ export default class ScreenPlayer extends Component {
 
 		}
 
-		const eventEmitter = new NativeEventEmitter(PIPVideoPlayer);
+		const PIPVideoPlayerEventEmitter = new NativeEventEmitter(PIPVideoPlayer);
 
-		eventEmitter.addListener('PIPVideoPlayer', (event) => {
+		PIPVideoPlayerEventEmitter.addListener('PIPVideoPlayer', (event) => {
 			console.log(event)
 			if(event.state)
 				this.handlePlayerState(event.state)
 
 		})
 
-		eventEmitter.addListener('AndroidYouTubePlayer', (event) => {
+		const AndroidYouTubePlayerEventEmitter = new NativeEventEmitter(AndroidYouTubePlayer);
+
+		AndroidYouTubePlayerEventEmitter.addListener('AndroidYouTubePlayer', (event) => {
 			console.log("AndroidYouTubePlayer",event)
 			if(event.state)
 				this.handlePlayerState(event.state)

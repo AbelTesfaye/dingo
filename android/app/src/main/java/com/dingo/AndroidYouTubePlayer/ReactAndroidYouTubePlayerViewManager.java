@@ -24,12 +24,12 @@ import javax.annotation.Nonnull;
 public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouTubePlayerView> {
 
     public static final String REACT_CLASS = "AndroidYouTubePlayer";
-    YouTubePlayerView mYouTubePlayerView;
+    static YouTubePlayerView mYouTubePlayerView;
     ReactApplicationContext mCallerContext;
     private final BroadcastReceiver myReceiver = new myReceiver();
     String mInitialVideoId = "";
-    boolean mIsPlayerReady = false;
-    boolean mIsPausedInitially = false;
+    static boolean mIsPlayerReady = false;
+    static boolean mIsPausedInitially = false;
 
     public ReactAndroidYouTubePlayerViewManager(ReactApplicationContext reactContext) {
         mCallerContext = reactContext;
@@ -70,10 +70,14 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
         return mYouTubePlayerView;
     }
 
-   private void pause(){
-            if(mYouTubePlayerView == null)
-                return;
+   public static void pause(){
+        if(mYouTubePlayerView == null)
+            return;
+
+        if (mIsPlayerReady)
             mYouTubePlayerView.getYouTubePlayerWhenReady(youTubePlayer -> youTubePlayer.pause());
+        else        
+            mIsPausedInitially = true;
     }
 
     @Override
@@ -92,10 +96,7 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                if (mIsPlayerReady)
-                    pause();
-                else        
-                    mIsPausedInitially = true;
+                pause();
             } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                 //Do something when it's back on
             }

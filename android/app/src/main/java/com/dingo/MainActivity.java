@@ -18,6 +18,8 @@ import java.util.Scanner;
 import com.dingo.database.DbHelper;
 import org.json.JSONObject;
 
+import com.dingo.AndroidYouTubePlayer.ReactAndroidYouTubePlayerViewManager;
+
 public class MainActivity extends ReactActivity {
 
     @Override
@@ -56,5 +58,11 @@ public class MainActivity extends ReactActivity {
                 return new RNGestureHandlerEnabledRootView(MainActivity.this);
             }
         };
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ReactAndroidYouTubePlayerViewManager.pause();
     }
 }

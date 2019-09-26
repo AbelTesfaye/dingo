@@ -109,8 +109,8 @@ android {
         applicationId "com.dingo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 110
-        versionName "1.1.0"
+        versionCode 120
+        versionName "1.2.0"
         multiDexEnabled true
 
     }

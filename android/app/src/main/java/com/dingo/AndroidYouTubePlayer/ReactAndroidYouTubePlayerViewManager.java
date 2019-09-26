@@ -29,6 +29,7 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
     private final BroadcastReceiver myReceiver = new myReceiver();
     String mInitialVideoId = "";
     boolean mIsPlayerReady = false;
+    boolean mIsPausedInitially = false;
 
     public ReactAndroidYouTubePlayerViewManager(ReactApplicationContext reactContext) {
         mCallerContext = reactContext;
@@ -52,7 +53,12 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
             public void onReady(@Nonnull YouTubePlayer youTubePlayer) {
                 mIsPlayerReady = true;
 
-                youTubePlayer.loadVideo(mInitialVideoId, 0);
+                if(mIsPausedInitially)
+                    youTubePlayer.cueVideo(mInitialVideoId, 0);
+                else
+                    youTubePlayer.loadVideo(mInitialVideoId, 0);
+
+                mIsPausedInitially = false;
             }
             @Override
             public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState state) {
@@ -86,7 +92,10 @@ public class ReactAndroidYouTubePlayerViewManager extends SimpleViewManager<YouT
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                pause();
+                if (mIsPlayerReady)
+                    pause();
+                else        
+                    mIsPausedInitially = true;
             } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                 //Do something when it's back on
             }

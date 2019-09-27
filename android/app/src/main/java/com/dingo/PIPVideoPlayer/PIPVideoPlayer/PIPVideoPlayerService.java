@@ -156,7 +156,7 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
         mFloatingViewManager.addViewToWindow(frameLayout, options);
 
         // 常駐起動
-        //startForeground(NOTIFICATION_ID, createNotification(this));
+        startForeground(NOTIFICATION_ID, createNotification(this));
 
         return START_REDELIVER_INTENT;
     }
@@ -235,7 +235,7 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
         builder.setWhen(System.currentTimeMillis());
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setContentTitle("Playing in mini player");
-        builder.setContentText("Tap to close.");
+        builder.setContentText("Swipe the mini player offscreen to close");
         builder.setOngoing(true);
         builder.setPriority(NotificationCompat.PRIORITY_MIN);
         builder.setCategory(NotificationCompat.CATEGORY_SERVICE);

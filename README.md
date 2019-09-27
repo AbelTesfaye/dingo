@@ -23,16 +23,13 @@
 
 ## Download
 
-We have releases for various android architectures. If you're not sure what architecture your device uses, choose the **[recommended download.](http://s000.tinyupload.com/index.php?file_id=37063980998875411629)**
+**Latest Release:**
 
-**[Recommended download: armeabi-v7a release](http://s000.tinyupload.com/index.php?file_id=37063980998875411629)**
+You can download dingo from the playstore: [https://play.google.com/store/apps/details?id=com.dingo](https://play.google.com/store/apps/details?id=com.dingo)
 
-Other alternatives:
+Direct download link can be found here: [https://github.com/AbelTesfaye/dingo/releases/download/v1.2.0/dingo-v1.20.apk](https://github.com/AbelTesfaye/dingo/releases/download/v1.2.0/dingo-v1.20.apk)
 
--   [v8a release](http://s000.tinyupload.com/?file_id=07427912673787672333)
--   [x86 release](http://s000.tinyupload.com/?file_id=63644582318498219615)
-
-**All Releases:**
+**Other Releases:**
 
 https://github.com/AbelTesfaye/dingo/releases/
 
@@ -42,9 +39,12 @@ You can join [our community on Telegram](https://t.me/dingoCommunity)
 
 ## Our TODO list
 
+DONE
+-   Video support
+
+NOT-DONE
 -   Spotify, Deezer and Apple Music integration
 -   Adjustable Data consumption
--   Video support
 -   IOS and desktop support
 -   Equalizer(Bass booster, etc..)
 

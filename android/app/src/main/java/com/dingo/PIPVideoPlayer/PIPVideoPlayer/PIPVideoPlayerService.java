@@ -16,7 +16,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
+import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
@@ -155,6 +158,17 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
 
         mFloatingViewManager.addViewToWindow(frameLayout, options);
 
+
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Support for Android Oreo: Notification Channels
+            NotificationChannel channel = new NotificationChannel(
+                        "dingo_channel_01",
+                        "dingo Notification Channel",
+                        NotificationManager.IMPORTANCE_NONE);
+            manager.createNotificationChannel(channel);
+        }
+        
         // 常駐起動
         startForeground(NOTIFICATION_ID, createNotification(this));
 
@@ -239,6 +253,7 @@ public class PIPVideoPlayerService extends Service implements FloatingViewListen
         builder.setOngoing(true);
         builder.setPriority(NotificationCompat.PRIORITY_MIN);
         builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+        builder.setChannelId("dingo_channel_01");
 
         return builder.build();
     }

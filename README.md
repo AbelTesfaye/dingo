@@ -27,7 +27,7 @@
 
 You can download dingo from the playstore: [https://play.google.com/store/apps/details?id=com.dingo](https://play.google.com/store/apps/details?id=com.dingo)
 
-Direct download link can be found here: [https://github.com/AbelTesfaye/dingo/releases/download/v1.2.0/dingo-v1.20.apk](https://github.com/AbelTesfaye/dingo/releases/download/v1.2.0/dingo-v1.20.apk)
+Direct download link can be found here: [https://github.com/AbelTesfaye/dingo/releases/download/v1.2.1/dingo-v1.2.1.apk](https://github.com/AbelTesfaye/dingo/releases/download/v1.2.1/dingo-v1.2.1.apk)
 
 **Other Releases:**
 

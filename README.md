@@ -33,9 +33,6 @@ Direct download link can be found here: [https://github.com/AbelTesfaye/dingo/re
 
 https://github.com/AbelTesfaye/dingo/releases/
 
-## Our community
-
-You can join [our community on Telegram](https://t.me/dingoCommunity)
 
 ## Our TODO list
 

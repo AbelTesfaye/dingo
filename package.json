@@ -11,7 +11,7 @@
 		"htmlparser2-without-node-native": "^3.9.2",
 		"nano-time": "^1.0.0",
 		"react": "16.6.3",
-		"react-native": "^0.60.5",
+		"react-native": "^0.62.3",
 		"react-native-background-timer": "^2.1.1",
 		"react-native-firebase": "^5.2.3",
 		"react-native-floating-action": "^1.19.1",
